@@ -2,13 +2,15 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
+	"time"
 
 	ins "push-swap/pkg/instructions"
+	parse "push-swap/pkg/parse"
 )
 
 func main() {
@@ -19,9 +21,13 @@ func main() {
 	var a ins.Stack
 	var b ins.Stack
 
-	instructionsToCheck, err := initialize(&a, &b)
-	if err != nil {
+	if parse.InitializeStacks(&a, &b) != nil {
 		fmt.Println("Error")
+		return
+	}
+
+	instructionsToCheck, err := readInstructions()
+	if err != nil {
 		return
 	}
 	runInstructions(&a, &b, instructionsToCheck)
@@ -46,17 +52,6 @@ func checkStacks(a, b ins.Stack) {
 }
 
 func runInstructions(a, b *ins.Stack, instructionsToCheck []string) {
-	// fmt.Println(instructions)
-	// fmt.Println("--------------------------------------- Initial")
-	// fmt.Print("a: ")
-	// for i, v := range a.Nums {
-	// 	if i == a.Top {
-	// 		fmt.Printf("[%d] ", v)
-	// 	} else {
-	// 		fmt.Printf("%d ", v)
-	// 	}
-	// }
-	// fmt.Print("\nb:")
 	for _, instruction := range instructionsToCheck {
 		switch instruction {
 		case "sa":
@@ -82,58 +77,56 @@ func runInstructions(a, b *ins.Stack, instructionsToCheck []string) {
 		case "rrr":
 			ins.Rrr(a, b)
 		}
-		// fmt.Println("\n---------------------------------------", instruction)
-		// fmt.Print("a: ")
-		// for i, v := range a.Nums {
-		// 	if i == a.Top {
-		// 		fmt.Printf("[%d] ", v)
-		// 	} else {
-		// 		fmt.Printf("%d ", v)
-		// 	}
-		// }
-		// fmt.Print("\nb: ")
-		// for i, v := range b.Nums {
-		// 	if i == b.Top {
-		// 		fmt.Printf("[%d] ", v)
-		// 	} else {
-		// 		fmt.Printf("%d ", v)
-		// 	}
-		// }
 	}
-	// fmt.Println()
 }
 
-func initialize(a, b *ins.Stack) ([]string, error) {
-	source := strings.Split(os.Args[1], (" "))
+func readInstructions() ([]string, error) {
 	instructionsToCheck := []string{}
-	numbers := []int{}
-
-	// TODO: check for errors and edge cases such as empty input
-
-	for _, v := range source {
-		n, err := strconv.Atoi(v)
-		if err != nil {
-			return []string{}, err
-		}
-		numbers = append(numbers, n)
-	}
-
-	*a = ins.Stack{Top: 0, Nums: numbers}
-	*b = ins.Stack{Top: -1, Nums: []int{}}
-
 	reader := bufio.NewReader(os.Stdin)
 
-	for {
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				break
+	inputChan := make(chan string)
+	errChan := make(chan error)
+	timeoutChan := make(chan []struct{})
+
+	fi, _ := os.Stdin.Stat()
+
+	go func() {
+		for {
+			input, err := reader.ReadString('\n')
+			if err != nil {
+				if err == io.EOF {
+					break
+				}
+				errChan <- err
 			}
-			return []string{}, err
+			inputChan <- strings.TrimSuffix(input, "\n")
 		}
-		input = strings.TrimSuffix(input, "\n")
-		instructionsToCheck = append(instructionsToCheck, input)
+	}()
+
+	go func() {
+		time.Sleep(5 * time.Second)
+		timeoutChan <- []struct{}{}
+	}()
+
+	for {
+		input := ""
+
+		select {
+		case input = <-inputChan:
+			if input == "" {
+				// If input is from the command line, move the cursor up one line
+				// to remove the blank line that would otherwise be printed.
+				// See 'Bitmasks: a Detour' in README.
+				if (fi.Mode() & os.ModeCharDevice) != 0 {
+					fmt.Print("\033[1A")
+				}
+				return instructionsToCheck, nil
+			}
+			instructionsToCheck = append(instructionsToCheck, input)
+		case <-errChan:
+			return nil, errors.New("failed to read input")
+		case <-timeoutChan:
+			return instructionsToCheck, nil
+		}
 	}
-	instructionsToCheck = instructionsToCheck[:len(instructionsToCheck)-1]
-	return instructionsToCheck, nil
 }
