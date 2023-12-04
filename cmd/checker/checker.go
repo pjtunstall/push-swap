@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"time"
 
 	ins "push-swap/pkg/instructions"
 	parse "push-swap/pkg/parse"
@@ -86,7 +85,6 @@ func readInstructions() ([]string, error) {
 
 	inputChan := make(chan string)
 	errChan := make(chan error)
-	timeoutChan := make(chan []struct{})
 
 	fi, _ := os.Stdin.Stat()
 
@@ -101,11 +99,6 @@ func readInstructions() ([]string, error) {
 			}
 			inputChan <- strings.TrimSuffix(input, "\n")
 		}
-	}()
-
-	go func() {
-		time.Sleep(5 * time.Second)
-		timeoutChan <- []struct{}{}
 	}()
 
 	for {
@@ -125,8 +118,6 @@ func readInstructions() ([]string, error) {
 			instructionsToCheck = append(instructionsToCheck, input)
 		case <-errChan:
 			return nil, errors.New("failed to read input")
-		case <-timeoutChan:
-			return instructionsToCheck, nil
 		}
 	}
 }
