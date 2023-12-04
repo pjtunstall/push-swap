@@ -1,8 +1,8 @@
 # push-swap
 
-1. [GETTING-STARTED](#1-getting-started)
-2. [ANOMALIES](#1-audit)
-3. [BITMASKS:-A-DETOUR](#-bitmasks:-a-detour)
+1. [Getting Started](#1-getting-started)
+2. [Anomalies](#1-audit)
+3. [Bitmasks: a Detour](#-bitmasks:-a-detour)
 
 ## 1. Getting Started
 
