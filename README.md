@@ -17,7 +17,9 @@ The project description clearly state that every instruction input to `checker` 
 
 However, they then absentmindedly show an example that violates this rule but still results in an `OK`:
 
-`$ echo -e "rra\npb\nsa\nrra\npa" | ./checker "3 2 1 0"`
-`OK`
+```
+$ echo -e "rra\npb\nsa\nrra\npa" | ./checker "3 2 1 0"
+OK
+```
 
 If one followes the project specification to the letter, this will not result in `OK` because the final instruction is not followed by a `\n`. But if a newline character is appended, our `checker` will indeed output `OK`.
