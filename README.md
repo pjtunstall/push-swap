@@ -1,8 +1,8 @@
 # push-swap
 
-1. [Getting Started](#1-getting-started)
+1. [Getting started](#1-getting-started)
 2. [Anomalies](#1-audit)
-3. [Bitmasks: a Detour](#-bitmasks:-a-detour)
+3. [Bitmasks: a detour](#-bitmasks:-a-detour)
 
 ## 1. Getting Started
 
@@ -31,7 +31,7 @@ OK
 
 So, if you find an example like this that isn't `OK` even though the instructions are right, just append a `\n`, and all should be well.
 
-## Bitmasks: a Detour
+## Bitmasks: a detour
 
 In the `readInstructions` function in `checker`, we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
 
