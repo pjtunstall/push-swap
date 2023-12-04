@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	ins "push-swap/pkg/instructions"
-	parse "push-swap/pkg/parse"
+	"push-swap/pkg/parse"
+	"push-swap/pkg/structs"
 )
 
 func main() {
 	var result string
-	var a ins.Stack
-	var b ins.Stack
+	var a structs.Stack
+	var b structs.Stack
 	wrong := false
 
 	err := parse.InitializeStacks(&a, &b)

@@ -6,17 +6,17 @@ import (
 	"strconv"
 	"strings"
 
-	ins "push-swap/pkg/instructions"
+	"push-swap/pkg/structs"
 )
 
-func InitializeStacks(a, b *ins.Stack) error {
+func InitializeStacks(a, b *structs.Stack) error {
 	if len(os.Args) < 2 {
 		return errors.New("not enough arguments")
 	}
 
 	if os.Args[1] == "" {
-		*a = ins.Stack{Top: -1, Nums: []int{}}
-		*b = ins.Stack{Top: -1, Nums: []int{}}
+		*a = structs.Stack{Top: -1, Nums: []int{}}
+		*b = structs.Stack{Top: -1, Nums: []int{}}
 		return nil
 	}
 
@@ -31,12 +31,12 @@ func InitializeStacks(a, b *ins.Stack) error {
 		numbers = append(numbers, n)
 	}
 
-	*a = ins.Stack{Top: 0, Nums: numbers}
-	*b = ins.Stack{Top: -1, Nums: []int{}}
+	*a = structs.Stack{Top: 0, Nums: numbers}
+	*b = structs.Stack{Top: -1, Nums: []int{}}
 	return nil
 }
 
-func AreThereDuplicates(a ins.Stack) bool {
+func AreThereDuplicates(a structs.Stack) bool {
 	for i := range a.Nums {
 		for j := range a.Nums {
 			if i == j {

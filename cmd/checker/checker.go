@@ -5,52 +5,71 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 
 	ins "push-swap/pkg/instructions"
-	parse "push-swap/pkg/parse"
+	"push-swap/pkg/parse"
+	"push-swap/pkg/structs"
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		return
-	}
-
-	var a ins.Stack
-	var b ins.Stack
-
-	if parse.InitializeStacks(&a, &b) != nil {
-		fmt.Println("Error")
-		return
-	}
-
-	instructionsToCheck, err := readInstructions()
+	fi, err := os.Stdin.Stat()
 	if err != nil {
+		log.Fatal(err)
+	}
+	// This variable will be true if the program is receiving input from the
+	// command line, and false if it is receiving input from a pipe. We'll use
+	// this to determine whether or not to move the cursor up one line after
+	// reading input. See 'Bitmasks: a Detour' in README.
+	isTerminal := (fi.Mode() & os.ModeCharDevice) != 0
+	s, err := run(os.Stdin, os.Stdout, isTerminal, os.Args)
+	if err != nil {
+		if err.Error() == "error to print" {
+			fmt.Println("Error")
+		}
 		return
 	}
-	runInstructions(&a, &b, instructionsToCheck)
-	checkStacks(a, b)
+	fmt.Println(s)
 }
 
-func checkStacks(a, b ins.Stack) {
+func run(r io.Reader, w io.Writer, isTerminal bool, args []string) (string, error) {
+	err := errors.New("error not to print")
+	if len(args) < 2 {
+		return "", err
+	}
+
+	var a, b structs.Stack
+
+	if parse.InitializeStacks(&a, &b) != nil {
+		return "", err
+	}
+
+	instructionsToCheck, err := readInstructions(r, isTerminal)
+	if err != nil {
+		return "", err
+	}
+	runInstructions(&a, &b, instructionsToCheck)
+	return checkStacks(a, b), nil
+}
+
+func checkStacks(a, b structs.Stack) string {
 	if len(b.Nums) != 0 {
-		fmt.Println("KO")
-		return
+		return "KO"
 	}
 	for i := range a.Nums {
 		if i == len(a.Nums)-1 {
 			break
 		}
 		if a.Nums[i] > a.Nums[i+1] {
-			fmt.Println("KO")
-			return
+			return "KO"
 		}
 	}
-	fmt.Println("OK")
+	return "OK"
 }
 
-func runInstructions(a, b *ins.Stack, instructionsToCheck []string) {
+func runInstructions(a, b *structs.Stack, instructionsToCheck []string) {
 	for _, instruction := range instructionsToCheck {
 		switch instruction {
 		case "sa":
@@ -79,14 +98,12 @@ func runInstructions(a, b *ins.Stack, instructionsToCheck []string) {
 	}
 }
 
-func readInstructions() ([]string, error) {
+func readInstructions(r io.Reader, isTerminal bool) ([]string, error) {
 	instructionsToCheck := []string{}
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(r)
 
 	inputChan := make(chan string)
 	errChan := make(chan error)
-
-	fi, _ := os.Stdin.Stat()
 
 	go func() {
 		for {
@@ -99,25 +116,20 @@ func readInstructions() ([]string, error) {
 			}
 			inputChan <- strings.TrimSuffix(input, "\n")
 		}
+		close(inputChan)
 	}()
 
 	for {
-		input := ""
-
-		select {
-		case input = <-inputChan:
-			if input == "" {
-				// If input is from the command line, move the cursor up one line
-				// to remove the blank line that would otherwise be printed.
-				// See 'Bitmasks: a Detour' in README.
-				if (fi.Mode() & os.ModeCharDevice) != 0 {
-					fmt.Print("\033[1A")
-				}
-				return instructionsToCheck, nil
-			}
-			instructionsToCheck = append(instructionsToCheck, input)
-		case <-errChan:
-			return nil, errors.New("failed to read input")
+		input, ok := <-inputChan
+		if !ok {
+			return instructionsToCheck, nil
 		}
+		if input == "" {
+			if isTerminal {
+				fmt.Print("\033[1A")
+			}
+			return instructionsToCheck, nil
+		}
+		instructionsToCheck = append(instructionsToCheck, input)
 	}
 }
