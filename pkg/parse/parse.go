@@ -13,6 +13,13 @@ func InitializeStacks(a, b *ins.Stack) error {
 	if len(os.Args) < 2 {
 		return errors.New("not enough arguments")
 	}
+
+	if os.Args[1] == "" {
+		*a = ins.Stack{Top: -1, Nums: []int{}}
+		*b = ins.Stack{Top: -1, Nums: []int{}}
+		return nil
+	}
+
 	source := strings.Split(os.Args[1], (" "))
 	numbers := []int{}
 
@@ -29,7 +36,7 @@ func InitializeStacks(a, b *ins.Stack) error {
 	return nil
 }
 
-func CheckForDuplicates(a ins.Stack) bool {
+func AreThereDuplicates(a ins.Stack) bool {
 	for i := range a.Nums {
 		for j := range a.Nums {
 			if i == j {
