@@ -1,11 +1,8 @@
 package instructions
 
-type Stack struct {
-	Top  int
-	Nums []int
-}
+import "push-swap/pkg/structs"
 
-func Rx(x *Stack) {
+func Rx(x *structs.Stack) {
 	if len(x.Nums) < 2 {
 		return
 	}
@@ -16,7 +13,7 @@ func Rx(x *Stack) {
 	x.Top += 1
 }
 
-func Rrx(x *Stack) {
+func Rrx(x *structs.Stack) {
 	if len(x.Nums) < 2 {
 		return
 	}
@@ -27,17 +24,17 @@ func Rrx(x *Stack) {
 	x.Top -= 1
 }
 
-func Rr(a, b *Stack) {
+func Rr(a, b *structs.Stack) {
 	Rx(a)
 	Rx(b)
 }
 
-func Rrr(a, b *Stack) {
+func Rrr(a, b *structs.Stack) {
 	Rrx(a)
 	Rrx(b)
 }
 
-func Sx(x *Stack) {
+func Sx(x *structs.Stack) {
 	if len(x.Nums) < 2 {
 		return
 	}
@@ -48,12 +45,12 @@ func Sx(x *Stack) {
 	x.Nums[x.Top], x.Nums[x.Top+1] = x.Nums[x.Top+1], x.Nums[x.Top]
 }
 
-func Ss(a, b *Stack) {
+func Ss(a, b *structs.Stack) {
 	Sx(a)
 	Sx(b)
 }
 
-func Px(x, y *Stack) {
+func Px(x, y *structs.Stack) {
 	if len(y.Nums) == 0 {
 		return
 	}
