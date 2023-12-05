@@ -6,23 +6,27 @@
 
 ## 1. Getting Started
 
-To compile `checker.go`, run `go build checker.go`; and, to run it, `./checker`, piping in the instructions like so:
+You'll find the main package for each of the two programs, `checker` and `push-swap`, in the folders of those names in `cmd`.
+
+To compile the `push-swap` program, cd into the corresponding directory and run `go build -o push-swap main.go`. To use the program, enter `./push-swap`, followed by a string of integers to sort, separated by spaces.
+
+To compile the `checker` program, run `go build -o checker main.go`; and, to use it, type `./checker`, followed by a string of integers to sort, piping in the instructions like so:
 
 ```
 echo -e "rra\npb\nsa\nrra\npa\n" | ./checker "3 2 1 0"
 ```
 
-or you can run `./checker "3 2 1 0"` (with your choice of initial values on stack `a`), then type instructions on the command line, pressing enter after each. When you've typed all your instructions, you can press enter once more to let the checker know you've finished.
+Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial values on stack `a`), then type instructions on the command line, pressing enter after each. When you've typed all your instructions, you can press enter once more to let the checker know you've finished.
 
 ## 2. Anomalies
 
-Notice how, in the example above, every instruction is followed by a newline character, `\n`? This is required according to the project description:
+Notice how, in the `checker` example above, every instruction is followed by a newline character, `\n`? According to the project description:
 
 ```
 Checker will then read instructions on the standard input, each instruction will be followed by \n.
 ```
 
-However, they then absentmindedly show an example that violates this rule but still results in an `OK`:
+They then show an example that violates this rule but still results in an `OK`:
 
 ```
 $ echo -e "rra\npb\nsa\nrra\npa" | ./checker "3 2 1 0"
@@ -33,7 +37,7 @@ So, if you find an example like this that isn't `OK` even though the instruction
 
 ## Bitmasks: a detour
 
-In the `readInstructions` function in `checker`, we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
+In the `getInstructions` function of the `checker` program (located in `get-instructions.go`), we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
 
 However, we can't unconditionally move up a line because when the intructions are piped to the program, there is no blank line. Hence we check whether the input is from the terminal before moving up a line.
 

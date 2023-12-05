@@ -1,12 +1,11 @@
-package instructions
+package ps
 
 import (
-	"push-swap/pkg/structs"
 	"testing"
 )
 
 func TestRx(t *testing.T) {
-	var r, s, u, v, w structs.Stack
+	var r, s, u, v, w Stack
 	r.Nums = []int{}
 	s.Nums = []int{1}
 	u.Nums = []int{1, 2, 3}

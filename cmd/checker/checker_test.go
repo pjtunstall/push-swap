@@ -4,41 +4,56 @@
 package main
 
 import (
-	"bytes"
-	"strings"
 	"testing"
+
+	"push-swap/ps"
 )
 
-func TestRun(t *testing.T) {
-	testCases := []struct {
-		args         []string
-		instructions string
-		expected     string
-	}{
+type testCase struct {
+	instructions []string
+	a            ps.Stack
+	b            ps.Stack
+	expected     string
+}
+
+// Simulating:
+
+// echo -e "sa\npb\nrrr\n" | ./checker "0 9 1 8 2 7 3 6 4 5"
+// echo -e "sa\npb\nrrr\n" | go run . "0 9 1 8 2 7 3 6 4 5"
+
+// echo -e "pb\nra\npb\nra\nsa\nra\npa\npa\n" | ./checker "0 9 1 8 2"
+// echo -e "pb\nra\npb\nra\nsa\nra\npa\npa\n" | go run . "0 9 1 8 2"
+
+func TestRunInstructions(t *testing.T) {
+	var resultString string
+
+	testCases := []testCase{
 		{
-			args:         []string{"push-swap", "0 9 1 8 2 7 3 6 4 5"},
-			instructions: "sa\npb\nrrr\n",
-			expected:     "KO\n",
+			instructions: []string{"sa", "pb", "rrr"},
+			a:            ps.Stack{Top: 0, Nums: []int{0, 9, 1, 8, 2, 7, 3, 6, 4, 5}},
+			expected:     "KO",
 		},
 		{
-			args:         []string{"push-swap", "0 9 1 8 2"},
-			instructions: "pb\nra\npb\nra\nsa\nra\npa\npa\n",
-			expected:     "OK\n",
+			instructions: []string{"pb", "ra", "pb", "ra", "sa", "ra", "pa", "pa"},
+			a:            ps.Stack{Top: 0, Nums: []int{0, 9, 1, 8, 2}},
+			expected:     "OK",
 		},
 	}
 
 	for i, tc := range testCases {
-		t.Logf("Running test case %d", i) // Log which test case is running
-		var outBuf bytes.Buffer
-		in := strings.NewReader(tc.instructions)
-		_, err := run(in, &outBuf, false, tc.args)
+		t.Logf("Running test case %d", i)
+		err := run(&tc.a, &tc.b, tc.instructions)
 		if err != nil {
-			t.Errorf("Test case %d failed with error: %v", i, err)
-			continue
+			t.Errorf("Test case %d failed. Expected no error, got %s", i, err)
 		}
-		result := outBuf.String()
-		if result != tc.expected {
-			t.Errorf("Test case %d failed. Expected %s, got %s", i, tc.expected, result)
+		result := ps.Check(tc.a, tc.b)
+		if result {
+			resultString = "OK"
+		} else {
+			resultString = "KO"
+		}
+		if resultString != tc.expected {
+			t.Errorf("Test case %d failed. Expected %s, got %s", i, tc.expected, resultString)
 		}
 	}
 }
