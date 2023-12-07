@@ -13,12 +13,7 @@ func main() {
 		return
 	}
 
-	b, err := ps.NewStack("")
-	if err != nil {
-		fmt.Println("Failed to initialize empty stack, b.")
-		return
-	}
-
+	b, _ := ps.NewStack("")
 	a, err := ps.NewStack(os.Args[1])
 	if err != nil {
 		if err.Error() == "invalid argument" {
@@ -46,11 +41,11 @@ func main() {
 		return
 	}
 
-	if run(&a, &b, instructions) != nil {
+	if ps.Run(&a, &b, instructions) != nil {
 		fmt.Println("Error: invalid instruction")
 		return
 	}
-	ok := ps.Check(a, b)
+	ok := ps.Check(a, b, true)
 
 	if ok {
 		fmt.Println("OK")

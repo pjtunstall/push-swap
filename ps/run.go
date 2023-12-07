@@ -1,36 +1,34 @@
-package main
+package ps
 
 import (
 	"errors"
-
-	"push-swap/ps"
 )
 
-func run(a, b *ps.Stack, instructions []string) error {
+func Run(a, b *Stack, instructions []string) error {
 	for _, instruction := range instructions {
 		switch instruction {
 		case "sa":
-			ps.Sx(a)
+			Sx(a)
 		case "sb":
-			ps.Sx(b)
+			Sx(b)
 		case "ss":
-			ps.Ss(a, b)
+			Ss(a, b)
 		case "pa":
-			ps.Px(a, b)
+			Px(a, b)
 		case "pb":
-			ps.Px(b, a)
+			Px(b, a)
 		case "ra":
-			ps.Rx(a)
+			Rx(a)
 		case "rb":
-			ps.Rx(b)
+			Rx(b)
 		case "rr":
-			ps.Rr(a, b)
+			Rr(a, b)
 		case "rra":
-			ps.Rrx(a)
+			Rrx(a)
 		case "rrb":
-			ps.Rrx(b)
+			Rrx(b)
 		case "rrr":
-			ps.Rrr(a, b)
+			Rrr(a, b)
 		default:
 			return errors.New("invalid instruction")
 		}

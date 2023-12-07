@@ -1,6 +1,3 @@
-// This is not working yet. I'll try to learn more about testing
-// by writing tests for smaller components of the program.
-
 package main
 
 import (
@@ -18,6 +15,9 @@ type testCase struct {
 
 // Simulating:
 
+// checker % echo -e "sa\nrra\npb\n" | go run . "3 2 1 0"
+// checker % echo -e "sa\nrra\npb\n" | ./checker "3 2 1 0"
+
 // echo -e "sa\npb\nrrr\n" | ./checker "0 9 1 8 2 7 3 6 4 5"
 // echo -e "sa\npb\nrrr\n" | go run . "0 9 1 8 2 7 3 6 4 5"
 
@@ -28,6 +28,11 @@ func TestRunInstructions(t *testing.T) {
 	var resultString string
 
 	testCases := []testCase{
+		{
+			instructions: []string{"sa", "rra", "pb"},
+			a:            ps.Stack{Top: 0, Nums: []int{3, 2, 1, 0}},
+			expected:     "KO",
+		},
 		{
 			instructions: []string{"sa", "pb", "rrr"},
 			a:            ps.Stack{Top: 0, Nums: []int{0, 9, 1, 8, 2, 7, 3, 6, 4, 5}},
@@ -42,11 +47,11 @@ func TestRunInstructions(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Logf("Running test case %d", i)
-		err := run(&tc.a, &tc.b, tc.instructions)
+		err := ps.Run(&tc.a, &tc.b, tc.instructions)
 		if err != nil {
 			t.Errorf("Test case %d failed. Expected no error, got %s", i, err)
 		}
-		result := ps.Check(tc.a, tc.b)
+		result := ps.Check(tc.a, tc.b, true)
 		if result {
 			resultString = "OK"
 		} else {

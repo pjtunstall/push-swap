@@ -3,40 +3,66 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"push-swap/ps"
 )
 
 func main() {
-	var result string
+	var result []string
 
 	if len(os.Args) < 2 {
 		return
 	}
 
-	// b, _ := ps.NewStack("")
+	if os.Args[1] == "" {
+		fmt.Println("Be reasonable.")
+		return
+	}
+
+	b, _ := ps.NewStack("")
 	a, err := ps.NewStack(os.Args[1])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error\n")
 		return
 	}
 
-	switch len(a.Nums) {
-	case 0:
-		return
-	case 1:
-		return
-	case 2:
-		if a.Nums[0] < a.Nums[1] {
+	if ps.Check(a, b, true) {
+		result = []string{}
+	} else if false && ps.Check(a, b, false) {
+		result = justRotate(&a)
+	} else {
+		switch len(a.Nums) {
+		case 0:
+			return
+		case 1:
+			return
+		case 2:
+			if a.Nums[0] < a.Nums[1] {
+				return
+			}
+			result = []string{"sa"}
+		case 3:
+			temp, _ := three(a.Nums)
+			result = temp
+		case 4:
+			result = four(&a, &b)
+		case 5:
+			result = five(&a, &b)
+		default:
+			fmt.Println("Not implemented yet.")
 			return
 		}
-		result = "sa\n"
-	case 3:
-		result = three(a.Nums)
 	}
 
 	if len(result) == 0 {
 		return
 	}
-	fmt.Print(result)
+
+	var sb strings.Builder
+	for _, str := range result {
+		sb.WriteString(str)
+		sb.WriteRune('\n')
+	}
+	fmt.Print(sb.String())
 }
