@@ -1,61 +1,68 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"testing"
 
 	"push-swap/ps"
 )
 
-type test struct {
-	input string
-	want  []string
-}
-
 func TestFour(t *testing.T) {
-	tests := []test{
-		// {"1 2 3 4", []string{}}, <-- Not tested because a sorted stack is
-		// never passed to four.
-		{"1 2 4 3", []string{"pb", "sa", "ra", "pa"}},
-		{"1 3 2 4", []string{"pb", "sa", "pa"}},
-		{"1 3 4 2", []string{"pb", "rra", "pa"}},
-		{"1 4 2 3", []string{"pb", "ra", "pa"}},
-		{"1 4 3 2", []string{"pb", "sa", "rra", "pa"}},
+	tests := []string{
+		"1 2 3 4",
+		"1 2 4 3",
+		"1 3 2 4",
+		"1 3 4 2",
+		"1 4 2 3",
+		"1 4 3 2",
 
-		{"2 1 3 4", []string{"pb", "ra", "pa", "rra"}},
-		{"2 1 4 3", []string{"pb", "sa", "rra", "pa", "rra"}},
-		{"2 3 1 4", []string{"pb", "sa", "ra", "pa", "rra"}},
-		{"2 3 4 1", []string{"pb", "pa", "rra"}}, // Forestall this superfluity.
-		// I could move Top to each position in turn and check if it's sorted,
-		// then return Top to its original position.
-		{"2 4 1 3", []string{"pb", "rra", "pa", "rra"}},
-		{"2 4 3 1", []string{"pb", "sa", "pa", "rra"}},
+		"2 1 3 4",
+		"2 1 4 3",
+		"2 3 1 4",
+		"2 3 4 1",
+		"2 4 1 3",
+		"2 4 3 1",
 
-		{"3 1 2 4", []string{"pb", "rra", "pa", "ra", "ra"}},
-		// etc.
+		"3 1 2 4",
+		"3 1 4 2",
+		"3 2 1 4",
+		"3 2 4 1",
+		"3 4 1 2",
+		"3 4 2 1",
 
-		/* But how is this a good test? It relies on trust or verifying
-		each case oneself by hand, so it's hardly automated. On the other
-		hand, automating any of the checks introduces a dependency on
-		other parts of the code. Also, doing it this way restricts the
-		the function to one solution. What if I improve the function or
-		change it an a way that causes it to produce a different solution
-		at least as good as the one expected by the test? I guess then the
-		new solution could be verified manually and substituted for in the
-		test. */
+		"4 1 2 3",
+		"4 1 3 2",
+		"4 2 1 3",
+		"4 2 3 1",
+		"4 3 1 2",
+		"4 3 2 1",
 	}
 
 	for _, tc := range tests {
-		a, _ := ps.NewStack(tc.input)
+		aInit, _ := ps.NewStack(tc)
+		bInit, _ := ps.NewStack("")
+		instructions := four(aInit, bInit)
+		a, _ := ps.NewStack(tc)
 		b, _ := ps.NewStack("")
-		instructions := four(a, b)
-		if len(instructions) != len(tc.want) {
-			t.Errorf("On initial stack %v, four gives %v%v, want %v", tc.input, "", instructions, tc.want)
-			continue
+		err := ps.Run(&a, &b, instructions)
+		if err != nil {
+			t.Errorf("on initial stack %v, `four` returned error: %v", tc, err)
 		}
-		for i := range instructions {
-			if instructions[i] != tc.want[i] {
-				t.Errorf("On initial stack %v, four gives %v%v, want %v", tc.input, "", instructions, tc.want)
+		fmt.Println(tc, a.Nums, b.Nums, instructions, a.Top)
+		arrInt := append(a.Nums[a.Top:], a.Nums[:a.Top]...)
+		arrStr := make([]string, len(a.Nums))
+		problem := false
+		for i, v := range arrInt {
+			arrStr[i] = strconv.Itoa(v)
+			if v != i+1 {
+				problem = true
 			}
+		}
+		str := strings.Join(arrStr, " ")
+		if problem {
+			t.Errorf("expected %v, got %v", "1 2 3 4", str)
 		}
 	}
 }
