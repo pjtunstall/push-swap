@@ -45,11 +45,16 @@ func main() {
 		fmt.Println("Error: invalid instruction")
 		return
 	}
-	ok := ps.Check(a, b, true)
+	_, sorted := ps.Check(a, b)
 
-	if ok {
+	if sorted {
 		fmt.Println("OK")
 	} else {
 		fmt.Println("KO")
 	}
+
+	fmt.Printf("a: %v, a.Top: %v\n", a.Nums, a.Top)
+	fmt.Printf("b: %v, b.Top %v\n", b.Nums, b.Top)
+
+	fmt.Println("Interpret this as the numbers sorted to:", append(a.Nums[a.Top:], a.Nums[:a.Top]...))
 }

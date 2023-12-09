@@ -56,8 +56,8 @@ func Px(x, y *Stack) {
 		x.Nums = []int{y.Nums[y.Top]}
 		x.Top = 0
 	} else {
-		head := append([]int{y.Nums[y.Top]}, x.Nums[x.Top:]...)
-		x.Nums = append(head, x.Nums[:x.Top]...)
+		tail := append([]int{y.Nums[y.Top]}, x.Nums[x.Top:]...)
+		x.Nums = append(x.Nums[:x.Top], tail...)
 	}
 
 	if len(y.Nums) == 1 {

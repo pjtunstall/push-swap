@@ -25,7 +25,7 @@ type testCase struct {
 // echo -e "pb\nra\npb\nra\nsa\nra\npa\npa\n" | go run . "0 9 1 8 2"
 
 func TestRunInstructions(t *testing.T) {
-	var resultString string
+	var result string
 
 	testCases := []testCase{
 		{
@@ -51,14 +51,14 @@ func TestRunInstructions(t *testing.T) {
 		if err != nil {
 			t.Errorf("Test case %d failed. Expected no error, got %s", i, err)
 		}
-		result := ps.Check(tc.a, tc.b, true)
-		if result {
-			resultString = "OK"
+		_, sorted := ps.Check(tc.a, tc.b)
+		if sorted {
+			result = "OK"
 		} else {
-			resultString = "KO"
+			result = "KO"
 		}
-		if resultString != tc.expected {
-			t.Errorf("Test case %d failed. Expected %s, got %s", i, tc.expected, resultString)
+		if result != tc.expected {
+			t.Errorf("Test case %d failed. Expected %s, got %s", i, tc.expected, result)
 		}
 	}
 }
