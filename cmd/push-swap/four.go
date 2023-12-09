@@ -4,7 +4,7 @@ import (
 	"push-swap/ps"
 )
 
-func four(a, b *ps.Stack) []string {
+func four(a, b ps.Stack) []string {
 	result := []string{"pb"}        // Push top two to B.
 	stayers := a.Nums[1:]           // The three that stay in A.
 	_, stayersRot := three(stayers) // `stayersRot` is true if no swap is needed to sort A.

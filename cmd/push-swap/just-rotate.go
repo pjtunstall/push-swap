@@ -4,7 +4,7 @@ import (
 	"push-swap/ps"
 )
 
-func justRotate(a *ps.Stack) []string {
+func justRotate(a ps.Stack) []string {
 	var result []string
 	var rx string
 	var numberOfRotataionsNeeded int

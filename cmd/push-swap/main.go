@@ -27,10 +27,14 @@ func main() {
 		return
 	}
 
-	if ps.Check(a, b, true) {
-		result = []string{}
-	} else if false && ps.Check(a, b, false) {
-		result = justRotate(&a)
+	rotatable, sorted := ps.Check(a, b)
+
+	if rotatable {
+		if sorted {
+			result = []string{}
+		} else {
+			result = justRotate(a)
+		}
 	} else {
 		switch len(a.Nums) {
 		case 0:
@@ -46,7 +50,7 @@ func main() {
 			temp, _ := three(a.Nums)
 			result = temp
 		case 4:
-			result = four(&a, &b)
+			result = four(a, b)
 		case 5:
 			result = five(&a, &b)
 		default:
