@@ -72,7 +72,6 @@ func TestFour(t *testing.T) {
 		}
 		str := strings.Join(arrStr, " ")
 		if problem {
-			// fmt.Println(tc, instructions, arrInt)
 			t.Errorf("expected %v, got %v", expected, str)
 		}
 	}

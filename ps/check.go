@@ -12,7 +12,7 @@ func Check(a, b Stack) (rotatable, sorted bool) {
 		j := a.Top + i
 		this := j % len(a.Nums)
 		next := (j + 1) % len(a.Nums)
-		if a.Nums[this] > a.Nums[next] && i != iMax {
+		if a.Nums[this] > a.Nums[next] && this != iMax {
 			return false, false
 		}
 	}
