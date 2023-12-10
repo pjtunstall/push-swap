@@ -5,26 +5,21 @@ import (
 )
 
 func justRotate(a ps.Stack) []string {
+	nums := a.GetNumsSlice()
 	var result []string
 	var rx string
-	var numberOfRotataionsNeeded int
-	iMin, _ := ps.MinInt(a.Nums)
-	up := len(a.Nums) / 2
-	if iMin <= up {
+	distanceFromTop, _ := ps.MinInt(nums)
+	midway := len(nums) / 2
+
+	if distanceFromTop <= midway {
 		rx = "ra"
-		numberOfRotataionsNeeded = iMin
 	} else {
 		rx = "rra"
-		numberOfRotataionsNeeded = len(a.Nums) - iMin
+		distanceFromTop = len(nums) - distanceFromTop
 	}
 
-	for i := 0; i < numberOfRotataionsNeeded; i++ {
+	for i := 0; i < distanceFromTop; i++ {
 		result = append(result, rx)
-		if rx == "ra" {
-			a.Nums = append(a.Nums[1:], a.Nums[0])
-		} else {
-			a.Nums = append(a.Nums[len(a.Nums)-1:], a.Nums[:len(a.Nums)-1]...)
-		}
 	}
 
 	return result

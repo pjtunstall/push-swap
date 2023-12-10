@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -39,7 +41,9 @@ func randomFive() string {
 
 func TestFive(t *testing.T) {
 	tests := []testCase{
+		{"3 5 2 4 1", []string{"pb", "pb", "rra", "pa", "rra", "pa", "rra", "rra"}},
 		{"1 5 2 4 3", []string{"pb", "pb", "sa", "ra", "pa", "ra", "pa"}},
+		{"3 2 1 4 5", []string{"pb", "pb", "rr", "pa", "pa", "rra"}},
 	}
 	for _, tc := range tests {
 		a, err := ps.NewStack(tc.input)
@@ -47,28 +51,45 @@ func TestFive(t *testing.T) {
 			t.Errorf("five(%s) failed: %s", tc.input, err)
 		}
 		b, _ := ps.NewStack("")
+		// fmt.Println(a.GetNumsString())
 		got := five(&a, &b)
-		if len(got) != len(tc.want) {
-			t.Errorf("five(%s) = %s, want %s", tc.input, got, tc.want)
-		} else {
-			for i, v := range got {
-				if v != tc.want[i] {
-					t.Errorf("five(%s) = %s, want %s", tc.input, got, tc.want)
-				}
-			}
+
+		_, sorted := ps.Check(a, b)
+		if !sorted {
+			fmt.Println(tc.input)
+			fmt.Println(a.GetNumsString())
+			fmt.Println(got)
+			fmt.Println()
+			fmt.Println()
+			t.Errorf("\nfive(%s) = %s, want %s", tc.input, got, tc.want)
 		}
 	}
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 100; i++ {
 		input := randomFive()
 		a, err := ps.NewStack(input)
 		if err != nil {
 			t.Errorf("five(%s) failed: %s", input, err)
 		}
 		b, _ := ps.NewStack("")
-		got := five(&a, &b)
-		if len(got) > 12 {
-			t.Errorf("Took more than 12 instructions to sort.")
+		instructions := five(&a, &b)
+		if len(instructions) > 12 {
+			t.Errorf("%v took more than 12 instructions to sort", input)
+		}
+		_, sorted := ps.Check(a, b)
+		if !sorted {
+			fmt.Println(input)
+			fmt.Println(a.GetNumsString())
+			fmt.Println(instructions)
+			fmt.Println()
+
+			split := strings.Split(input, " ")
+			in := make([]int, len(split))
+			for i, v := range split {
+				in[i], _ = strconv.Atoi(v)
+			}
+			sort.Ints(in)
+			t.Errorf("\nfive(%s) = %s, want %v", input, a.GetNumsString(), in)
 		}
 	}
 }

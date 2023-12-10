@@ -4,9 +4,15 @@ import (
 	"push-swap/ps"
 )
 
+// Probably wrong because I'm not being consistent about modifying the stack.
+// Sometimes I modify it with stack methods like Run, sometimes I modify it
+// directly, changing a.Nums. I should probably always use stack methods
+// and be careful about when I pass the stack by value and when I pass it by
+// reference.
+
 func five(a, b *ps.Stack) []string {
 	var result []string
-	var stayers []int
+	stayers := make([]int, 3)
 	var maxB int
 	var minB int
 	var stayersRot bool
@@ -21,7 +27,7 @@ func five(a, b *ps.Stack) []string {
 	// }
 
 	result = []string{"pb", "pb"}  // Push top two to B.
-	stayers = a.Nums[2:]           // The three that stay in A.
+	copy(stayers, a.Nums[2:])      // The three that stay in A.
 	_, stayersRot = three(stayers) // `stayersRot` is true if no swap is needed to sort A.
 	maxB = max(a.Nums[0], a.Nums[1])
 	minB = min(a.Nums[0], a.Nums[1])
@@ -66,9 +72,14 @@ func five(a, b *ps.Stack) []string {
 	case 2:
 		result = append(result, "ra", "ra")
 	case 3:
-		result = append(result, "rra", "rra")
+		result = append(result, "rra")
 	}
 	result = append(result, "pa")
+
+	ps.Run(a, b, result)
+	rots := justRotate(*a)
+	result = append(result, justRotate(*a)...)
+	ps.Run(a, b, rots)
 
 	return result
 }
