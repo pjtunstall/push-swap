@@ -4,11 +4,7 @@ func Rx(x *Stack) {
 	if len(x.Nums) < 2 {
 		return
 	}
-	if x.Top == len(x.Nums)-1 {
-		x.Top = 0
-		return
-	}
-	x.Top += 1
+	x.Top = (x.Top + 1) % len(x.Nums)
 }
 
 func Rrx(x *Stack) {
@@ -56,8 +52,9 @@ func Px(x, y *Stack) {
 		x.Nums = []int{y.Nums[y.Top]}
 		x.Top = 0
 	} else {
-		tail := append([]int{y.Nums[y.Top]}, x.Nums[x.Top:]...)
-		x.Nums = append(x.Nums[:x.Top], tail...)
+		head := append([]int{y.Nums[y.Top]}, x.Nums[x.Top:]...)
+		x.Nums = append(head, x.Nums[:x.Top]...)
+		x.Top = 0
 	}
 
 	if len(y.Nums) == 1 {
@@ -71,8 +68,8 @@ func Px(x, y *Stack) {
 	}
 	if y.Top == len(y.Nums)-1 {
 		y.Nums = y.Nums[:y.Top]
-		y.Top = 0
-		return
+	} else {
+		y.Nums = append(y.Nums[y.Top+1:], y.Nums[:y.Top]...)
 	}
-	y.Nums = append(y.Nums[:y.Top], y.Nums[y.Top+1:]...)
+	y.Top = 0
 }

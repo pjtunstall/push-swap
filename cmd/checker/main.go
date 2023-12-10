@@ -42,7 +42,7 @@ func main() {
 	}
 
 	if ps.Run(&a, &b, instructions) != nil {
-		fmt.Println("Error: invalid instruction")
+		fmt.Println("Error: invalid instruction:", instructions)
 		return
 	}
 	_, sorted := ps.Check(a, b)
@@ -52,9 +52,4 @@ func main() {
 	} else {
 		fmt.Println("KO")
 	}
-
-	fmt.Printf("a: %v, a.Top: %v\n", a.Nums, a.Top)
-	fmt.Printf("b: %v, b.Top %v\n", b.Nums, b.Top)
-
-	fmt.Println("Interpret this as the numbers sorted to:", append(a.Nums[a.Top:], a.Nums[:a.Top]...))
 }

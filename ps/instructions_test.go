@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+// TODO: Fill out the rest of these instruction tests.
+
 func TestRx(t *testing.T) {
 	var r, s, u, v, w Stack
 	r.Nums = []int{}
@@ -16,10 +18,20 @@ func TestRx(t *testing.T) {
 	u.Top = 0
 	v.Top = 1
 	w.Top = 2
+	Rx(&r)
+	Rx(&s)
 	Rx(&u)
 	Rx(&v)
 	Rx(&w)
 	if r.Top != -1 || s.Top != 0 || u.Top != 1 || v.Top != 2 || w.Top != 0 {
 		t.Error("Rx(&x) failed")
+	}
+	Rrx(&r)
+	Rrx(&s)
+	Rrx(&u)
+	Rrx(&v)
+	Rrx(&w)
+	if r.Top != -1 || s.Top != 0 || u.Top != 0 || v.Top != 1 || w.Top != 2 {
+		t.Error("Rrx(&x) failed")
 	}
 }

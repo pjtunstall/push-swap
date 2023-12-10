@@ -37,3 +37,73 @@ func NewStack(str string) (Stack, error) {
 
 	return x, nil
 }
+
+func (x Stack) Copy() Stack {
+	var y Stack
+	y.Top = x.Top
+	y.Nums = make([]int, len(x.Nums))
+	copy(y.Nums, x.Nums)
+	return y
+}
+
+func (x Stack) GetNumsSlice() []int {
+	if len(x.Nums) == 0 {
+		return []int{}
+	}
+	result := make([]int, len(x.Nums))
+	head := x.Nums[x.Top:]
+	tail := x.Nums[:x.Top]
+	copy(result, append(head, tail...))
+	return result
+}
+
+func (x Stack) GetNumsString() string {
+	if len(x.Nums) == 0 {
+		return ""
+	}
+	nums := make([]int, len(x.Nums))
+	head := x.Nums[x.Top:]
+	tail := x.Nums[:x.Top]
+	copy(nums, append(head, tail...))
+	var sb strings.Builder
+	for i, num := range nums {
+		sb.WriteString(strconv.Itoa(num))
+		if i == len(nums)-1 {
+			break
+		}
+		sb.WriteString(" ")
+	}
+	return sb.String()
+}
+
+func (x Stack) Max() (int, int, error) {
+	if len(x.Nums) == 0 {
+		return 0, 0, errors.New("empty stack")
+	}
+
+	max := x.Nums[0]
+	index := 0
+	for i, v := range x.Nums {
+		if v > max {
+			max = v
+			index = i
+		}
+	}
+	return index, max, nil
+}
+
+func (x Stack) Min() (int, int, error) {
+	if len(x.Nums) == 0 {
+		return 0, 0, errors.New("empty stack")
+	}
+
+	min := x.Nums[0]
+	index := 0
+	for i, v := range x.Nums {
+		if v < min {
+			min = v
+			index = i
+		}
+	}
+	return index, min, nil
+}

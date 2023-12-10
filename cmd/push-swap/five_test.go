@@ -12,11 +12,6 @@ import (
 	"push-swap/ps"
 )
 
-type testCase struct {
-	input string
-	want  []string
-}
-
 func contains(nums []int, num int) bool {
 	for _, n := range nums {
 		if n == num {
@@ -31,7 +26,7 @@ func randomFive() string {
 	r := rand.New(s)
 	nums := make([]int, 0, 5)
 	for len(nums) < 5 {
-		num := r.Intn(100) // generates random integers between 0 to 99
+		num := r.Intn(2000) - 1000 // generates random integers between -1000 and 999
 		if !contains(nums, num) {
 			nums = append(nums, num)
 		}
@@ -40,31 +35,6 @@ func randomFive() string {
 }
 
 func TestFive(t *testing.T) {
-	tests := []testCase{
-		{"3 5 2 4 1", []string{"pb", "pb", "rra", "pa", "rra", "pa", "rra", "rra"}},
-		{"1 5 2 4 3", []string{"pb", "pb", "sa", "ra", "pa", "ra", "pa"}},
-		{"3 2 1 4 5", []string{"pb", "pb", "rr", "pa", "pa", "rra"}},
-	}
-	for _, tc := range tests {
-		a, err := ps.NewStack(tc.input)
-		if err != nil {
-			t.Errorf("five(%s) failed: %s", tc.input, err)
-		}
-		b, _ := ps.NewStack("")
-		// fmt.Println(a.GetNumsString())
-		got := five(&a, &b)
-
-		_, sorted := ps.Check(a, b)
-		if !sorted {
-			fmt.Println(tc.input)
-			fmt.Println(a.GetNumsString())
-			fmt.Println(got)
-			fmt.Println()
-			fmt.Println()
-			t.Errorf("\nfive(%s) = %s, want %s", tc.input, got, tc.want)
-		}
-	}
-
 	for i := 0; i < 100; i++ {
 		input := randomFive()
 		a, err := ps.NewStack(input)
@@ -78,11 +48,6 @@ func TestFive(t *testing.T) {
 		}
 		_, sorted := ps.Check(a, b)
 		if !sorted {
-			fmt.Println(input)
-			fmt.Println(a.GetNumsString())
-			fmt.Println(instructions)
-			fmt.Println()
-
 			split := strings.Split(input, " ")
 			in := make([]int, len(split))
 			for i, v := range split {

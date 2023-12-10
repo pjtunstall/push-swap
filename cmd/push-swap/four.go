@@ -7,21 +7,27 @@ import (
 	"strings"
 )
 
-func four(a, b ps.Stack) []string {
-	nums := make([]int, len(a.Nums))
+func rank(nums []int) string {
+	rankMap := make(map[int]int)
 	strs := make([]string, len(nums))
-	copy(nums, a.Nums)
-	sort.Ints(nums)
+	numsCopy := make([]int, len(nums))
+	copy(numsCopy, nums)
 
-	rank := make(map[int]int)
-	for i, v := range nums {
-		rank[v] = i + 1
+	sort.Ints(numsCopy)
+	for i, v := range numsCopy {
+		rankMap[v] = i + 1
 	}
 
-	for i, v := range a.Nums {
-		strs[i] = strconv.Itoa(rank[v])
+	for i, v := range nums {
+		strs[i] = strconv.Itoa(rankMap[v])
 	}
 	s := strings.Join(strs, " ")
+
+	return s
+}
+
+func four(a, b ps.Stack) []string {
+	s := rank(a.Nums)
 
 	switch s {
 	case "1 2 3 4":

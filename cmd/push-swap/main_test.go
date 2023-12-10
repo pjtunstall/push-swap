@@ -1,7 +1,6 @@
 package main_test
 
 import (
-	"fmt"
 	"io"
 	"os/exec"
 	"strings"
@@ -18,7 +17,7 @@ func TestChecker(t *testing.T) {
 		"2 4 3 1",
 		"3 1 2 4",
 		"3 2 1 4 5",
-		// "2 1 3 4 5",
+		"2 1 3 4 5",
 	}
 
 	for _, tc := range tests {
@@ -30,7 +29,6 @@ func TestChecker(t *testing.T) {
 
 		// Convert mainOutput to a string
 		mainOutputStr := string(mainOutput)
-		fmt.Println(mainOutputStr)
 
 		// Run the checker command and pass the output of the main function as an argument
 		checkerCmd := exec.Command("../checker/checker", tc)
