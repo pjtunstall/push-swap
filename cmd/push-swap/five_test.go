@@ -26,7 +26,8 @@ func randomFive() string {
 	r := rand.New(s)
 	nums := make([]int, 0, 5)
 	for len(nums) < 5 {
-		num := r.Intn(2000) - 1000 // generates random integers between -1000 and 999
+		num := r.Intn(5) + 1
+		// num := r.Intn(2000) - 1000 // generates random integers between -1000 and 999
 		if !contains(nums, num) {
 			nums = append(nums, num)
 		}

@@ -54,8 +54,7 @@ func main() {
 		case 5:
 			result = five(&a, &b)
 		default:
-			fmt.Println("Not implemented yet.")
-			return
+			result = general(&a, &b)
 		}
 	}
 

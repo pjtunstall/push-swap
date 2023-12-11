@@ -107,3 +107,29 @@ func (x Stack) Min() (int, int, error) {
 	}
 	return index, min, nil
 }
+
+// func (x Stack) Len() int {
+// 	return len(x.Nums)
+// }
+
+// func (x Stack) IsEmpty() bool {
+// 	return len(x.Nums) == 0
+// }
+
+// func (x *Stack) rank() string {
+// 	nums := x.GetNumsSlice()
+// 	rankMap := make(map[int]int)
+// 	strs := make([]string, len(nums))
+
+// 	sort.Ints(numsCopy)
+// 	for i, v := range nums {
+// 		rankMap[v] = i + 1
+// 	}
+
+// 	for i, v := range nums {
+// 		strs[i] = strconv.Itoa(rankMap[v])
+// 	}
+// 	s := strings.Join(strs, " ")
+
+// 	return s
+// }

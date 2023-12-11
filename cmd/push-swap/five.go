@@ -153,61 +153,55 @@ func rotSwap(a, b ps.Stack) ([]string, bool) {
 	var result []string
 	var rotSwappable bool
 
-	ps.Rx(&a)
-	ps.Sx(&a)
-	rotatable, sorted := ps.Check(a, b)
-	if sorted {
-		rotSwappable = true
-		result = []string{"ra", "sa"}
-	} else if rotatable {
-		rotSwappable = true
-		result = append([]string{"ra", "sa"}, justRotate(a)...)
-	}
-	ps.Sx(&a)
-	ps.Rrx(&a)
+	for h := 1; h <= len(a.Nums)/2; h++ {
+		for i := 1; i <= h; i++ {
+			ps.Rx(&a)
+		}
+		ps.Sx(&a)
+		rotatable, sorted := ps.Check(a, b)
+		if sorted {
+			rotSwappable = true
+			for i := 1; i <= h; i++ {
+				result = append(result, "ra")
+			}
+			result = append(result, "sa")
+		} else if rotatable {
+			rotSwappable = true
+			for i := 1; i <= h; i++ {
+				result = append(result, "ra")
+			}
+			result = append(result, "sa")
+			result = append(result, justRotate(a)...)
+		}
+		ps.Sx(&a)
+		for i := 1; i <= h; i++ {
+			ps.Rrx(&a)
+		}
 
-	ps.Rrx(&a)
-	ps.Sx(&a)
-	rotatable, sorted = ps.Check(a, b)
-	if sorted {
-		rotSwappable = true
-		result = []string{"rra", "sa"}
-	} else if rotatable {
-		rotSwappable = true
-		result = append([]string{"rra", "sa"}, justRotate(a)...)
+		for i := 1; i <= h; i++ {
+			ps.Rrx(&a)
+		}
+		ps.Sx(&a)
+		rotatable, sorted = ps.Check(a, b)
+		if sorted {
+			rotSwappable = true
+			for i := 1; i <= h; i++ {
+				result = append(result, "rra")
+			}
+			result = append(result, "sa")
+		} else if rotatable {
+			rotSwappable = true
+			for i := 1; i <= h; i++ {
+				result = append(result, "rra")
+			}
+			result = append(result, "sa")
+			result = append(result, justRotate(a)...)
+		}
+		ps.Sx(&a)
+		for i := 1; i <= h; i++ {
+			ps.Rx(&a)
+		}
 	}
-	ps.Sx(&a)
-	ps.Rx(&a)
-
-	ps.Rx(&a)
-	ps.Rx(&a)
-	ps.Sx(&a)
-	rotatable, sorted = ps.Check(a, b)
-	if sorted {
-		rotSwappable = true
-		result = []string{"ra", "ra", "sa"}
-	} else if rotatable {
-		rotSwappable = true
-		result = append([]string{"ra", "ra", "sa"}, justRotate(a)...)
-	}
-	ps.Sx(&a)
-	ps.Rrx(&a)
-	ps.Rrx(&a)
-
-	ps.Rrx(&a)
-	ps.Rrx(&a)
-	ps.Sx(&a)
-	rotatable, sorted = ps.Check(a, b)
-	if sorted {
-		rotSwappable = true
-		result = []string{"rra", "rra", "sa"}
-	} else if rotatable {
-		rotSwappable = true
-		result = append([]string{"rra", "rra", "sa"}, justRotate(a)...)
-	}
-	ps.Sx(&a)
-	ps.Rx(&a)
-	ps.Rx(&a)
 
 	return result, rotSwappable
 }
