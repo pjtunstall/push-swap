@@ -177,6 +177,9 @@ func rotSwap(a, b ps.Stack) ([]string, bool) {
 		for i := 1; i <= h; i++ {
 			ps.Rrx(&a)
 		}
+		if rotSwappable {
+			break
+		}
 
 		for i := 1; i <= h; i++ {
 			ps.Rrx(&a)
@@ -200,6 +203,9 @@ func rotSwap(a, b ps.Stack) ([]string, bool) {
 		ps.Sx(&a)
 		for i := 1; i <= h; i++ {
 			ps.Rx(&a)
+		}
+		if rotSwappable {
+			break
 		}
 	}
 
