@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"push-swap/ps"
 )
 
@@ -65,17 +66,27 @@ func general(a, b *ps.Stack) []string {
 				ra = true
 			}
 
+			foundOneGreater := false
 			targetValue := 0
-			var targetIndex int
+			targetIndex := 0
 			for j, w := range B {
-				if w < v && w > targetValue {
-					targetValue = w
-					targetIndex = j
+				if w > v {
+					foundOneGreater = true
+				} else {
+					if w > targetValue {
+						targetValue = w
+						targetIndex = j
+					}
 				}
 			}
-			if targetValue == 0 {
+			if !foundOneGreater {
 				targetIndex, targetValue = ps.MaxInt(B)
 			}
+			// fmt.Println("v:", v)
+			// fmt.Println("foundOneGreater:", foundOneGreater)
+			// fmt.Println("targetIndex:", targetIndex)
+			// fmt.Println("targetValue:", targetValue)
+			// fmt.Println()
 
 			if targetIndex > len(B)/2 {
 				cost += len(B) - targetIndex
@@ -114,40 +125,46 @@ func general(a, b *ps.Stack) []string {
 			}
 		}
 
-		for _, v := range journeyPlanner {
-			if v.Cost != journeyPlanner[cheapest].Cost {
-				continue
+		c := journeyPlanner[cheapest]
+		if c.Ra && c.Rb {
+			for j := 0; j < c.JointSteps; j++ {
+				ps.Rr(b, a)
+				result = append(result, "rr")
 			}
-			if v.Ra && v.Rb {
-				for j := 0; j < v.JointSteps; j++ {
-					ps.Rr(b, a)
-					result = append(result, "rr")
-				}
-			} else if !v.Ra && !v.Rb {
-				for j := 0; j < v.JointSteps; j++ {
-					ps.Rr(b, a)
-					result = append(result, "rrr")
-				}
+		} else if !c.Ra && !c.Rb {
+			for j := 0; j < c.JointSteps; j++ {
+				ps.Rr(b, a)
+				result = append(result, "rrr")
 			}
-			if v.Ra {
-				for j := 0; j < v.StepsA; j++ {
-					ps.Rx(a)
-					result = append(result, "ra")
-				}
-			}
-			if v.Rb {
-				for j := 0; j < v.StepsB; j++ {
-					ps.Rx(b)
-					result = append(result, "rb")
-				}
-			}
-			ps.Px(b, a)
-			result = append(result, "pb")
-			break
 		}
+		if c.Ra {
+			for j := 0; j < c.StepsA; j++ {
+				ps.Rx(a)
+				result = append(result, "ra")
+			}
+		} else {
+			for j := 0; j < c.StepsA; j++ {
+				ps.Rrx(a)
+				result = append(result, "rra")
+			}
+		}
+		if c.Rb {
+			for j := 0; j < c.StepsB; j++ {
+				ps.Rx(b)
+				result = append(result, "rb")
+			}
+		} else {
+			for j := 0; j < c.StepsB; j++ {
+				ps.Rrx(b)
+				result = append(result, "rrb")
+			}
+		}
+		ps.Px(b, a)
+		result = append(result, "pb")
 
-		// fmt.Println("A:", a.GetNumsSlice())
-		// fmt.Println("B:", b.GetNumsSlice())
+		fmt.Println("A:", a.GetNumsSlice())
+		fmt.Println("B:", b.GetNumsSlice())
+		fmt.Println()
 		// for _, v := range journeyPlanner {
 		// 	fmt.Printf("%+v\n", v)
 		// }
