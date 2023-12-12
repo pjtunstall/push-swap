@@ -8,6 +8,8 @@ import (
 func general(a, b *ps.Stack) []string {
 	var result []string
 
+	*a, _ = ps.NewStack(rank(a.Nums))
+
 	// Check if a swap, or a swap then rotations, are enough to sort the stack.
 	A, _ := ps.NewStack(a.GetNumsString())
 	B, _ := ps.NewStack("")
