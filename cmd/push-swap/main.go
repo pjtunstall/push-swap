@@ -68,4 +68,6 @@ func main() {
 		sb.WriteRune('\n')
 	}
 	fmt.Print(sb.String())
+
+	fmt.Print("\n", len(result), "\n")
 }
