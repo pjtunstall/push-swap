@@ -1,11 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"push-swap/ps"
 )
 
+// var decade int
+// var n int
+
 func general(a, b *ps.Stack) []string {
+	// n = len(a.Nums)
+
 	var result []string
 
 	// Just in case any preliminary checks altered the stacks. May not be necessary.
@@ -47,7 +51,13 @@ func general(a, b *ps.Stack) []string {
 		result = append(result, "sb")
 	}
 
+	// if n == 100 {
+	// 	for ; decade < 10; decade++ {
+	// 		result = append(result, sortToB(a, b)...)
+	// 	}
+	// } else {
 	result = append(result, sortToB(a, b)...)
+	// }
 
 	_, rotatable := three(a.Nums)
 	if !rotatable {
@@ -59,9 +69,9 @@ func general(a, b *ps.Stack) []string {
 
 	ps.Run(a, b, justRotate(*a))
 
-	fmt.Println("A:", a.GetNumsSlice())
-	fmt.Println("B:", b.GetNumsSlice())
-	fmt.Println()
+	// fmt.Println("A:", a.GetNumsSlice())
+	// fmt.Println("B:", b.GetNumsSlice())
+	// fmt.Println()
 
 	return result
 }
@@ -72,13 +82,24 @@ func sortToB(a, b *ps.Stack) []string {
 		A := a.GetNumsSlice()
 		B := b.GetNumsSlice()
 		journeyPlanner := make([]ps.PushInfo, len(A))
+		// if n == 100 {
+		// 	journeyPlanner = journeyPlanner[:10]
+		// }
 
 		if len(A) == 3 {
 			break
 		}
 
+		// if n == 100 && len(A) < 100-(decade+1)*10 {
+		// 	break
+		// }
+
 		cheapest := 0
 		for i, v := range A {
+			// if n == 100 && v > decade*10 && v <= (decade+1)*10 {
+			// 	continue
+			// }
+
 			var cost int
 			var ra, rb bool
 			var stepsA, stepsB, jointSteps int
@@ -120,20 +141,20 @@ func sortToB(a, b *ps.Stack) []string {
 
 			jointSteps = min(stepsA, stepsB)
 
-			// Optimization: Account for case where ra XOR rb, but
-			// either of the stacks would be rotated len(X)/2 times.
-			// In that case, it doesn't matter which way we rotate the
-			// stack that needs rotating len(X)/2 times, so we can
-			// set its direction of rotation to the same as the other
-			// to take advantage of any possible joint steps.
-			// But understand why the same code DOESN'T work in
-			// sortToA, and indeed fails to sort.
-			if stepsA == len(A)/2 {
-				ra = rb
-			}
-			if stepsB == len(B)/2 {
-				rb = ra
-			}
+			// // Optimization: Account for case where ra XOR rb, but
+			// // either of the stacks would be rotated len(X)/2 times.
+			// // In that case, it doesn't matter which way we rotate the
+			// // stack that needs rotating len(X)/2 times, so we can
+			// // set its direction of rotation to the same as the other
+			// // to take advantage of any possible joint steps.
+			// // But understand why the same code DOESN'T work in
+			// // sortToA, and indeed fails to sort.
+			// if stepsA == len(A)/2 {
+			// 	ra = rb
+			// }
+			// if stepsB == len(B)/2 {
+			// 	rb = ra
+			// }
 
 			if (ra && rb) || (!ra && !rb) {
 				cost -= jointSteps
