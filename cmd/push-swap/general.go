@@ -1,18 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"push-swap/ps"
 )
 
 func general(a, b *ps.Stack) []string {
-	n := len(a.Nums)
-	runSize := n
-	numberOfRuns := 1
-	// if n > 5 {
-	// 	numberOfRuns = n / runSize
-	// }
-
 	var result []string
 
 	// Just in case any preliminary checks altered the stacks. May not be necessary.
@@ -45,180 +37,28 @@ func general(a, b *ps.Stack) []string {
 		return rotSwapScript
 	}
 
-	if true {
-		ps.Px(b, a)
-		ps.Px(b, a)
-		result = append(result, "pb", "pb")
-		nums := b.GetNumsSlice()
-		if nums[0] < nums[1] {
-			ps.Sx(b)
-			result = append(result, "sb")
-		}
-		result = append(result, sortToB(a, b)...)
-		_, rotatable := three(a.Nums)
-		if !rotatable {
-			ps.Sx(a)
-			result = append(result, "sa")
-		}
-		result = append(result, sortToA(a, b)...)
-	} else {
-		for runNumber := 0; runNumber < numberOfRuns; runNumber++ {
-			result = append(result, sortRuns(a, b, runNumber, runSize)...)
-		}
-		// TODO: Rotate B shortest way to put the biggest number on top.
-		// Adjust whatever value is returned by justRotate(*b) trimming any
-		// trailing rrb. If the last value is rb, append another rb.
-		// Run and append to result.
-		B := b.GetNumsSlice()
-		_, minB := ps.MinInt(B)
-		if B[0] != minB {
-			result = append(result, justRotate(*b)...)
-			result = append(result, "rb")
-		}
-		for i := 0; i < n; i++ {
-			ps.Px(a, b)
-			result = append(result, "pa")
-		}
+	ps.Px(b, a)
+	ps.Px(b, a)
+	result = append(result, "pb", "pb")
+	nums := b.GetNumsSlice()
+	if nums[0] < nums[1] {
+		ps.Sx(b)
+		result = append(result, "sb")
 	}
+	result = append(result, sortToB(a, b)...)
+	_, rotatable := three(a.Nums)
+	if !rotatable {
+		ps.Sx(a)
+		result = append(result, "sa")
+	}
+	result = append(result, sortToA(a, b)...)
 
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, justRotate(*a))
 
-	fmt.Println("A:", a.GetNumsSlice())
-	fmt.Println("B:", b.GetNumsSlice())
-	fmt.Println()
-
-	return result
-}
-
-func sortRuns(a, b *ps.Stack, runNumber int, runSize int) []string {
-	result := []string{}
-
-	for {
-		A := a.GetNumsSlice()
-		if len(A) == 0 {
-			break
-		}
-		B := b.GetNumsSlice()
-		if len(B) == (runNumber+1)*runSize {
-			break
-		}
-
-		var cheapest ps.PushInfo
-
-		// Search A fromm top and bottom smultaneously. The first element
-		// found will be the one that takes the least steps to rotate to
-		// the top.
-		for i := range A {
-			if A[i] > runNumber*runSize && A[i] <= (runNumber+1)*runSize {
-				cheapest.Index = i
-				cheapest.StepsA = i
-				cheapest.Value = A[i]
-				cheapest.Ra = true
-				break
-			}
-
-			// Just -i not -1-i because it takes the ith element from the end
-			// one more reverse rotation to reach the top than the number of
-			// rotations that the ith element takes to reach the top.
-			if i != 0 && A[i] > runNumber*runSize && A[i] <= (runNumber+1)*runSize {
-				cheapest.Index = len(A) - i
-				cheapest.StepsA = i
-				cheapest.Value = A[len(A)-i]
-				cheapest.Ra = false
-				break
-			}
-		}
-
-		if len(B) == 0 {
-			if cheapest.Index != 0 {
-				if cheapest.Ra {
-					for i := 0; i < cheapest.StepsA; i++ {
-						ps.Rx(a)
-						result = append(result, "ra")
-					}
-				} else {
-					for i := 0; i < cheapest.StepsA; i++ {
-						ps.Rrx(a)
-						result = append(result, "rra")
-					}
-				}
-			}
-			ps.Px(b, a)
-			result = append(result, "pb")
-			continue
-		}
-
-		foundOneLess := false
-		for j, w := range B {
-			if w < cheapest.Value {
-				foundOneLess = true
-			} else {
-				if w > cheapest.TargetValue {
-					cheapest.TargetValue = w
-					cheapest.TargetIndex = j
-				}
-			}
-		}
-		if !foundOneLess {
-			cheapest.TargetIndex, cheapest.TargetValue = ps.MaxInt(B)
-		}
-
-		if cheapest.TargetIndex > len(B)/2 {
-			cheapest.StepsB = len(B) - cheapest.TargetIndex
-		} else {
-			cheapest.StepsB = cheapest.TargetIndex
-			cheapest.Rb = true
-		}
-
-		cheapest.JointSteps = min(cheapest.StepsA, cheapest.StepsB)
-
-		if (cheapest.Ra && cheapest.Rb) || (!cheapest.Ra && !cheapest.Rb) {
-			cheapest.StepsA -= cheapest.JointSteps
-			cheapest.StepsB -= cheapest.JointSteps
-		}
-
-		fmt.Println("A:", A)
-		fmt.Println("B:", B)
-		fmt.Println("cheapest:", cheapest)
-		fmt.Println()
-
-		if cheapest.Ra && cheapest.Rb {
-			for j := 0; j < cheapest.JointSteps; j++ {
-				ps.Rr(b, a)
-				result = append(result, "rr")
-			}
-		} else if !cheapest.Ra && !cheapest.Rb {
-			for j := 0; j < cheapest.JointSteps; j++ {
-				ps.Rrr(a, b)
-				result = append(result, "rrr")
-			}
-		}
-		if cheapest.Ra {
-			for j := 0; j < cheapest.StepsA; j++ {
-				ps.Rx(a)
-				result = append(result, "ra")
-			}
-		} else {
-			for j := 0; j < cheapest.StepsA; j++ {
-				ps.Rrx(a)
-				result = append(result, "rra")
-			}
-		}
-		if cheapest.Rb {
-			for j := 0; j < cheapest.StepsB; j++ {
-				ps.Rx(b)
-				result = append(result, "rb")
-			}
-		} else {
-			for j := 0; j < cheapest.StepsB; j++ {
-				ps.Rrx(b)
-				result = append(result, "rrb")
-			}
-		}
-		ps.Px(b, a)
-		result = append(result, "pb")
-	}
+	// fmt.Println("A:", a.GetNumsSlice())
+	// fmt.Println("B:", b.GetNumsSlice())
+	// fmt.Println()
 
 	return result
 }

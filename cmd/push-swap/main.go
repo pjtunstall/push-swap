@@ -69,5 +69,5 @@ func main() {
 	}
 	fmt.Print(sb.String())
 
-	fmt.Print("\n", len(result), "\n")
+	// fmt.Print("\n", len(result), "\n")
 }
