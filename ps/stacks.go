@@ -7,6 +7,7 @@ import (
 )
 
 type PushInfo struct {
+	Index       int
 	Value       int
 	TargetIndex int
 	TargetValue int
