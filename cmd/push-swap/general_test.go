@@ -10,9 +10,8 @@ import (
 	"testing"
 )
 
-// 100 times tests that 5 random numbers are sorted in 12 or fewer instructions,
-// 100 times tests that 100 random numbers are sorted in 700 or fewer instructions,
-// and 6! times tests that all permutations of 1-6 are sorted in 12 or fewer instructions:
+// 1000 times tests that 100 random numbers are sorted in less than 700 instructions,
+// and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
 	// Check length of result for 100 random numbers 1000 times:
 	for i := 0; i < 1000; i++ {
@@ -32,7 +31,10 @@ func TestGeneral(t *testing.T) {
 		}
 	}
 
-	// Check that the result is sorted for all permutations of 1-6:
+	// Check that the result is sorted for all permutations of 1-6.
+	// Note that this unit test for general doesn't take into account
+	// pre-checks in main.go that deal with the case where the stack
+	// is already sorted.
 	for i := 1; i <= 6; i++ {
 		for j := 1; j <= 6; j++ {
 			for k := 1; k <= 6; k++ {
@@ -49,10 +51,11 @@ func TestGeneral(t *testing.T) {
 							}
 							b, _ := ps.NewStack("")
 							general(&a, &b)
-							// instructions := general(&a, &b)
-							// if len(instructions) => 12 {
-							// 	t.Errorf("%v took 12 more instructions to sort", input)
-							// }
+							instructions := general(&a, &b)
+							limit := 12
+							if len(instructions) > limit {
+								t.Errorf("more than %v instructions to sort 6 numbers:\n%v took %v instructions to sort", limit, input, len(instructions))
+							}
 							_, sorted := ps.Check(a, b)
 							if !sorted {
 								split := strings.Split(input, " ")
