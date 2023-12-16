@@ -7,9 +7,6 @@ import (
 func general(a, b *ps.Stack) []string {
 	var result []string
 
-	// Just in case any preliminary checks altered the stacks. May not be necessary.
-	*a, _ = ps.NewStack(rank(a.Nums))
-
 	swapRotatable, swappable := swapRot(*a, *b)
 
 	// If a swap is enough to sort the stack:

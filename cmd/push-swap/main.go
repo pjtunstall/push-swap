@@ -47,8 +47,7 @@ func main() {
 			}
 			result = []string{"sa"}
 		case 3:
-			temp, _ := three(a.Nums)
-			result = temp
+			result, _ = three(a.Nums)
 		case 4:
 			result = four(a, b)
 		case 5:

@@ -16,6 +16,7 @@ import (
 // deal with the case where the stack is already sorted or can be simply
 // into the correct order.
 func TestFive(t *testing.T) {
+	limit := 8
 	for i := 1; i <= 5; i++ {
 		for j := 1; j <= 5; j++ {
 			for k := 1; k <= 5; k++ {
@@ -31,10 +32,13 @@ func TestFive(t *testing.T) {
 						}
 						b, _ := ps.NewStack("")
 						instructions := five(&a, &b)
-						limit := 12
 						if len(instructions) >= limit {
-							t.Errorf("%v took %v instructions to sort\nnot under %v", input, len(instructions), limit)
+							// t.Errorf("%v: %v", input, instructions)
+							t.Errorf("%v took %v instructions to sort\n, more than %v", input, len(instructions), limit)
 						}
+						a, _ = ps.NewStack(input)
+						b, _ = ps.NewStack("")
+						ps.Run(&a, &b, instructions)
 						_, sorted := ps.Check(a, b)
 						if !sorted {
 							split := strings.Split(input, " ")
@@ -46,11 +50,10 @@ func TestFive(t *testing.T) {
 								}
 							}
 							sort.Ints(in)
-							t.Errorf("\nfive(%s) = %s, want %v", input, a.GetNumsString(), in)
+							t.Errorf("\nfive(%s) = %s, want %v; instructions: %v", input, a.GetNumsString(), in, instructions)
 						}
 					}
 				}
-
 			}
 		}
 	}

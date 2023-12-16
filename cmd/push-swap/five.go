@@ -1,39 +1,42 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
 	"push-swap/ps"
 )
 
 func five(a, b *ps.Stack) []string {
 	var result []string
 	nums := a.GetNumsSlice()
-	left := make([]int, 3, 5)
+	numsString := a.GetNumsString()
 	var maxB int
 	var minB int
 	var leftRot bool
 	var combineRotation bool
 
-	swapRotatable, swappable := swapRot(*a, *b)
-	if swappable {
-		ps.Sx(a)
-		return []string{"sa"}
+	jsonData, err := os.ReadFile("shortcuts-five.json")
+	if err != nil {
+		fmt.Println(err)
+		return []string{}
 	}
-	if swapRotatable {
-		ps.Sx(a)
-		rots := justRotate(*a)
-		ps.Run(a, b, rots)
-		return append([]string{"sa"}, rots...)
+	shortcuts := make(map[string][]string)
+	err = json.Unmarshal(jsonData, &shortcuts)
+	if err != nil {
+		fmt.Println(err)
+		return []string{}
 	}
 
-	rotSwapScript, rotSwappable := rotSwap(*a, *b)
-	if rotSwappable {
-		ps.Run(a, b, rotSwapScript)
-		return rotSwapScript
+	v, ok := shortcuts[numsString]
+	if ok {
+		return v
 	}
 
 	result = []string{"pb", "pb"} // Push top two to B.
-	copy(left, nums[2:])          // The three that stay in A.
-	_, leftRot = three(left)      // `stayersRot` is true if no swap is needed to sort them.
+	ps.Px(b, a)
+	ps.Px(b, a)
+	_, leftRot = three(a.GetNumsSlice()) // `stayersRot` is true if no swap is needed to sort them.
 	maxB = max(nums[0], nums[1])
 	minB = min(nums[0], nums[1])
 
@@ -42,54 +45,65 @@ func five(a, b *ps.Stack) []string {
 			combineRotation = true
 		}
 	} else {
-		left[0], left[1] = left[1], left[0]
 		if nums[0] == maxB {
+			ps.Ss(a, b)
 			result = append(result, "ss")
 		} else {
+			ps.Sx(a)
 			result = append(result, "sa")
 		}
 	}
 
 	// Consider maxB at top of B now, unless combineRotation is true.
-	switch fitTheFourth(maxB, left) {
+	switch fitTheFourth(maxB, a.GetNumsSlice()) {
 	case 0:
 		if combineRotation {
 			result = append(result, "sb")
+			ps.Sx(b)
 		}
 	case 1:
 		if combineRotation {
 			result = append(result, "rr")
+			ps.Rr(a, b)
 		} else {
 			result = append(result, "ra")
+			ps.Rx(a)
 		}
-		left = append(left[1:], left[0])
 	case 2:
 		if combineRotation {
 			result = append(result, "rrr")
+			ps.Rrr(a, b)
 		} else {
 			result = append(result, "rra")
+			ps.Rrx(a)
 		}
-		left = append(left[len(left)-1:], left[:len(left)-1]...)
 	}
-	result = append(result, "pa")
-	left = append([]int{maxB}, left...)
+	if len(result) > 0 && result[len(result)-1] == "pb" {
+		result = result[:len(result)-1]
+	} else {
+		result = append(result, "pa")
+	}
+	ps.Px(a, b)
 
-	switch fitTheFifth(minB, left) {
+	switch fitTheFifth(minB, a.GetNumsSlice()) {
 	case 1:
 		result = append(result, "ra")
-		left = append(left[1:], left[0])
+		ps.Rx(a)
 	case 2:
 		result = append(result, "ra", "ra")
-		left = append(left[2:], left[:2]...)
+		ps.Rx(a)
+		ps.Rx(a)
 	case 3:
 		result = append(result, "rra")
-		left = append(left[len(left)-1:], left[:len(left)-1]...)
+		ps.Rrx(a)
 	}
-	result = append(result, "pa")
-	left = append([]int{minB}, left...)
+	if len(result) > 0 && result[len(result)-1] == "pb" {
+		result = result[:len(result)-1]
+	} else {
+		result = append(result, "pa")
+		ps.Px(a, b)
+	}
 
-	copy(a.Nums, left)
-	a.Top = 0
 	rots := justRotate(*a)
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, rots)
@@ -106,6 +120,9 @@ func fitTheFourth(x int, left []int) int {
 		position = iMin
 	} else if x > maxStayer {
 		position = iMax + 1
+		if position > 2 {
+			position = 0
+		}
 	} else {
 		if x > left[0] && x < left[1] {
 			position = 1
