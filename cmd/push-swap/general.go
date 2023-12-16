@@ -5,6 +5,7 @@ import (
 )
 
 func general(a, b *ps.Stack) []string {
+	c, _ := ps.NewStack(a.GetNumsString())
 	var result []string
 
 	swapRotatable, swappable := swapRot(*a, *b)
@@ -56,6 +57,17 @@ func general(a, b *ps.Stack) []string {
 	// fmt.Println("A:", a.GetNumsSlice())
 	// fmt.Println("B:", b.GetNumsSlice())
 	// fmt.Println()
+
+	// An extra check to see if we can sort using a sequence of only
+	// swaps and rotations. This uses a BFS, and if too slow for big
+	// stacks, hence the simpler checks at the beginning of this
+	// function.
+	if len(a.Nums) < 32 {
+		alt := bfs(c, len(result))
+		if len(alt) > 0 && len(alt) < len(result) {
+			result = alt
+		}
+	}
 
 	return result
 }

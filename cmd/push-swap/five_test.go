@@ -16,7 +16,7 @@ import (
 // deal with the case where the stack is already sorted or can be simply
 // into the correct order.
 func TestFive(t *testing.T) {
-	limit := 8
+	limit := 9 // must be sorted in less than 9 instructions
 	for i := 1; i <= 5; i++ {
 		for j := 1; j <= 5; j++ {
 			for k := 1; k <= 5; k++ {

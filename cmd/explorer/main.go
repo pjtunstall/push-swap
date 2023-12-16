@@ -11,6 +11,10 @@ import (
 	"push-swap/ps"
 )
 
+func main() {
+	bfs(5)
+}
+
 func seed(n int) string {
 	nums := make([]string, n)
 	for i := 1; i <= n; i++ {
@@ -44,7 +48,7 @@ func bfs(n int) {
 		five := five(&a, &b)
 		a, _ = ps.NewStack(numsString)
 		general := general(&a, &b)
-		sorted, _ := ps.Check(a, b)
+		_, sorted := ps.Check(a, b)
 		if !sorted {
 			fmt.Println("Not sorted:", a.GetNumsString())
 		} else {
@@ -93,10 +97,6 @@ func bfs(n int) {
 	}
 }
 
-func main() {
-	bfs(5)
-}
-
 func inverse(instructions []string) []string {
 	var result []string
 	for i := len(instructions) - 1; i >= 0; i-- {
@@ -127,34 +127,6 @@ func inverse(instructions []string) []string {
 	}
 	return result
 }
-
-// func listFive() {
-// 	for i := 1; i <= 5; i++ {
-// 		for j := 1; j <= 5; j++ {
-// 			for k := 1; k <= 5; k++ {
-// 				for l := 1; l <= 5; l++ {
-// 					for m := 1; m <= 5; m++ {
-// 						if (i == j || i == k || i == l || i == m) || (j == k || j == l || j == m) || k == l || k == m || (l == m) {
-// 							continue
-// 						}
-// 						input := fmt.Sprintf("%d %d %d %d %d", i, j, k, l, m)
-// 						a, _ := ps.NewStack(input)
-// 						b, _ := ps.NewStack("")
-// 						ins := five(&a, &b)
-// 						fmt.Printf("%v: %v", input, ins)
-
-// 						_, sorted := ps.Check(a, b)
-// 						if !sorted {
-// 							fmt.Println(". Not sorted: ", a.GetNumsString())
-// 						} else {
-// 							fmt.Println()
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// }
 
 func five(a, b *ps.Stack) []string {
 	var result []string
