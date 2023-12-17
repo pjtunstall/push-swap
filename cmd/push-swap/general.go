@@ -124,20 +124,14 @@ func sortToB(a, b *ps.Stack) []string {
 
 			jointSteps = min(stepsA, stepsB)
 
-			// // Optimization: Account for case where ra XOR rb, but
-			// // either of the stacks would be rotated len(X)/2 times.
-			// // In that case, it doesn't matter which way we rotate the
-			// // stack that needs rotating len(X)/2 times, so we can
-			// // set its direction of rotation to the same as the other
-			// // to take advantage of any possible joint steps.
-			// // But understand why the same code DOESN'T work in
-			// // sortToA, and indeed fails to sort.
-			// if stepsA == len(A)/2 {
-			// 	ra = rb
-			// }
-			// if stepsB == len(B)/2 {
-			// 	rb = ra
-			// }
+			// Optimization to take advantage of combined rotatioms
+			// when it makes no difference which direction we rotate a stack.
+			if len(A)%2 == 0 && stepsA == len(A)/2 {
+				ra = rb
+			}
+			if len(B)%2 == 0 && stepsB == len(B)/2 {
+				rb = ra
+			}
 
 			if (ra && rb) || (!ra && !rb) {
 				cost -= jointSteps
@@ -165,21 +159,6 @@ func sortToB(a, b *ps.Stack) []string {
 		}
 
 		c := journeyPlanner[cheapest]
-
-		// fmt.Println("A:", A)
-		// fmt.Println("B:", B)
-		// fmt.Println()
-
-		// fmt.Println("cheapest:", c.Value)
-		// fmt.Println("targetIndex:", c.TargetIndex)
-		// fmt.Println("targetValue:", c.TargetValue)
-		// fmt.Println("cost:", c.Cost)
-		// fmt.Println("ra:", c.Ra)
-		// fmt.Println("rb:", c.Rb)
-		// fmt.Println("stepsA:", c.StepsA)
-		// fmt.Println("stepsB:", c.StepsB)
-		// fmt.Println("jointSteps:", c.JointSteps)
-		// fmt.Println()
 
 		if c.Ra && c.Rb {
 			for j := 0; j < c.JointSteps; j++ {
@@ -216,14 +195,6 @@ func sortToB(a, b *ps.Stack) []string {
 		}
 		ps.Px(b, a)
 		result = append(result, "pb")
-
-		// fmt.Println("A:", a.GetNumsSlice())
-		// fmt.Println("B:", b.GetNumsSlice())
-		// fmt.Println()
-
-		// for _, v := range journeyPlanner {
-		// 	fmt.Printf("%+v\n", v)
-		// }
 	}
 
 	return result
@@ -280,24 +251,14 @@ func sortToA(a, b *ps.Stack) []string {
 
 			jointSteps = min(stepsA, stepsB)
 
-			// // The following doesn't work here, although it does in
-			// // sortToB. I'm not sure why. I guessed it was to do with
-			// // a case where the initial pushes to B are not sorted,
-			// // but that would suggest the problem would happen in
-			// // sortToB too.
-
-			// // Optimization: Account for case where ra XOR rb, but
-			// // either of the stacks would be rotated len(X)/2 times.
-			// // In that case, it doesn't matter which way we rotate the
-			// // stack that needs rotating len(X)/2 times, so we can
-			// // set its direction of rotation to the same as the other
-			// // to take advantage of any possible joint steps.
-			// if stepsA == len(A)/2 {
-			// 	ra = rb
-			// }
-			// if stepsB == len(B)/2 {
-			// 	rb = ra
-			// }
+			// Optimization to take advantage of combined rotatioms
+			// when it makes no difference which direction we rotate a stack.
+			if len(A)%2 == 0 && stepsA == len(A)/2 {
+				ra = rb
+			}
+			if len(B)%2 == 0 && stepsB == len(B)/2 {
+				rb = ra
+			}
 
 			if (ra && rb) || (!ra && !rb) {
 				cost -= jointSteps
@@ -325,17 +286,6 @@ func sortToA(a, b *ps.Stack) []string {
 		}
 
 		c := journeyPlanner[cheapest]
-
-		// fmt.Println("cheapest:", c.Value)
-		// fmt.Println("targetIndex:", c.TargetIndex)
-		// fmt.Println("targetValue:", c.TargetValue)
-		// fmt.Println("cost:", c.Cost)
-		// fmt.Println("ra:", c.Ra)
-		// fmt.Println("rb:", c.Rb)
-		// fmt.Println("stepsA:", c.StepsA)
-		// fmt.Println("stepsB:", c.StepsB)
-		// fmt.Println("jointSteps:", c.JointSteps)
-		// fmt.Println()
 
 		if c.Ra && c.Rb {
 			for j := 0; j < c.JointSteps; j++ {
@@ -372,10 +322,6 @@ func sortToA(a, b *ps.Stack) []string {
 		}
 		ps.Px(a, b)
 		result = append(result, "pa")
-
-		// for _, v := range journeyPlanner {
-		// 	fmt.Printf("%+v\n", v)
-		// }
 	}
 
 	return result

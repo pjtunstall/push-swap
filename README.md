@@ -5,7 +5,8 @@
 2. [A quick note about newline characters](#2-a-quick-note-about-newline-characters)
 3. [Research](#-research)
 4. [Structure and strategy](#-structure-and-strategy)
-5. [Bitmasks: a detour](#-bitmasks:-a-detour)
+5. [Some math](#-some-math)
+6. [Bitmasks: a detour](#-bitmasks:-a-detour)
 
 ## 0. The brief
 
@@ -88,7 +89,17 @@ A + B - C
 
 where `A` is number of rotations needed to bring this number to the top of stack A, `B` is the number of rotations needed to put its target number at the top of stack B, and `C` is any combined rotations. At least in our program, this calculation makes a big saving on instructions for sorting 100 numbers. Sequences of instructions tend to be in the 500s as opposed to the 1400s.
 
-## 5. Detour: bitmasks
+When pushing the cheapest number from A to B, its target is the biggest smaller number or, if there is no smaller number, the maximum of B. When pushing back, the target is the smallest bigger number or, if there is no bigger number, the minimum. For more detail, examples, and illustrations, see AYO's article and the video by TQ.
+
+## 5. Some math
+
+All permutations of `n` elements, `{1, 2, 3, ..., n}`, can be expressed as combinations of a swap `(1 2)` (i.e. the permutation that swaps `1` and `2`) and a rotation `(1 2 3, ..., n)` (i.e. the permutation that sends `1` to where `2` was, and `2` to where `3` was, and ..., and `n` to where `1` was), so, if we didn't care about sequenec length, we could sort any stack with no pushes.
+
+Due to the circular nature of the stacks, the cheapest numbers will tend to be those near the top or the bottom. To put it another way, a number is furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such a middle/opposite/antipodeal element: 6.)
+
+One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
+
+## 6. Detour: bitmasks
 
 In the `getInstructions` function of the `checker` program (located in `get-instructions.go`), we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
 
