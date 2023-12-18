@@ -7,6 +7,9 @@ import (
 	"testing"
 )
 
+// TestChecker tests the push-swap program against the checker program.
+// It assumes there is a push-swap executable in the current directory
+// and a checker executable in the checker directory.
 func TestChecker(t *testing.T) {
 	tests := []string{
 		"240 108 360 420",
@@ -46,8 +49,6 @@ func TestChecker(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to execute checker command: %v", err)
 		}
-
-		// t.Logf("Output of checker: %s", output)
 
 		// Check the output of the checker command
 		outputStr := string(output)

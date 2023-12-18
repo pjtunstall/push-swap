@@ -20,9 +20,9 @@ The object is to write a program that leaves the numbers sorted on stack A in as
 
 You'll find the main package for each of the two programs, `checker` and `push-swap`, in the folders of those names in `cmd`.
 
-To compile the `push-swap` program, cd into the corresponding directory and run `go build -o push-swap main.go`. To use the program, enter `./push-swap`, followed by a string of integers to sort, separated by spaces.
+To compile the `push-swap` program, cd into the corresponding directory and run `go build -o push-swap`. To use the program, enter `./push-swap`, followed by a string of integers to sort, separated by spaces.
 
-To compile the `checker` program, run `go build -o checker main.go`; and, to use it, type `./checker`, followed by a string of integers to sort, piping in the instructions like so:
+To compile the `checker` program, run `go build -o checker`; and, to use it, type `./checker`, followed by a string of integers to sort, piping in the instructions like so:
 
 ```
 echo -e "rra\npb\nsa\nrra\npa\n" | ./checker "3 2 1 0"
