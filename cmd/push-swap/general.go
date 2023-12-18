@@ -54,10 +54,6 @@ func general(a, b *ps.Stack) []string {
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, justRotate(*a))
 
-	// fmt.Println("A:", a.GetNumsSlice())
-	// fmt.Println("B:", b.GetNumsSlice())
-	// fmt.Println()
-
 	// An extra check to see if we can sort using a sequence of only
 	// swaps and rotations. This uses a BFS, and if too slow for big
 	// stacks, hence the simpler checks at the beginning of this
