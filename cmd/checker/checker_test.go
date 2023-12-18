@@ -6,6 +6,9 @@ import (
 	"push-swap/ps"
 )
 
+// See also cmd/push-swap/main_test.go for a more complete test of the
+// whole push-swap program against the checker program.
+
 type testCase struct {
 	instructions []string
 	a            ps.Stack
