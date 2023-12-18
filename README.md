@@ -5,7 +5,7 @@
 2. [A quick note about newline characters](#2-a-quick-note-about-newline-characters)
 3. [Research](#-research)
 4. [Structure and strategy](#-structure-and-strategy)
-5. [Some math](#-some-math)
+5. [Mathematical](#-mathematical-observations)
 6. [Bitmasks: a detour](#-bitmasks:-a-detour)
 
 ## 0. The brief
@@ -59,7 +59,7 @@ For 100 numbers, JD pushes the lowest 20 numbers to stack B first, then the next
 
 By contrast, AYO sorts all but three numbers onto stack B in descending order. That way, he can push them back without having to make an extra rotation each time to bring the right number to the top, and they'll arrive naturally in the right order. He calculates the cheapest element to push from stack A each time, based on how many rotations it would take to bring both it and its target number in B to the tops of their respective stacks.
 
-LF uses radix sort. Although he says it didn't get him the highest score, this is an important technique to learn, and his article makes an interesting read, particularly as our project description hinted that non-comparative sorting algorithms might be relevant.
+LF uses radix sort. He says it didn't get him the highest score; presumably the cost of having to push numbers back and forth on multiple passes was too much. But this is an important technique to learn, and his article makes an interesting read, particularly as the `push-swap` project description hinted that non-comparative sorting algorithms might be relevant.
 
 It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
 
@@ -91,11 +91,17 @@ where `A` is number of rotations needed to bring this number to the top of stack
 
 When pushing the cheapest number from A to B, its target is the biggest smaller number or, if there is no smaller number, the maximum of B. When pushing back, the target is the smallest bigger number or, if there is no bigger number, the minimum. For more detail, examples, and illustrations, see AYO's article and the video by TQ.
 
-## 5. Some math
+## 5. Mathematical observations
 
-All permutations of `n` elements, `{1, 2, 3, ..., n}`, can be expressed as combinations of a swap `(1 2)` (i.e. the permutation that swaps `1` and `2`) and a rotation `(1 2 3, ..., n)` (i.e. the permutation that sends `1` to where `2` was, and `2` to where `3` was, and ..., and `n` to where `1` was), so, if we didn't care about sequenec length, we could sort any stack with no pushes.
+Any permutation of `n` elements, `{1, 2, 3, ..., n}`, can be expressed as a sequence of swaps and rotations, so, if we didn't care about how many instructions it takes to sort a stack, we could just use these two operations.
 
-Due to the circular nature of the stacks, the cheapest numbers will tend to be those near the top or the bottom. To put it another way, a number is furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such a middle/opposite/antipodeal element: 6.)
+In the language of group theory, an `n`-cycle, such as `(1 2 3 ... n)` (i.e. the permutation that sends `1` to where `2` was, and `2` to where `3` was, and ..., and `n` to where `1` was), and a transposition of elements that are adjacent in this cycle, such as `(1 2)`, together generate the whole symmetric group on `n` elements. These statements are equivalent because the inverse of `(1 2 3 ... n)` (a reverse rotation) is a composition of `n - 1` instances of `(1 2 3 ... n)`, while `(1 2)` is its own inverse.
+
+To see that they generate the whole symmetric group, we can use the fact every permutation can be expressed as a composition of transpositions. A transposition of neighboring elements can be achieved by rotating them into the top two spots on the stack, then performing the swap operation, then rotating them back to their original positions. To transpose elements that are a positive number `k` steps apart, place one of them at the top of the stack so that the other is no more than half `n` steps below it. (This is the maximum distance apart around the circlular stack that any pair of elements can be.) Then perform a swap, then `k - 1` rotations, each followed by a swap, and then `k - 1` reverse rotations, each also followed by a swap. The result will be that the elements have changed places.
+
+As `n` increases, there will be ever more permutations that involve long-distance transpositions, which can be performed more efficiently by pushing to stack B and rotating A into the correct position before pushing back, avoiding the need for a swap after each rotation.
+
+Due to the circular nature of the stacks, the cheapest numbers will tend to be those near the top or the bottom. In other words, a number is actually furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such a middle/opposite/antipodeal element: 6.)
 
 One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
 
