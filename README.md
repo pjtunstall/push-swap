@@ -32,7 +32,9 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
-We've provided a Zsh script to run the audit questions. Make sure the executables are built in the correct folders before running it. If you want to take this shortcut, cd to the root directory and type `chmod +x audit.zsh`, then execute the audit script with `./audit.zsh`, assuming you have Zsh. If you have Bash, change the shebang at the beginning of the file to `#!/usr/bin/env bash`. (Don't worry about the extension.)
+We've provided a Zsh script to run the audit questions. Make sure the executables are built in the correct folders before running it. If you want to take this shortcut, cd to the `cmd/pushswap` and type `chmod +x audit.zsh`, then execute the audit script with `./audit.zsh`, assuming you have Zsh. If you have Bash, change the shebang at the beginning of the file to `#!/usr/bin/env bash`. (Don't worry about the extension.)
+
+If auditing this way, be sure to verify that the script does actually do what the audit questions ask, and to consider the subjective questions at the end.
 
 ## 2. A quick note about newline characters
 
@@ -73,7 +75,7 @@ You'll find the source code in several folders: `push-swap`, for the program tha
 
 The `ps` package is for functions and structs these programs share.
 
-`cmd` also contains a folder called `explorer`, for exploring new ideas. Its `main.go` uses breadth-first-search to pre-compute all solutions for five numbers that only use rotations and swaps and are shorter than those found the standard way (using pushes). The current version of the `push-swap` program now actually finds such solutions at runtime for less than 9 numbers. For longer lists, and certainly for 100 numbers, BFS is too slow to be practical at runtime, so we make do with checking some of the simpler cases where push-free sorts can be used.
+`cmd` also contains a folder called `explorer`, for exploring new ideas. Its `main.go` uses breadth-first search to pre-compute all solutions for five numbers that only use rotations and swaps and are shorter than those found the standard way (using pushes). The current version of the `push-swap` performs this BFS at runtime for stacks of size 6, 7, or 8. For longer lists, and certainly for 100 numbers, BFS is too slow to be practical at runtime, so we make do with checking some of the simpler cases where push-free sorts can be used.
 
 Like AYO and JD, we dealt with initial stacks of less than six numbers as special cases. This was partly because they lend themselves to optimizations that would be prohibitively time-consuming for longer lists, and partly so we could treat these smaller problems as warm up exercises. The six permutations of three elements are easily checked by hand. With a ranking function to simplify the task, it didn't take much longer to find optimal solutions for the 24 permutations of four elements and hardcode them.
 

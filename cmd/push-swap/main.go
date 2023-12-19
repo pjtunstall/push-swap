@@ -16,7 +16,7 @@ func main() {
 	}
 
 	if os.Args[1] == "" {
-		fmt.Println("Be reasonable.")
+		fmt.Println("Be reasonable! Any commands will sort an empty stack.")
 		return
 	}
 
