@@ -32,6 +32,8 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
+We've provided a Zsh script to run the audit questions. Make sure the executables are built in the correct folders before running it. If you want to take this shortcut, cd to the root directory and type `chmod +x audit.zsh`, then execute the audit script with `./audit.zsh`, assuming you have Zsh. If you have Bash, change the shebang at the beginning of the file to `#!/usr/bin/env bash`. (Don't worry about the extension.)
+
 ## 2. A quick note about newline characters
 
 In the `checker` example above, every instruction is followed by a newline character, `\n`, as it should be according to the project description:
@@ -51,7 +53,7 @@ Presumably the contradiction is due to a typo: either a missing `\n` from the en
 
 ## 3. Research
 
-The technique we used is essentially [A. Yigit Ogun's "Turk algorithm"](https://medium.com/@ayogun/push-swap-c1f5d2d41e97), with some additional checks to find shorter sequences of instructions that avoid pushes. I recommend this [YouTube video by Thuy Quematon (Thuggonaut)](https://www.youtube.com/watch?v=wRvipSG4Mmk) for more detail.
+The technique we used is essentially [Ali Yigit Ogun's "Turk algorithm"](https://medium.com/@ayogun/push-swap-c1f5d2d41e97), with some additional checks to find shorter sequences of instructions that avoid pushes. I recommend this [YouTube video by Thuy Quematon (Thuggonaut)](https://www.youtube.com/watch?v=wRvipSG4Mmk) for more detail.
 
 Two other Medium articles on the subject are also worth consulting as they use quite different methods to sort larger stacks: one by [Jamie Dawson](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a) and one by [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e).
 
@@ -63,7 +65,7 @@ LF uses radix sort. He says it didn't get him the highest score; presumably the 
 
 It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
 
-More significant: By 2023, at 01 Founders in London, we'd fail unless we could sort 100 mumbers in less than 700 of the specified operations. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which less than 700 is needed for top marks. On the other hand, he had to meet a minimum requirement for 500 numbers, whereas we weren't tested on 500 at all. AYO was happy to score 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos.
+By 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our audit. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which less than 700 is needed for top marks. He also had to meet a minimum requirement for 500 numbers, and got extra points according to how few instructions he could do it in. AYO says he scored 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos.
 
 ## 4. Structure and strategy
 

@@ -16,12 +16,13 @@ func main() {
 	b, _ := ps.NewStack("")
 	a, err := ps.NewStack(os.Args[1])
 	if err != nil {
-		if err.Error() == "invalid argument" {
-			fmt.Println("Error: invalid argument")
-		}
-		if err.Error() == "duplicate numbers" {
-			fmt.Println("Error: duplicate numbers")
-		}
+		// if err.Error() == "invalid argument" {
+		// 	fmt.Println("Error: invalid argument")
+		// }
+		// if err.Error() == "duplicate numbers" {
+		// 	fmt.Println("Error: duplicate numbers")
+		// }
+		fmt.Println("Error") // Not specific, so as to comply with the audit.
 		return
 	}
 
