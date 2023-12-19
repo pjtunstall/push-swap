@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"push-swap/ps"
 	"sort"
@@ -14,6 +15,12 @@ import (
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
 	// Check length of result for 100 random numbers 1000 times:
+	limit := 700
+
+	// // Uncomment this and related lines, and adjust limit to explore stats.
+	// fails := 0
+	// scores := make([]float64, 0, 1000)
+
 	for i := 0; i < 1000; i++ {
 		hundred := hundredRandomNumbers()
 		a, err := ps.NewStack(hundred)
@@ -26,10 +33,21 @@ func TestGeneral(t *testing.T) {
 		if !sorted {
 			t.Errorf("not sorted")
 		}
-		if len(instructions) >= 700 {
+
+		if len(instructions) >= limit {
+			// // Uncomment to explore stats.
+			// scores = append(scores, float64(len(instructions)))
+			// fails++
 			t.Errorf("%v instructions--that's a bit much", len(instructions))
 		}
 	}
+
+	// // Uncomment and set limit to 0 to see the mean and standard deviation:
+	// if true {
+	// 	t.Errorf("fails: %v", fails)
+	// 	t.Errorf("mean: %v", Average(scores))
+	// 	t.Errorf("standard deviation: %v", StandardDeviation(scores))
+	// }
 
 	// Check that the result is sorted for all permutations of 1-6.
 	// Note that this unit test for general doesn't take into account
@@ -111,4 +129,24 @@ func hundredRandomNumbers() string {
 
 func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
+}
+
+func Average(data []float64) float64 {
+	var sum float64
+	for i := 0; i < len(data); i++ {
+		sum += data[i]
+	}
+	return sum / float64(len(data))
+}
+
+func Variance(data []float64) float64 {
+	m := Average(data)
+	var d []float64
+	for i := 0; i < len(data); i++ {
+		d = append(d, (data[i]-m)*(data[i]-m))
+	}
+	return Average(d)
+}
+func StandardDeviation(data []float64) float64 {
+	return math.Sqrt(Variance(data))
 }
