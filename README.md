@@ -71,7 +71,7 @@ You'll find the source code in several folders: `push-swap`, for the program tha
 
 The `ps` package is for functions and structs these programs share.
 
-`cmd` also contains a folder called `explorer`, for exploring new ideas. Its `main.go` uses breadth-first-search to pre-compute all solutions for five numbers that only use rotations and swaps and are shorter than those found the standard way (using pushes). The current version of the `push-swap` program now actually finds such solutions at runtime for lists of up to 32 numbers. For longer lists, such as those with 100 numbers, BFS is too slow to be practical at runtime, so we make do with checking some of the simpler cases where push-free sorts can be used.
+`cmd` also contains a folder called `explorer`, for exploring new ideas. Its `main.go` uses breadth-first-search to pre-compute all solutions for five numbers that only use rotations and swaps and are shorter than those found the standard way (using pushes). The current version of the `push-swap` program now actually finds such solutions at runtime for less than 9 numbers. For longer lists, and certainly for 100 numbers, BFS is too slow to be practical at runtime, so we make do with checking some of the simpler cases where push-free sorts can be used.
 
 Like AYO and JD, we dealt with initial stacks of less than six numbers as special cases. This was partly because they lend themselves to optimizations that would be prohibitively time-consuming for longer lists, and partly so we could treat these smaller problems as warm up exercises. The six permutations of three elements are easily checked by hand. With a ranking function to simplify the task, it didn't take much longer to find optimal solutions for the 24 permutations of four elements and hardcode them.
 
@@ -79,7 +79,7 @@ At 120 permutation, the five-number challenge seemed like a good place to start 
 
 One remark on JD's statement: "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omit this final step and just rotate stack A to where it needs to be before pushing each number back from B.
 
-Anyway, for the general case, we followed AYO's method, which extends JD's for five numbers. The top two numbers are pushed indescriminately from A to B. AYO sorts the rest of the numbers from A to B so that they land in descending order. This makes it simpler to push them back into ascending order on A. Before deciding which number to push from A, he checks each one to find the cheapest.
+Anyway, for the general case, we followed AYO's method, which extends JD's for five numbers. The first two numbers on the stack are pushed indiscriminately from A to B. AYO sorts the rest of the numbers from A to B so that they land in descending order. This makes it simpler to push them back into ascending order on A. Before deciding which number to push from A, he checks each one to find the cheapest.
 
 The cheapest number to move is the one that miminizes
 
@@ -90,6 +90,8 @@ A + B - C
 where `A` is number of rotations needed to bring this number to the top of stack A, `B` is the number of rotations needed to put its target number at the top of stack B, and `C` is any combined rotations. At least in our program, this calculation makes a big saving on instructions for sorting 100 numbers. Sequences of instructions tend to be in the 500s as opposed to the 1400s.
 
 When pushing the cheapest number from A to B, its target is the biggest smaller number or, if there is no smaller number, the maximum of B. When pushing back, the target is the smallest bigger number or, if there is no bigger number, the minimum. For more detail, examples, and illustrations, see AYO's article and the video by TQ.
+
+Indiscriminately pushing the first two numbers from A to B can result in cases where one or both are just pushed right back! We deal with this by checking first to see if the stack is already sorted, and by canceling out any "pb", "pa" subsequence from the list of instructions.
 
 ## 5. Mathematical observations
 
