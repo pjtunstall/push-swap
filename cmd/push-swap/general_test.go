@@ -35,7 +35,7 @@ func TestGeneral(t *testing.T) {
 		}
 
 		if len(instructions) >= limit {
-			// // Uncomment to explore stats.
+			// Uncomment to explore stats.
 			// scores = append(scores, float64(len(instructions)))
 			// fails++
 			t.Errorf("%v instructions--that's a bit much", len(instructions))
@@ -150,3 +150,19 @@ func Variance(data []float64) float64 {
 func StandardDeviation(data []float64) float64 {
 	return math.Sqrt(Variance(data))
 }
+
+// func fiveHundred() string {
+// 	var result string
+// 	arr := make([]int, 500)
+// 	for i := range arr {
+// 		arr[i] = i + 1
+// 	}
+// 	rand.Shuffle(500, func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
+// 	for i, v := range arr {
+// 		result += fmt.Sprintf("%d", v)
+// 		if i != 499 {
+// 			result += " "
+// 		}
+// 	}
+// 	return result
+// }

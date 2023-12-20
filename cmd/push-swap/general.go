@@ -4,6 +4,52 @@ import (
 	"push-swap/ps"
 )
 
+func hundred(a, b *ps.Stack) []string {
+	var result []string
+	*a, _ = ps.NewStack(rank(a.Nums))
+
+	// Push the smallest third to the bottom of stack B and the
+	// middle third to the top.
+	for len(a.Nums) > 33 {
+		A := a.GetNumsSlice()
+		if A[0] < 68 {
+			ps.Px(b, a)
+			result = append(result, "pb")
+			if A[0] < 34 && len(b.Nums) > 1 {
+				ps.Rx(b)
+				result = append(result, "rb")
+			}
+		} else {
+			ps.Rx(a)
+			result = append(result, "ra")
+		}
+	}
+
+	// Push the smallest third to the top of stack B, leaving
+	// the last three on stack A
+	for len(a.Nums) > 3 {
+		ps.Px(b, a)
+		result = append(result, "pb")
+	}
+
+	// Perform a swap on stack A if necessary to make it rotatable
+	// into sorted position.
+	_, rotatable := three(a.Nums)
+	if !rotatable {
+		ps.Sx(a)
+		result = append(result, "sa")
+	}
+
+	// Sort while merging from stack B to stack A.
+	result = append(result, insert(b, a, 0, false)...)
+
+	// Rotate stack A into sorted position.
+	result = append(result, justRotate(*a)...)
+	ps.Run(a, b, justRotate(*a))
+
+	return result
+}
+
 func general(a, b *ps.Stack) []string {
 	c, _ := ps.NewStack(a.GetNumsString())
 	var result []string
@@ -35,6 +81,10 @@ func general(a, b *ps.Stack) []string {
 		return rotSwapScript
 	}
 
+	if len(a.Nums) == 100 {
+		return hundred(a, b)
+	}
+
 	ps.Px(b, a)
 	ps.Px(b, a)
 	result = append(result, "pb", "pb")
@@ -43,15 +93,13 @@ func general(a, b *ps.Stack) []string {
 		ps.Sx(b)
 		result = append(result, "sb")
 	}
-	// result = append(result, sortToB(a, b)...)
-	result = append(result, merge(a, b, 3, true)...)
+	result = append(result, insert(a, b, 3, true)...)
 	_, rotatable := three(a.Nums)
 	if !rotatable {
 		ps.Sx(a)
 		result = append(result, "sa")
 	}
-	// result = append(result, sortToA(a, b)...)
-	result = append(result, merge(b, a, 0, false)...)
+	result = append(result, insert(b, a, 0, false)...)
 
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, justRotate(*a))
@@ -70,13 +118,13 @@ func general(a, b *ps.Stack) []string {
 	return result
 }
 
-// Sorts as it merges from one stack to another. Here a and
+// Sorts as it pushes from one stack to another. Here a and
 // b are just parameters, with a representing the source stack
 // and b the destination stack. The stopAt parameter is the number
 // of elements to leave in the source stack. If forward is true,
-// the merge is from the real a to the real b, otherwise it is
+// the sort is from the real a to the real b, otherwise it is
 // from the real b to the real a.
-func merge(a, b *ps.Stack, stopAt int, forward bool) []string {
+func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 	result := []string{}
 
 	for {
@@ -248,3 +296,74 @@ func merge(a, b *ps.Stack, stopAt int, forward bool) []string {
 
 	return result
 }
+
+// // Variant of FO's algorithm, but using 4 buckets instead of 3.
+// func fourSeasons(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+
+// 	// Group the numbers are grouped according to size and call
+// 	// the smallest fourth spring, the next smallest summer,
+// 	// then fall, and finally winter the biggest. We first push
+// 	// summer to the bottom of stack B and fall to the top.
+// 	for len(a.Nums) > 50 {
+// 		A := a.GetNumsSlice()
+// 		if A[0] > 25 && A[0] < 76 {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 			if A[0] < 51 && len(b.Nums) > 1 {
+// 				ps.Rx(b)
+// 				result = append(result, "rb")
+// 			}
+// 		} else {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	// Now we push spring to the bottom of stack B and winter to the top,
+// 	// leaving the last three on stack A.
+// 	for len(a.Nums) > 3 {
+// 		A := a.GetNumsSlice()
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if A[0] < 26 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Perform a swap on stack A if necessary to make it rotatable
+// 	// into sorted position.
+// 	_, rotatable := three(a.Nums)
+// 	if !rotatable {
+// 		ps.Sx(a)
+// 		result = append(result, "sa")
+// 	}
+
+// 	// Sort while merging from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // JC's algorithm.
+// func jc(a, b *ps.Stack) []string {
+// 	var result []string
+
+// 	for len(a.Nums) > 1 {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 	}
+
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
