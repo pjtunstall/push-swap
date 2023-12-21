@@ -4,6 +4,78 @@ import (
 	"push-swap/ps"
 )
 
+func general(a, b *ps.Stack) []string {
+	c, _ := ps.NewStack(a.GetNumsString())
+	var result []string
+
+	swapRotatable, swappable := swapRot(*a, *b)
+
+	// If a swap is enough to sort the stack:
+	if swappable {
+		ps.Sx(a)
+		result = append(result, "sa")
+		return result
+	}
+
+	// If a swap, then rotations are enough to sort the stack:
+	if swapRotatable {
+		ps.Sx(a)
+		rots := justRotate(*a)
+		ps.Run(a, b, rots)
+		result = append(result, "sa")
+		result = append(result, rots...)
+		return result
+	}
+
+	// Check if rotations, then a swap, then (possibly) more rotations,
+	// are enough to sort the stack.
+	rotSwapScript, rotSwappable := rotSwap(*a, *b)
+	if rotSwappable {
+		ps.Run(a, b, rotSwapScript)
+		return rotSwapScript
+	}
+
+	if len(a.Nums) == 100 {
+		return hundred(a, b)
+	}
+
+	if len(a.Nums) == 500 {
+		return fiveHundred(a, b)
+	}
+
+	ps.Px(b, a)
+	ps.Px(b, a)
+	result = append(result, "pb", "pb")
+	nums := b.GetNumsSlice()
+	if nums[0] < nums[1] {
+		ps.Sx(b)
+		result = append(result, "sb")
+	}
+	result = append(result, insert(a, b, 3, true)...)
+	_, rotatable := three(a.Nums)
+	if !rotatable {
+		ps.Sx(a)
+		result = append(result, "sa")
+	}
+	result = append(result, insert(b, a, 0, false)...)
+
+	result = append(result, justRotate(*a)...)
+	ps.Run(a, b, justRotate(*a))
+
+	// An extra check to see if we can sort using a sequence of only
+	// swaps and rotations. This uses a BFS, and if too slow for big
+	// stacks, hence the simpler checks at the beginning of this
+	// function.
+	if len(a.Nums) < 9 {
+		alt := bfs(c, len(result))
+		if len(alt) > 0 && len(alt) < len(result) {
+			result = alt
+		}
+	}
+
+	return result
+}
+
 func hundred(a, b *ps.Stack) []string {
 	var result []string
 	*a, _ = ps.NewStack(rank(a.Nums))
@@ -40,7 +112,7 @@ func hundred(a, b *ps.Stack) []string {
 		result = append(result, "sa")
 	}
 
-	// Sort while merging from stack B to stack A.
+	// Sort while inserting from stack B to stack A.
 	result = append(result, insert(b, a, 0, false)...)
 
 	// Rotate stack A into sorted position.
@@ -50,70 +122,47 @@ func hundred(a, b *ps.Stack) []string {
 	return result
 }
 
-func general(a, b *ps.Stack) []string {
-	c, _ := ps.NewStack(a.GetNumsString())
+func fiveHundred(a, b *ps.Stack) []string {
 	var result []string
+	*a, _ = ps.NewStack(rank(a.Nums))
 
-	swapRotatable, swappable := swapRot(*a, *b)
-
-	// If a swap is enough to sort the stack:
-	if swappable {
-		ps.Sx(a)
-		result = append(result, "sa")
-		return result
+	// Push the smallest third to the bottom of stack B and the
+	// middle third to the top.
+	for len(a.Nums) > 167 {
+		A := a.GetNumsSlice()
+		if A[0] < 334 {
+			ps.Px(b, a)
+			result = append(result, "pb")
+			if A[0] < 168 && len(b.Nums) > 1 {
+				ps.Rx(b)
+				result = append(result, "rb")
+			}
+		} else {
+			ps.Rx(a)
+			result = append(result, "ra")
+		}
 	}
 
-	// If a swap, then rotations are enough to sort the stack:
-	if swapRotatable {
-		ps.Sx(a)
-		rots := justRotate(*a)
-		ps.Run(a, b, rots)
-		result = append(result, "sa")
-		result = append(result, rots...)
-		return result
+	// Push the smallest third to the top of stack B, leaving
+	// the last three on stack A
+	for len(a.Nums) > 3 {
+		ps.Px(b, a)
+		result = append(result, "pb")
 	}
 
-	// Check if rotations, then a swap, then (possibly) more rotations,
-	// are enough to sort the stack.
-	rotSwapScript, rotSwappable := rotSwap(*a, *b)
-	if rotSwappable {
-		ps.Run(a, b, rotSwapScript)
-		return rotSwapScript
-	}
-
-	if len(a.Nums) == 100 {
-		return hundred(a, b)
-	}
-
-	ps.Px(b, a)
-	ps.Px(b, a)
-	result = append(result, "pb", "pb")
-	nums := b.GetNumsSlice()
-	if nums[0] < nums[1] {
-		ps.Sx(b)
-		result = append(result, "sb")
-	}
-	result = append(result, insert(a, b, 3, true)...)
+	// Perform a swap on stack A if necessary to make it rotatable
+	// into sorted position.
 	_, rotatable := three(a.Nums)
 	if !rotatable {
 		ps.Sx(a)
 		result = append(result, "sa")
 	}
+
+	// Sort while inserting from stack B to stack A.
 	result = append(result, insert(b, a, 0, false)...)
 
+	// Rotate stack A into sorted position.
 	result = append(result, justRotate(*a)...)
-	ps.Run(a, b, justRotate(*a))
-
-	// An extra check to see if we can sort using a sequence of only
-	// swaps and rotations. This uses a BFS, and if too slow for big
-	// stacks, hence the simpler checks at the beginning of this
-	// function.
-	if len(a.Nums) < 9 {
-		alt := bfs(c, len(result))
-		if len(alt) > 0 && len(alt) < len(result) {
-			result = alt
-		}
-	}
 
 	return result
 }

@@ -5,7 +5,7 @@
 2. [A quick note about newline characters](#2-a-quick-note-about-newline-characters)
 3. [Research](#-research)
 4. [Structure and strategy](#-structure-and-strategy)
-5. [Mathematical](#-mathematical-observations)
+5. [Mathematical observations](#-mathematical-observations)
 6. [Bitmasks: a detour](#-bitmasks:-a-detour)
 
 ## 0. The brief
@@ -69,17 +69,19 @@ For 100 numbers, JD pushes the lowest 20 numbers to stack B first, then the next
 
 One remark on JD's statement: "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omitted this final step and just rotate stack A to where it needs to be before pushing each number back from B.
 
-LF uses radix sort. He says it didn't get him the highest score; presumably the cost of having to push numbers back and forth on multiple passes was too much. But this is an important technique to learn, particularly as the `push-swap` project description hinted that non-comparative sorting algorithms might be relevant.
+LF uses base 2 radix sort, of the Least Significant Digit flavor. For each bit, starting with the rightmost, he checks the numbers at the top of stack A. If the relevant bit is 0, he moves pushes to stack B; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers. Then he pushes those that went to stack B back, and procedes in this way through all the bits. He says it didn't get him the highest score; presumably the cost of having to push numbers back and forth on multiple passes was too much. But this is an important technique to learn, particularly as the `push-swap` project description hinted that non-comparative sorting algorithms might be relevant.
 
 It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
 
 Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of these folks' solutions. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which less than 700 is needed for top marks. He also had to meet a minimum requirement for 500 numbers, and got extra points according to how few instructions he could do it in. AYO says he scored 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos. By 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our audit.
 
-On 10,000 tests, our implementation of FO's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. (He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did, but I'd be curious to see if he really was doing something different. Four buckets performed somewhat worse at 569 instructions. The standard deviation was 23.)
+On 10,000 tests, our implementation of FO's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. (He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. Four buckets performed somewhat worse at 569 instructions. The standard deviation was 23. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.)
 
 AYO's method achieved a mean of 561 instructions, with a standard deviation of 23, the worst cases being in the low 600s. (Without AYO's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
 
 JC's approach of pushing everything, then insertion sorting with cost checking like AYO on the way back took 584 instructions on average, with a standard deviation of 24.
+
+LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756. We'll return to this shortly, in 5. Mathematical Observations.
 
 ## 4. Structure and strategy
 
@@ -109,6 +111,8 @@ Indiscriminately pushing the first two numbers from A to B can result in cases w
 
 ## 5. Mathematical observations
 
+### a. Swaps and rotations are enough to sort
+
 Any permutation of `n` elements, `{1, 2, 3, ..., n}`, can be expressed as a sequence of swaps and rotations, so, if we didn't care about how many instructions it takes to sort a stack, we could just use these two operations.
 
 In the language of group theory, an `n`-cycle, such as `(1 2 3 ... n)` (i.e. the permutation that sends `1` to where `2` was, and `2` to where `3` was, and ..., and `n` to where `1` was), and a transposition of elements that are adjacent in this cycle, such as `(1 2)`, together generate the whole symmetric group on `n` elements. These statements are equivalent because the inverse of `(1 2 3 ... n)` (a reverse rotation) is a composition of `n - 1` instances of `(1 2 3 ... n)`, while `(1 2)` is its own inverse.
@@ -117,9 +121,39 @@ To see that they generate the whole symmetric group, we can use the fact every p
 
 While swaps and rotations are sufficient, it will sometimes be more efficient to push elements to the spare stack B for sorting.
 
+## b. Antipodeal elements: an optimization for stacks of even size
+
 Due to the circular nature of the stacks, the cheapest numbers to push will tend to be those near the top or the bottom. In other words, a number is actually furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such a middle/opposite/antipodeal element: 6.)
 
 One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
+
+## c. Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?
+
+As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
+
+To see why this is (and why must also have always got exactly 1084), note first that he takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, ..., 99. Now, ceil(log2(500)) = 9, so there will be 9 passes for the 9 bits needed to label 500 numbers in this way. In the case of 500 numbers, then, there will be at least 500 operations per bit. One might think that half the numbers (250 of them) would take a turn at being pushed to B each time, and thus have to be pushed back (resulting in 9 \* 750 = 6750 instructions)--and this would indeed be the case if 500 was a power of 2. But the bits of 499 are 111110011, so not every 9-bit sequenece of 0s and 1s is represented among the numbers to be sorted. Since it's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, it's the 0s that will be overrepresented in the total, shifting the balance in favor of pushes.
+
+To take a simple example, suppose we had to sort 6 numbers. We'd need ceil(log2(6)) = 3 bits, and the numbers to sort would be expressed in binary form as:
+
+```
+000
+001
+010
+011
+100
+101
+```
+
+There would be one operation (`ra` or `pb` for each of these numbers on each pass, and one pass for each of the three bits, hence at least 6 \* 3 = 18 operations. In addition, there will be a `pa` for every number that was pushed to stack B, which is to say, one more operation for every 0 that appears in this list. There are 11 zeros: 3 for the least significant bit, and 4 each for the others. In total, therefore, it will always take 18 + 11 = 29 operations to sort 6 numbers in this way.)
+
+Notice that the two numbers missing to make up the next power of two are:
+
+110
+111
+
+For a full power of 2, there are as many 0s as 1s for every bit. Since 0s and 1s are equally represented in the rightmost bit of the missing numbers, they must be equally represented in the rightmost bit of the 6 numbers we have: that is, 6/2 = 3 zeros. But there are no 0s among the other two bits of the missing numbers, so all 8/2 = 4 of the total possible zeros must be present among our 6 numbers. Hence it will take 6 \* 3 + 3 + 4 + 4 = 29 operations.
+
+Similarly, ceil(log2(100)) = 7, so there will be at least 700 operations (rotations and pushes from A to B), and somewhat more than 7 \* 50 extra pushes, representing pushes back to A of those numbers that were moved there. This is a bit further off LF's actual score of 1084, which makes sense given that the difference between 100 and the next highest power of 2--or, equivalently, between 99 and 127 (2^7 - 1)--is greater than the difference between 500 and and 2^9.
 
 ## 6. Detour: bitmasks
 

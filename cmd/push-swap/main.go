@@ -53,6 +53,8 @@ func main() {
 		case 5:
 			result = five(&a, &b)
 		default:
+			// 100 and 500 are dealt with as special cases too, but
+			// they're called from general for ease of testing.
 			result = general(&a, &b)
 		}
 	}

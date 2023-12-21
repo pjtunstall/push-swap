@@ -14,7 +14,6 @@ import (
 // 1000 times tests that 100 random numbers are sorted in less than 700 instructions,
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
-	// Check length of result for 100 random numbers 1000 times:
 	limit := 700
 
 	// // Uncomment this and related lines, and adjust limit to explore stats.
@@ -23,6 +22,7 @@ func TestGeneral(t *testing.T) {
 
 	for i := 0; i < 1000; i++ {
 		hundred := hundredRandomNumbers()
+		// hundred := fiveHundredRandomNumbers()
 		a, err := ps.NewStack(hundred)
 		if err != nil {
 			t.Errorf("general(%s) failed: %s", hundred, err)
@@ -35,7 +35,7 @@ func TestGeneral(t *testing.T) {
 		}
 
 		if len(instructions) >= limit {
-			// Uncomment to explore stats.
+			// // Uncomment to explore stats.
 			// scores = append(scores, float64(len(instructions)))
 			// fails++
 			t.Errorf("%v instructions--that's a bit much", len(instructions))
@@ -151,7 +151,7 @@ func StandardDeviation(data []float64) float64 {
 	return math.Sqrt(Variance(data))
 }
 
-// func fiveHundred() string {
+// func fiveHundredRandomNumbers() string {
 // 	var result string
 // 	arr := make([]int, 500)
 // 	for i := range arr {
