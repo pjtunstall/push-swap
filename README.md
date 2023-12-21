@@ -13,7 +13,7 @@
 5. [Mathematical curios](#5-mathematical-curios)
    - a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
    - b. [Antipodeal elements: an optimization for stacks of even size](#b-antipodeal-elements-an-optimization-for-stacks-of-even-size)
-   - c. [Why did Leo Fu always need the same amount of instructions for a given stack size?](#c-why-did-leo-fus-always-need-the-same-amount-ofinstructions-for-a-given-stack-size)
+   - c. [Why Leo Fu always got the same amount of instructions for a given stack size](#c-why-leo-fu-always-got-the-same-amount-of-instructions-for-a-given-stack-size)
 6. [Detour: bitmasks](#6-detour-bitmasks)
 
 ## 0. The brief
