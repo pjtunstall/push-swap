@@ -151,7 +151,7 @@ Due to the circular nature of the stacks, the cheapest numbers to push will tend
 
 One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
 
-### c. Why does Leo Fu's radix sort always take 6756 instructions for 500 numbers?
+### c. Why Leo Fu always got the same amount of instructions for a given stack size
 
 As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
