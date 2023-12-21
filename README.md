@@ -87,6 +87,20 @@ One remark on JD's statement: "We’ll bring those numbers back once the three n
 
 LF followes a quite different approach. He base 2 radix sort, of the Least Significant Digit flavor. For each bit, starting with the least significant (rightmost), he checks the number at the top of stack A. If the relevant bit is 0, he pushes the top number from A to B with `pb`; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers in A. Then he pushes back everything from B with `pa`, and procedes in this way through all the bits. He says it didn't get him the highest score; presumably the cost of having to push all those numbers back and forth on multiple passes was too much. But this is an important technique to learn, particularly as the `push-swap` project description hinted that non-comparative sorting algorithms might be relevant.
 
+A few others have made their solutions public on GitHub. [Adrian Roque](https://github.com/AdrianWR/push_swap) and [Anya Schukin](https://github.com/anyaschukin/Push_Swap) deal into buckets on stack B, like FO (except with 2 buckets when there are no more than numbers, or else 4 buckets when there are 500 or less). In Anya's words:
+
+```
+The algorithms in ./push_swap to sort the stack are relatively straight-forward. I had 3 different algorithms: one for 5 numbers or less, one for 100 numbers or less, and one for 500 numbers or less.
+
+For 100 < numbers, I find the median and push everything below the median into stack b. Then I identify each the largest and smallest integer in stack b, and determine which is most efficient to rotate up/down and push back to stack a (along with the specific moves to make that happen). Then I execute those moves.
+
+In this way, integers are pushed back to stack a already sorted. I then repeat the process for everything above the median.
+
+For 500 < numbers, I executed the same process but divided stack a by quarters instead of median.
+```
+
+The moves back to A sound like selection sort, except with the refinement that both the minimum or the maximum are valid options to push, depending on which is cheaper, thus taking advantage of the circularity of the stack.
+
 ### b. Grading systems
 
 It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
