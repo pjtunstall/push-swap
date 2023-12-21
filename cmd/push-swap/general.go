@@ -122,6 +122,40 @@ func hundred(a, b *ps.Stack) []string {
 	return result
 }
 
+// // Like LF's algorithm, but using 2 buckets instead of 3.
+// func hundredHalves(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top.
+// 	for len(a.Nums) > 3 {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Perform a swap on stack A if necessary to make it rotatable
+// 	// into sorted position.
+// 	_, rotatable := three(a.Nums)
+// 	if !rotatable {
+// 		ps.Sx(a)
+// 		result = append(result, "sa")
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
 func fiveHundred(a, b *ps.Stack) []string {
 	var result []string
 	*a, _ = ps.NewStack(rank(a.Nums))

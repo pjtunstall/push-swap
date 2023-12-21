@@ -18,9 +18,9 @@ func TestGeneral(t *testing.T) {
 
 	// // Uncomment this and related lines, and adjust limit to explore stats.
 	// fails := 0
-	// scores := make([]float64, 0, 1000)
+	// scores := make([]float64, 0, 10000)
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 10000; i++ {
 		hundred := hundredRandomNumbers()
 		// hundred := fiveHundredRandomNumbers()
 		a, err := ps.NewStack(hundred)

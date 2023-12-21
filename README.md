@@ -6,6 +6,9 @@
    - b. [A quick note about newline characters](#b-a-quick-note-about-newline-characters)
 2. [Audit](#2-audit)
 3. [Research](#3-research)
+   - a. [Our peers at affiliated schools](#a-our-peers-at-affiliated-schools)
+   - b. [Grading systems](#b-grading-systems)
+   - c. [Results](#c-results)
 4. [Structure and strategy](#4-structure-and-strategy)
 5. [Mathematical observations](#5-mathematical-observations)
    - a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
@@ -64,6 +67,8 @@ If auditing this way, be sure to verify that the script does actually do what th
 
 ## 3. Research
 
+### a. Our peers at affiliated schools
+
 The technique we used is essentially [Ali Yigit Ogun's "Turk algorithm"](https://medium.com/@ayogun/push-swap-c1f5d2d41e97), with some additional checks to find shorter sequences of instructions that avoid pushes. I recommend this [YouTube video by Thuy Quematon (Thuggonaut)](https://www.youtube.com/watch?v=wRvipSG4Mmk) for more detail.
 
 He used an insertion sort of all but three numbers to stack B, then insertion sort again back to A. A refinement is that instead of always pushing the number at the top of the stack, he does a preliminary calculation before each push. He then pushes the number for which the least amount of rotations is needed to bring it to the top of its stack and its target to the top of the other stack.
@@ -80,11 +85,21 @@ One remark on JD's statement: "We’ll bring those numbers back once the three n
 
 LF uses base 2 radix sort, of the Least Significant Digit flavor. For each bit, starting with the rightmost, he checks the numbers at the top of stack A. If the relevant bit is 0, he moves pushes to stack B; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers. Then he pushes those that went to stack B back, and procedes in this way through all the bits. He says it didn't get him the highest score; presumably the cost of having to push numbers back and forth on multiple passes was too much. But this is an important technique to learn, particularly as the `push-swap` project description hinted that non-comparative sorting algorithms might be relevant.
 
+### b. Grading systems
+
 It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
 
-Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of these folks' solutions. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which less than 700 is needed for top marks. He also had to meet a minimum requirement for 500 numbers, and got extra points according to how few instructions he could do it in. AYO says he scored 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos. By 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our audit.
+Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of folks' solutions when they don't go into specifics. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which top marks are gained by sorting 100 numbers in less than 700 instructions, and 500 in less than 5500.
 
-On 10,000 tests, our implementation of FO's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. Four buckets performed somewhat worse at 569 instructions. The standard deviation was 23. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121. Of all the ways I've see, his has yet to be beaten, and it sounds like he may have achieved some further optimization that I've missed or wasn't revealed in his summary.
+AYO says he scored 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos.
+
+By December 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our [audit questions](https://github.com/01-edu/public/tree/master/subjects/push-swap/audit). Altogether, it looks like we could have an easier ride--if we wanted it..
+
+### Results
+
+On 10,000 tests, our implementation of FO's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. Of all the ways we've tried so far, this is the winner, and it sounds like FO may have achieved some further optimization that wasn't revealed in his summary, unless I've overlooked it. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.
+
+We tried varying the number of buckets used in this technique: Four buckets performed somewhat worse at 569 instructions (standard deviation: 23), and two buckets even worse at 573 (standard deviation: 26).
 
 AYO's method achieved a mean of 561 instructions, with a standard deviation of 23, the worst cases being in the low 600s. (Without AYO's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
 
