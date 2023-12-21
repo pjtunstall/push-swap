@@ -10,7 +10,7 @@
    - b. [Grading systems](#b-grading-systems)
    - c. [Results](#c-results)
 4. [Structure and strategy](#4-structure-and-strategy)
-5. [Mathematical observations](#5-mathematical-observations)
+5. [Mathematical curios](#5-mathematical-curios)
    - a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
    - b. [Antipodeal elements: an optimization for stacks of even size](#b-antipodeal-elements-an-optimization-for-stacks-of-even-size)
    - c. [Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size)
@@ -133,7 +133,7 @@ When pushing the cheapest number from A to B, its target is the biggest smaller 
 
 Indiscriminately pushing the first two numbers from A to B can result in cases where one or both are just pushed right back! We deal with this by checking first to see if the stack is already sorted, and by canceling out any "pb", "pa" subsequence from the list of instructions.
 
-## 5. Mathematical observations
+## 5. Mathematical curios
 
 ### a. Swaps and rotations are enough to sort
 
