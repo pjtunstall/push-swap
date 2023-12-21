@@ -75,7 +75,9 @@ He used an [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort) of all
 
 As a special case, for 100 and 500 numbers, we followed [Fred 1000orion's method](https://www.youtube.com/watch?v=2aMrmWOgLvU): a bucket sort, with three buckets (that is, splitting the numbers into three equal chunks, then pushing all but three numbers to B in such a way that the bucket consisting of the smallest numbers is at the bottom of B, and that consisting of the largest numbers is at the top of B), then insertion sort to stack A with a cost check as per AYO.
 
-I've read three other Medium articles on the subject: one by [Jamie Dawson](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a), one by [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e), and one by [Julien Caucheteux](https://medium.com/@julien-ctx/push-swap-an-easy-and-efficient-algorithm-to-sort-numbers-4b7049c2639a).
+I've read several other Medium articles on the subject: by [Jamie Dawson](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a), [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e), [Julien Caucheteux](https://medium.com/@julien-ctx/push-swap-an-easy-and-efficient-algorithm-to-sort-numbers-4b7049c2639a), and [Dan Sylvain](https://medium.com/@dansylvain84/my-implementation-of-the-42-push-swap-project-2706fd8c2e9f).
+
+DS's distinct feature is that he starts by finding the longest increasing subsequence (LIS) in A. He then pushes everthing else to B in two buckets: numbers greater than the median go to the top half of B, the rest to the bottom. Then they're insertion sorted back using a cost calculation as AYO does.
 
 JC does something similar to AYO. His method is a bit simpler and a bit less effective, at least in our implementation. He starts by pushing everything to stack B. He then sorts them back to A via insertion sort with cost check, choosing, at each iteration, to push back the number that can be correctly placed on A with the least rotations.
 
@@ -87,19 +89,7 @@ One remark on JD's statement: "We’ll bring those numbers back once the three n
 
 LF followes a quite different approach. He base 2 radix sort, of the Least Significant Digit flavor. For each bit, starting with the least significant (rightmost), he checks the number at the top of stack A. If the relevant bit is 0, he pushes the top number from A to B with `pb`; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers in A. Then he pushes back everything from B with `pa`, and procedes in this way through all the bits. He says it didn't get him the highest score; presumably the cost of having to push all those numbers back and forth on multiple passes was too much. But this is an important technique to learn, particularly as the `push-swap` project description hinted that non-comparative sorting algorithms might be relevant.
 
-A few others have made their solutions public on GitHub. [Adrian Roque](https://github.com/AdrianWR/push_swap) and [Anya Schukin](https://github.com/anyaschukin/Push_Swap) deal into buckets on stack B, like FO (except with 2 buckets when there are no more than numbers, or else 4 buckets when there are 500 or less). In Anya's words:
-
-```
-The algorithms in ./push_swap to sort the stack are relatively straight-forward. I had 3 different algorithms: one for 5 numbers or less, one for 100 numbers or less, and one for 500 numbers or less.
-
-For 100 < numbers, I find the median and push everything below the median into stack b. Then I identify each the largest and smallest integer in stack b, and determine which is most efficient to rotate up/down and push back to stack a (along with the specific moves to make that happen). Then I execute those moves.
-
-In this way, integers are pushed back to stack a already sorted. I then repeat the process for everything above the median.
-
-For 500 < numbers, I executed the same process but divided stack a by quarters instead of median.
-```
-
-The moves back to A sound like selection sort, except with the refinement that both the minimum or the maximum are valid options to push, depending on which is cheaper, thus taking advantage of the circularity of the stack.
+A few others have made their solutions public on GitHub, such as [Adrian Roque](https://github.com/AdrianWR/push_swap), who credits [Anya Schukin](https://github.com/anyaschukin/Push_Swap) with this idea. They deal into buckets on stack B, like FO, except that Anya says she used 2 buckets when there are no more than 100 numbers, or else 4 buckets when there are 500 or less. The numbers are then pushed back to A using a kind of selection sort, except with the refinement that the minimum OR THE MAXIMUM are valid options to push, depending on which is cheaper, thus taking advantage of the circularity of the stack.
 
 ### b. Grading systems
 
