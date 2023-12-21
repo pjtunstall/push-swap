@@ -98,9 +98,9 @@ You'll find the source code in several folders: `push-swap`, for the program tha
 
 The `ps` package is for functions and structs these programs share.
 
-`cmd` also contains a folder called `explorer`, for exploring new ideas. Its `main.go` uses breadth-first search to pre-compute all solutions for five numbers that only use rotations and swaps and are shorter than those found the standard way (using pushes). The current version of the `push-swap` performs this BFS at runtime for stacks of size 6, 7, or 8. For longer lists, and certainly for 100 numbers, BFS is too slow to be practical at runtime, so we make do with checking some of the simpler cases where push-free sorts can be used.
+`cmd` also contains a folder called `explorer`, for exploring new ideas. Its `main.go` uses breadth-first search to pre-compute all solutions for five numbers that only use rotations and swaps and are shorter than those found the standard way (using pushes). The current version of our `push-swap` program performs this BFS at runtime for stacks of size 6, 7, or 8. For longer lists, and certainly for 100 numbers, BFS is too slow to be practical at runtime, so we make do with checking some of the simpler cases where push-free sorts can be used.
 
-Like AYO and JD, we dealt with initial stacks of less than six numbers as special cases. This was partly because they lend themselves to optimizations that would be prohibitively time-consuming for longer lists, and partly so we could treat these smaller problems as warm up exercises. The six permutations of three elements are easily checked by hand. With a ranking function to simplify the task, it didn't take much longer to find optimal solutions for the 24 permutations of four elements and hardcode them.
+Like JD (and many of the others), we dealt with initial stacks of less than six numbers as special cases. This was partly because they lend themselves to optimizations that would be prohibitively time-consuming for longer lists, and partly so we could treat these smaller problems as warm up exercises. The six permutations of three elements are easily checked by hand. With a ranking function to simplify the task, it didn't take much longer to find optimal solutions for the 24 permutations of four elements and hardcode them.
 
 At 120 permutation, the five-number challenge seemed like a good place to start automating, particularly as JD uses it as an example to develop intuition for how one might proceed to the general case. Indeed, we followed his method.
 
@@ -112,7 +112,7 @@ The cheapest number to move is the one that miminizes
 A + B - C
 ```
 
-where `A` is number of rotations needed to bring this number to the top of stack A, `B` is the number of rotations needed to put its target number at the top of stack B, and `C` is any combined rotations. At least in our program, this calculation makes a big saving on instructions for sorting 100 numbers. Sequences of instructions tend to be in the 500s as opposed to the 1400s.
+where `A` is number of rotations needed to bring this number to the top of stack A, `B` is the number of rotations needed to put its target number at the top of stack B, and `C` is any combined rotations. At least in our program, this calculation makes a big saving on instructions for sorting 100 numbers, as detailed in the previous section.
 
 When pushing the cheapest number from A to B, its target is the biggest smaller number or, if there is no smaller number, the maximum of B. When pushing back, the target is the smallest bigger number or, if there is no bigger number, the minimum. For more detail, examples, and illustrations, see AYO's article and the video by TQ.
 
