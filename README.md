@@ -155,7 +155,11 @@ One consequence of this is that, if we need to rotate one stack, say, `r` times 
 
 As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
-To see why this is (and why must also have always got exactly 1084), note first that he takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, ..., 99. Now, ceil(log2(500)) = 9, so there will be 9 passes for the 9 bits needed to label 500 numbers in this way. In the case of 500 numbers, then, there will be at least 500 operations per bit. One might think that half the numbers (250 of them) would take a turn at being pushed to B each time, and thus have to be pushed back (resulting in 9 \* 750 = 6750 instructions)--and this would indeed be the case if 500 was a power of 2. But the bits of 499 are 111110011, so not every 9-bit sequenece of 0s and 1s is represented among the numbers to be sorted. Since it's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, it's the 0s that will be overrepresented in the total, shifting the balance in favor of pushes.
+To see why this is (and why he must also have always got exactly 1084 for 100 numbers), note first that he takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, ..., 99.
+
+Now, ceil(log2(500)) = 9, so there will be 9 passes for the 9 bits needed to label 500 numbers in this way. In the case of 500 numbers, then, there will be at least 500 operations per bit, because every number is either rotatated out of the way with `ra` or pushed to B with `pb`. In addition to this 500 essential operations, the subset of numbers that were pushed to B will need pushing back with `pa`.
+
+One might think that half the numbers (250 of them) would take a turn at being pushed to B each time, and thus have to be pushed back (resulting in 9 \* 750 = 6750 instructions)--and this would indeed be the case if 500 was a power of 2. But the bits of 499 are 111110011, so not every 9-bit sequenece of 0s and 1s is represented among the numbers to be sorted. Since it's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, it's the 0s that will be overrepresented in the total, shifting the balance in favor of pushes.
 
 To take a simple example, suppose we had to sort 6 numbers. We'd need ceil(log2(6)) = 3 bits, and the numbers to sort would be expressed in binary form as:
 
@@ -170,14 +174,14 @@ To take a simple example, suppose we had to sort 6 numbers. We'd need ceil(log2(
 
 There would be one operation (`ra` or `pb` for each of these numbers on each pass, and one pass for each of the three bits, hence at least 6 \* 3 = 18 operations. In addition, there will be a `pa` for every number that was pushed to stack B, which is to say, one more operation for every 0 that appears in this list. There are 11 zeros: 3 for the least significant bit, and 4 each for the others. In total, therefore, it will always take 18 + 11 = 29 operations to sort 6 numbers in this way.)
 
-Notice that the two numbers missing to make up the next power of two are:
+As another way of looking at it, notice that the two numbers missing to make up the next power of two are:
 
 110
 111
 
-For a full power of 2, there are as many 0s as 1s for every bit. Since 0s and 1s are equally represented in the rightmost bit of the missing numbers, they must be equally represented in the rightmost bit of the 6 numbers we have: that is, 6/2 = 3 zeros. But there are no 0s among the other two bits of the missing numbers, so all 8/2 = 4 of the total possible zeros must be present among our 6 numbers. Hence it will take 6 \* 3 + 3 + 4 + 4 = 29 operations.
+For a full power of 2, there must be as many 0s as 1s for every bit. Since 0s and 1s are equally represented in the rightmost bit of the missing numbers, they must be equally represented in the rightmost bit of the 6 numbers we have: that is, 6/2 = 3 zeros. But there are no 0s among the other two bits of the missing numbers, so all 8/2 = 4 of the total possible zeros must be present among our 6 numbers. Hence it will take 6 \* 3 + 3 + 4 + 4 = 29 operations.
 
-Similarly, ceil(log2(100)) = 7, so there will be at least 700 operations (rotations and pushes from A to B), and somewhat more than 7 \* 50 extra pushes, representing pushes back to A of those numbers that were moved there. This is a bit further off LF's actual score of 1084, which makes sense given that the difference between 100 and the next highest power of 2--or, equivalently, between 99 and 127 (2^7 - 1)--is greater than the difference between 500 and and 2^9.
+Similarly, in the case of 100 numbers, ceil(log2(100)) = 7, so there will be at least 700 operations (rotations and pushes from A to B), and somewhat more than 7 \* 50 extra pushes, representing pushes back to A of those numbers that were moved there. This is a bit further off LF's actual score of 1084, which makes sense given that the difference between 100 and the next highest power of 2 (128) is greater than the difference between 500 and the next highest power of 2 (512).
 
 ## 6. Detour: bitmasks
 
