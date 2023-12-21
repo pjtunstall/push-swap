@@ -2,7 +2,9 @@
 
 0. [The brief](#0-the-brief)
 1. [Getting started](#1-getting-started)
-2. [A quick note about newline characters](#2-a-quick-note-about-newline-characters)
+   - a. [Building binaries](#a-building-binaries)
+   - b. [A quick note about newline characters](#b-a-quick-note-about-newline-characters)
+2. [Audit](#2-audit)
 3. [Research](#3-research)
 4. [Structure and strategy](#4-structure-and-strategy)
 5. [Mathematical observations](#5-mathematical-observations)
@@ -21,6 +23,8 @@ The object is to write a program that leaves the numbers sorted on stack A in as
 
 ## 1. Getting started
 
+### a. Building binaries
+
 You'll find the main package for each of the two programs, `checker` and `push-swap`, in the folders of those names in `cmd`.
 
 To compile the `push-swap` program, cd into the corresponding directory and run `go build -o push-swap`. To use the program, enter `./push-swap`, followed by a string of integers to sort, separated by spaces.
@@ -35,11 +39,7 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
-We've provided a Zsh script to run the audit questions. Make sure the executables are built in the correct folders before running it. If you want to take this shortcut, cd to the `cmd/pushswap` and type `chmod +x audit.zsh`, then execute the audit script with `./audit.zsh`, assuming you have Zsh. If you have Bash, change the shebang at the beginning of the file to `#!/usr/bin/env bash`. (Don't worry about the extension.)
-
-If auditing this way, be sure to verify that the script does actually do what the audit questions ask, and to consider the subjective questions at the end.
-
-## 2. A quick note about newline characters
+### b. A quick note about newline characters
 
 In the `checker` example above, every instruction is followed by a newline character, `\n`, as it should be according to the project description:
 
@@ -55,6 +55,12 @@ OK
 ```
 
 Presumably the contradiction is due to a typo: either a missing `\n` from the end of the instructions or an `OK` where they meant `KO`. The audit questions support the statement in the project description that every instruction, including the final one, should have a `\n`.
+
+## 2. Audit
+
+We've provided a Zsh script to run the audit questions. Make sure the executables are built in the correct folders before running it, as explained in the previous section. If you want to take this shortcut, cd to the `cmd/pushswap` and type `chmod +x audit.zsh`, then execute the script with `./audit.zsh`, assuming you have Zsh. If you have Bash, change the shebang at the beginning of the file to `#!/usr/bin/env bash`.
+
+If auditing this way, be sure to verify that the script does actually do what the audit questions ask, and to consider the subjective questions at the end.
 
 ## 3. Research
 
