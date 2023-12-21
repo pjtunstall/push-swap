@@ -143,11 +143,11 @@ In the language of group theory, an `n`-cycle, such as `(1 2 3 ... n)` (i.e. the
 
 To see that they generate the whole symmetric group, we can use the fact every permutation can be expressed as a composition of transpositions. A transposition of neighboring elements can be achieved by rotating them into the top two spots on the stack, then performing the swap operation, then rotating them back to their original positions. To transpose elements that are a positive number `k` steps apart, place one of them at the top of the stack so that the other is no more than half `n` steps below it. (This is the maximum distance apart around the circlular stack that any pair of elements can be.) Then perform a swap, then `k - 1` rotations, each followed by a swap, and then `k - 1` reverse rotations, each also followed by a swap. The result will be that the elements have changed places.
 
-While swaps and rotations are sufficient, it will sometimes be more efficient to push elements to the spare stack B for sorting.
+Since any permutation can be sorted on one stack, it follows that it can be sorted when two are available, an unspoken assumption of this project!
 
 ### b. Antipodeal elements: an optimization for stacks of even size
 
-Due to the circular nature of the stacks, the cheapest numbers to push will tend to be those near the top or the bottom. In other words, a number is actually furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such a middle/opposite/antipodeal element: 6.)
+Due to the circular nature of the stacks, the cheapest numbers to push will tend to be those near the top or the bottom. In other words, a number is actually furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element (we could call it opposite or antipodeal) which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such an opposite element: 6.)
 
 One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
 
@@ -155,7 +155,7 @@ One consequence of this is that, if we need to rotate one stack, say, `r` times 
 
 As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
-To see why this is (and why he must also have always got exactly 1084 for 100 numbers), note first that he takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, ..., 99.
+To see how this can be (and why he must also have always got exactly 1084 for 100 numbers), note first that he takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, ..., 99.
 
 Now, ceil(log2(500)) = 9, so there will be 9 passes for the 9 bits needed to label 500 numbers in this way. In the case of 500 numbers, then, there will be at least 500 operations per bit, because every number is either rotatated out of the way with `ra` or pushed to B with `pb`. In addition to this 500 essential operations, the subset of numbers that were pushed to B will need pushing back with `pa`.
 
