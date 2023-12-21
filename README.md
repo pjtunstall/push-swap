@@ -176,8 +176,10 @@ There would be one operation (`ra` or `pb` for each of these numbers on each pas
 
 As another way of looking at it, notice that the two numbers missing to make up the next power of two are:
 
+```
 110
 111
+```
 
 For a full power of 2, there must be as many 0s as 1s for every bit. Since 0s and 1s are equally represented in the rightmost bit of the missing numbers, they must be equally represented in the rightmost bit of the 6 numbers we have: that is, 6/2 = 3 zeros. But there are no 0s among the other two bits of the missing numbers, so all 8/2 = 4 of the total possible zeros must be present among our 6 numbers. Hence it will take 6 \* 3 + 3 + 4 + 4 = 29 operations.
 
