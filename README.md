@@ -19,7 +19,7 @@ This is our take on the 01 Edu project `push-swap`, details of which can be foun
 
 We're given a list of numbers on a circular stack A, together with an empty stack B, and a set of eleven operations, including rotations of stacks (individually or together in the same direction), swapping the top two elements of a stack, and pushing numbers back and forth from one stack to another.
 
-The object is to write a program that leaves the numbers sorted on stack A in ascending order. There are certain constraints on the length of the sequence of instructions to accomplish this. Only programs that can sort 5 numbers in less than 12 instructions, and 100 numbers in less than 700 instructions will pass.
+The object is to write a program that leaves the numbers sorted on stack A in ascending order. There are certain constraints on the length of the sequence of instructions to accomplish this.
 
 ## 1. Getting started
 
@@ -74,7 +74,7 @@ I've see three other Medium articles on the subject: one by [Jamie Dawson](https
 
 JC starts by pushing everything to stack B. He then sorts them back to A via insertion sort with cost check, choosing, at each iteration, to push back the number that can be correctly placed on A with the least rotations.
 
-For 100 numbers, JD pushes the lowest 20 numbers to stack B first, then the next lowest, and so on till everything is sorted on B in ascending order (getting bigger as you go down), then pushes them back one by one. (Note that his original approach, that he calls insertion sort, sounds more like selection sort.)
+After a passable but less than optimally scoring attempt that he calls insertion sort, but which sounds more like selection sort, JD settled on a style of bucket sort in which he sorts each bucket's contents as he fills it rather than afterwards. For 100 numbers, he pushes the lowest 20 numbers to stack B first, then the next lowest, and so on till everything is sorted on B in ascending order (why not descending, so that they're in place already to push to A?), then pushes them back one by one.
 
 One remark on JD's statement: "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omitted this final step and just rotate stack A to where it needs to be before pushing each number back from B.
 
@@ -84,7 +84,7 @@ It seems the push-swap rules have varied slightly over time and space. We had tw
 
 Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of these folks' solutions. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which less than 700 is needed for top marks. He also had to meet a minimum requirement for 500 numbers, and got extra points according to how few instructions he could do it in. AYO says he scored 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos. By 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our audit.
 
-On 10,000 tests, our implementation of FO's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. (He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. Four buckets performed somewhat worse at 569 instructions. The standard deviation was 23. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.)
+On 10,000 tests, our implementation of FO's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. Four buckets performed somewhat worse at 569 instructions. The standard deviation was 23. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121. Of all the ways I've see, his has yet to be beaten, and it sounds like he may have achieved some further optimization that I've missed or wasn't revealed in his summary.
 
 AYO's method achieved a mean of 561 instructions, with a standard deviation of 23, the worst cases being in the low 600s. (Without AYO's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
 
