@@ -95,11 +95,13 @@ A few others have made their solutions public on GitHub, such as [Adrian Roque](
 
 It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
 
-Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of folks' solutions when they don't go into specifics. At Ecole 42, Lyon, in 2021, LF passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which top marks are gained by sorting 100 numbers in less than 700 instructions, and 500 in less than 5500.
+Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of folks' solutions when they don't go into specifics. At Ecole 42, Lyon, in 2021, [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e) passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which top marks are gained by sorting 100 numbers in less than 700 instructions, and 500 in less than 5500.
 
 AYO says he scored 125/125. As for what this means, he links to a PDF of his school's instructions, but all they say on scoring is that if your list of instructions is "too big" it will fail. (It refers to a "maximum number tolerated" without specifying.) Similarly, at 42 Silicon Valley in 2019, JD needed to pass some requirement for 100 and 500, although he doesn't say how many instructions he was allowed. Of course, a dedicated push-swappist could persuse the commit histories of these various schools' public repos.
 
-By December 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our [audit questions](https://github.com/01-edu/public/tree/master/subjects/push-swap/audit). Altogether, it looks like we could have an easier ride--if we wanted it..
+[Dan Sylvain](https://medium.com/@dansylvain84/my-implementation-of-the-42-push-swap-project-2706fd8c2e9f) presents a similar grading system to LF, but talks about a "base project" having to be perfect before you can conplete the "bonus part", as if either the 100 or the 500 test are bonuses.
+
+At any rate, by December 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our [audit questions](https://github.com/01-edu/public/tree/master/subjects/push-swap/audit). Altogether, it looks like we could have an easier ride--if we wanted it..
 
 ### Results
 
