@@ -84,7 +84,7 @@ AYO's method achieved a mean of 561 instructions, with a standard deviation of 2
 
 JC's approach of pushing everything, then insertion sorting with cost checking like AYO on the way back took 584 instructions on average, with a standard deviation of 24.
 
-LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756. We'll return to this shortly, in 5. Mathematical Observations.
+LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: Why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
 ## 4. Structure and strategy
 
