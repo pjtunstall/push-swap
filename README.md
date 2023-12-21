@@ -14,7 +14,7 @@
    - a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
    - b. [Antipodeal elements: an optimization for stacks of even size](#b-antipodeal-elements-an-optimization-for-stacks-of-even-size)
    - c. [Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size)
-6. [Bitmasks: a detour](#6-bitmasks:-a-detour)
+6. [Detour: bitmasks](#6-detour-bitmasks)
 
 ## 0. The brief
 
