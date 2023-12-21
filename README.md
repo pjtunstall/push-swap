@@ -13,7 +13,7 @@
 5. [Mathematical curios](#5-mathematical-curios)
    - a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
    - b. [Antipodeal elements: an optimization for stacks of even size](#b-antipodeal-elements-an-optimization-for-stacks-of-even-size)
-   - c. [Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size)
+   - c. [Why does Leo Fu's radix sort always take 6756 instructions for 500 numbers?](#c-why-does-lfs-radix-sort-always-take-6756-instructions-for-500-numbers)
 6. [Detour: bitmasks](#6-detour-bitmasks)
 
 ## 0. The brief
@@ -151,7 +151,7 @@ Due to the circular nature of the stacks, the cheapest numbers to push will tend
 
 One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
 
-### c. Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?
+### c. Why does Leo Fu's radix sort always take 6756 instructions for 500 numbers?
 
 As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
