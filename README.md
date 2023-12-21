@@ -3,13 +3,13 @@
 0. [The brief](#0-the-brief)
 1. [Getting started](#1-getting-started)
 2. [A quick note about newline characters](#2-a-quick-note-about-newline-characters)
-3. [Research](#-research)
-4. [Structure and strategy](#-structure-and-strategy)
-5. [Mathematical observations](#-mathematical-observations)
+3. [Research](#3-research)
+4. [Structure and strategy](#4-structure-and-strategy)
+5. [Mathematical observations](#5-mathematical-observations)
    a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
    b. [Antipodeal elements: an optimization for stacks of even size](#b-antipodeal-elements-an-optimization-for-stacks-of-even-size)
    c. [Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size)
-6. [Bitmasks: a detour](#-bitmasks:-a-detour)
+6. [Bitmasks: a detour](#6-bitmasks:-a-detour)
 
 ## 0. The brief
 
