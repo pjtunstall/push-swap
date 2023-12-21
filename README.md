@@ -6,6 +6,9 @@
 3. [Research](#-research)
 4. [Structure and strategy](#-structure-and-strategy)
 5. [Mathematical observations](#-mathematical-observations)
+   a. [Swaps and rotations are enough to sort](#a-swaps-and-rotations-are-enough-to-sort)
+   b. [Antipodeal elements: an optimization for stacks of even size](#b-antipodeal-elements-an-optimization-for-stacks-of-even-size)
+   c. [Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size)
 6. [Bitmasks: a detour](#-bitmasks:-a-detour)
 
 ## 0. The brief
@@ -121,13 +124,13 @@ To see that they generate the whole symmetric group, we can use the fact every p
 
 While swaps and rotations are sufficient, it will sometimes be more efficient to push elements to the spare stack B for sorting.
 
-## b. Antipodeal elements: an optimization for stacks of even size
+### b. Antipodeal elements: an optimization for stacks of even size
 
 Due to the circular nature of the stacks, the cheapest numbers to push will tend to be those near the top or the bottom. In other words, a number is actually furthest from the top when it's near the middle of the stack. If the stack has `n` elements indexed from `0` at the top, then those whose index is less than or equal to the floor of `n/2` will reach the top sooner when rotated upwards, while, for those whose index is greater than the floor of `n/2`, the top is reached soonest when they're rotated downwards. This means that, when `n` is an even number, there will be a middle element which takes either `n/2` upwards or `n/2` downwards rotations to reach the top. (Think how a clock, where even-numbered 12 is also 0, has such a middle/opposite/antipodeal element: 6.)
 
 One consequence of this is that, if we need to rotate one stack, say, `r` times upwards, and the other stack has `2 * r` elements, then if we need to rotate the second stack `r` times, we can choose to rotate it upwards too, to take advantage of the combined rotation operation.
 
-## c. Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?
+### c. Why does Leo Fu's radix sort always take the same amount of instructions for a given stack size?
 
 As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
