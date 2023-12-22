@@ -451,9 +451,8 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 // 	return result
 // }
 
-// // Dan Sylvain's idea of leaving the longest increasing run on stack A
-// // and pushing the smallest half to the bottom of stack B and the
-// // biggest half to the top.
+// // Leave ongest increasing run on stack A and push the smallest
+// // half to the bottom of stack B and the biggest half to the top.
 // func hundredRun(a, b *ps.Stack) []string {
 // 	var result []string
 // 	*a, _ = ps.NewStack(rank(a.Nums))
@@ -486,85 +485,6 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 // 			ps.Rx(b)
 // 			result = append(result, "rb")
 // 		}
-// 	}
-
-// 	// Sort while inserting from stack B to stack A.
-// 	result = append(result, insert(b, a, 0, false)...)
-
-// 	// Rotate stack A into sorted position.
-// 	result = append(result, justRotate(*a)...)
-// 	ps.Run(a, b, justRotate(*a))
-
-// 	return result
-// }
-
-// // Dan Sylvain's idea of leaving the longest increasing run on stack A,
-// // adapted to use 3 buckets instead of 2. But it's not sorting yet.
-// // I'll need to come back to this.
-// func hundredRunThree(a, b *ps.Stack) []string {
-// 	var result []string
-// 	*a, _ = ps.NewStack(rank(a.Nums))
-// 	A := a.GetNumsSlice()
-// 	startIndex, startValue, length := longestRun(A)
-
-// 	// Deal with case where longest run overlaps top.
-// 	diff := len(A) - startIndex
-// 	if diff < length {
-// 		for i := 0; i < length-diff; i++ {
-// 			ps.Rx(a)
-// 			result = append(result, "ra")
-// 		}
-// 	}
-
-// 	// Push the smallest third to the bottom of stack B and the
-// 	// middle third to the top.
-// 	for len(a.Nums) > 33 {
-// 		if a.Top == startValue {
-// 			for i := 0; i < length; i++ {
-// 				ps.Rx(a)
-// 				result = append(result, "ra")
-// 			}
-// 		}
-// 		if a.Nums[a.Top] < 68 {
-// 			ps.Px(b, a)
-// 			result = append(result, "pb")
-// 			if a.Nums[a.Top] < 34 && len(b.Nums) > 1 {
-// 				ps.Rx(b)
-// 				result = append(result, "rb")
-// 			}
-// 		} else {
-// 			ps.Rx(a)
-// 			result = append(result, "ra")
-// 		}
-// 	}
-
-// 	A = a.GetNumsSlice()
-
-// 	// Deal with case where longest run starts at top.
-// 	if a.Top == startValue {
-// 		for i := 0; i < length; i++ {
-// 			ps.Rx(a)
-// 			result = append(result, "ra")
-// 		}
-// 	}
-
-// 	// Deal with case where longest run overlaps top.
-// 	diff = len(A) - startIndex
-// 	if diff < length {
-// 		for i := 0; i < length-diff; i++ {
-// 			ps.Rx(a)
-// 			result = append(result, "ra")
-// 		}
-// 	}
-
-// 	// Push the largest third to the top of stack B, leaving
-// 	// the last three on stack A
-// 	for {
-// 		if a.Nums[a.Top] == startValue {
-// 			break
-// 		}
-// 		ps.Px(b, a)
-// 		result = append(result, "pb")
 // 	}
 
 // 	// Sort while inserting from stack B to stack A.
