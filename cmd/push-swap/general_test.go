@@ -14,13 +14,13 @@ import (
 // 1000 times tests that 100 random numbers are sorted in less than 700 instructions,
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
-	limit := 700
+	limit := 7000
 
 	// // Uncomment this and related lines, and adjust limit to explore stats.
 	// fails := 0
 	// scores := make([]float64, 0, 10000)
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 10000; i++ {
 		hundred := hundredRandomNumbers()
 		// hundred := fiveHundredRandomNumbers()
 		a, err := ps.NewStack(hundred)
