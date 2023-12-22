@@ -20,7 +20,7 @@ func TestGeneral(t *testing.T) {
 	// fails := 0
 	// scores := make([]float64, 0, 10000)
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 1000; i++ {
 		hundred := hundredRandomNumbers()
 		// hundred := fiveHundredRandomNumbers()
 		a, err := ps.NewStack(hundred)

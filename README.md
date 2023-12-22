@@ -115,6 +115,8 @@ JC's approach of pushing everything, then insertion sorting with cost checking l
 
 LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: Why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
+We tried DS's idea of finding the longest run (increasing subsequence of consecutive numbers) in A and pushing everything else into two buckets. It resulted in a mean of 572 instructions and a standard deviation of 25.
+
 ## 4. Structure and strategy
 
 You'll find the source code in several folders: `push-swap`, for the program that generates instructions to sort a given list of numbers, and `checker` for the program to check whether a given sequence of instructions sorts a given list of numbers, both in `cmd`.

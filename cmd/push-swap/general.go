@@ -122,40 +122,6 @@ func hundred(a, b *ps.Stack) []string {
 	return result
 }
 
-// // Like LF's algorithm, but using 2 buckets instead of 3.
-// func hundredHalves(a, b *ps.Stack) []string {
-// 	var result []string
-// 	*a, _ = ps.NewStack(rank(a.Nums))
-
-// 	// Push the smallest half to the bottom of stack B and the
-// 	// biggest half to the top.
-// 	for len(a.Nums) > 3 {
-// 		ps.Px(b, a)
-// 		result = append(result, "pb")
-// 		if b.Nums[b.Top] < 50 {
-// 			ps.Rx(b)
-// 			result = append(result, "rb")
-// 		}
-// 	}
-
-// 	// Perform a swap on stack A if necessary to make it rotatable
-// 	// into sorted position.
-// 	_, rotatable := three(a.Nums)
-// 	if !rotatable {
-// 		ps.Sx(a)
-// 		result = append(result, "sa")
-// 	}
-
-// 	// Sort while inserting from stack B to stack A.
-// 	result = append(result, insert(b, a, 0, false)...)
-
-// 	// Rotate stack A into sorted position.
-// 	result = append(result, justRotate(*a)...)
-// 	ps.Run(a, b, justRotate(*a))
-
-// 	return result
-// }
-
 func fiveHundred(a, b *ps.Stack) []string {
 	var result []string
 	*a, _ = ps.NewStack(rank(a.Nums))
@@ -380,6 +346,40 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 	return result
 }
 
+// // Like LF's algorithm, but using 2 buckets instead of 3.
+// func hundredHalves(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top.
+// 	for len(a.Nums) > 3 {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Perform a swap on stack A if necessary to make it rotatable
+// 	// into sorted position.
+// 	_, rotatable := three(a.Nums)
+// 	if !rotatable {
+// 		ps.Sx(a)
+// 		result = append(result, "sa")
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
 // // Variant of FO's algorithm, but using 4 buckets instead of 3.
 // func fourSeasons(a, b *ps.Stack) []string {
 // 	var result []string
@@ -445,6 +445,90 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 
 // 	result = append(result, insert(b, a, 0, false)...)
 
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // Dan Sylvain's idea of leaving the longets increasing run on stack A.
+// // and pushing the smallest half to the bottom of stack B and the
+// // biggest half to the top.
+// func hundredRun(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	start, length := longestRun(a.Nums)
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top, leaving the longest increasing
+// 	// run on stack A.
+// 	for len(a.Nums) > length {
+// 		if a.Nums[a.Top] == start {
+// 			for i := 0; i < length; i++ {
+// 				ps.Rx(a)
+// 				result = append(result, "ra")
+// 			}
+// 		}
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // Dan Sylvain's idea adapted to use 3 buckets instead of 2.
+// // but it's not sorting. I must have made a mistake here;
+// // I'll have to come back to this.
+// func hundredRunThree(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	start, length := longestRun(a.Nums)
+
+// 	// Push the smallest third to the bottom of stack B and the
+// 	// middle third to the top.
+// 	for len(a.Nums) > 33 && len(a.Nums) > length {
+// 		if a.Nums[a.Top] == start {
+// 			for i := 0; i < length; i++ {
+// 				ps.Rx(a)
+// 				result = append(result, "ra")
+// 			}
+// 		}
+// 		A := a.GetNumsSlice()
+// 		if A[0] < 68 {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 			if A[0] < 34 && len(b.Nums) > 1 {
+// 				ps.Rx(b)
+// 				result = append(result, "rb")
+// 			}
+// 		} else {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	// Push the smallest third to the top of stack B, leaving
+// 	// the last three on stack A
+// 	for len(a.Nums) > length {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
 // 	result = append(result, justRotate(*a)...)
 // 	ps.Run(a, b, justRotate(*a))
 
