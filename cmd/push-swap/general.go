@@ -451,7 +451,7 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 // 	return result
 // }
 
-// // Dan Sylvain's idea of leaving the longets increasing run on stack A.
+// // Dan Sylvain's idea of leaving the longest increasing run on stack A
 // // and pushing the smallest half to the bottom of stack B and the
 // // biggest half to the top.
 // func hundredRun(a, b *ps.Stack) []string {
@@ -471,7 +471,8 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 
 // 	// Push the smallest half to the bottom of stack B and the
 // 	// biggest half to the top, leaving the longest increasing
-// 	// run on stack A.
+// 	// run on stack A, leaving the longest increasing run on
+// 	// stack A.
 // 	for len(a.Nums) > length {
 // 		if a.Nums[a.Top] == startValue {
 // 			for i := 0; i < length; i++ {

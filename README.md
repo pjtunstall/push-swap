@@ -42,6 +42,14 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
+If you're running a lot of tests, say if you want to experiment with different algorithms, you might want to use the `-count=1` flag to bypass caching:
+
+```
+go test -run=TestFunctionName -count=1
+```
+
+This will ensure that the test actually reflect the current state of the code!
+
 ### b. A quick note about newline characters
 
 In the `checker` example above, every instruction is followed by a newline character, `\n`, as it should be according to the project description:
@@ -115,7 +123,7 @@ JC's approach of pushing everything, then insertion sorting with cost checking l
 
 LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: Why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
-We tried DS's idea of finding the longest run (increasing subsequence of consecutive numbers) in A and pushing everything else into two buckets. It resulted in a mean of 572 instructions and a standard deviation of 25.
+We tried DS's idea of finding the longest run (increasing subsequence of consecutive numbers) in A and pushing everything else into two buckets. It resulted in a mean of 577 instructions and a standard deviation of 25. Its poor showing is probably due to the fact that the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
 
 ## 4. Structure and strategy
 

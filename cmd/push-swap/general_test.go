@@ -14,7 +14,7 @@ import (
 // 1000 times tests that 100 random numbers are sorted in less than 700 instructions,
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
-	limit := 7000
+	limit := 700
 
 	// // Uncomment this and related lines, and adjust limit to explore stats.
 	// fails := 0
