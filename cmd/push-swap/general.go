@@ -346,7 +346,7 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 	return result
 }
 
-// // Like LF's algorithm, but using 2 buckets instead of 3.
+// // Like FO's algorithm, but using 2 buckets instead of 3.
 // func hundredHalves(a, b *ps.Stack) []string {
 // 	var result []string
 // 	*a, _ = ps.NewStack(rank(a.Nums))
@@ -451,7 +451,7 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 // 	return result
 // }
 
-// // Leave ongest increasing run on stack A and push the smallest
+// // Leave longest increasing run on stack A and push the smallest
 // // half to the bottom of stack B and the biggest half to the top.
 // func hundredRun(a, b *ps.Stack) []string {
 // 	var result []string
@@ -478,6 +478,48 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 // 				ps.Rx(a)
 // 				result = append(result, "ra")
 // 			}
+// 		}
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // After Dan Sylvain: leave the longest increasing sequence on stack A,
+// // and push the rest to B. Then insertion sort back with a cost check
+// // to see which to push next.
+// func hundredLIS(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	LIS := longestIncreasingSequence(a.Nums)
+// 	l := len(LIS)
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top, leaving any numbers in the longest
+// 	// increasing sequence on stack A.
+// 	for len(a.Nums) > l {
+// 		found := false
+// 		for i := range LIS {
+// 			if a.Nums[a.Top] == LIS[i] {
+// 				found = true
+// 			}
+// 		}
+// 		if found {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 			continue
 // 		}
 // 		ps.Px(b, a)
 // 		result = append(result, "pb")

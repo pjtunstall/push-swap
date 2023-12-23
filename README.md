@@ -42,10 +42,10 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
-If you're running a lot of tests, say if you want to experiment with different algorithms, you might want to use the `-count=1` flag to bypass caching:
+If you're running a lot of tests, say if you want to experiment with different algorithms, you might want to use the `-count=1` flag to bypass caching. For example, to test a function called general:
 
 ```
-go test -run=TestFunctionName -count=1
+go test -run=TestGeneral -count=1
 ```
 
 This will ensure that the test actually reflect the current state of the code!
@@ -85,7 +85,7 @@ As a special case, for 100 and 500 numbers, we followed [Fred 1000orion's method
 
 I've read several other Medium articles on the subject: by [Jamie Dawson](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a), [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e), [Julien Caucheteux](https://medium.com/@julien-ctx/push-swap-an-easy-and-efficient-algorithm-to-sort-numbers-4b7049c2639a), and [Dan Sylvain](https://medium.com/@dansylvain84/my-implementation-of-the-42-push-swap-project-2706fd8c2e9f).
 
-DS's distinct feature is that he starts by finding the longest increasing subsequence (LIS) in A. He then pushes everthing else to B in two buckets: numbers greater than the median go to the top half of B, the rest to the bottom. Then they're insertion sorted back using a cost calculation as AYO does.
+DS's distinct feature is that he starts by finding the longest increasing subsequence (LIS) in the initial arrangement of A (ignoring its circularity, that is, and not wrapping around). He pushes everthing else to B in two buckets: numbers greater than the median go to the top half of B, the rest to the bottom. They're then insertion sorted back using a cost calculation as AYO does.
 
 JC does something similar to AYO. His method is a bit simpler and a bit less effective, at least in our implementation. He starts by pushing everything to stack B. He then sorts them back to A via insertion sort with cost check, choosing, at each iteration, to push back the number that can be correctly placed on A with the least rotations.
 
@@ -120,6 +120,8 @@ On 10,000 tests, our implementation of FO's algorithm took an average of 555 ins
 We tried varying the number of buckets used in this technique: Four buckets performed somewhat worse at 569 instructions (standard deviation: 23), and two buckets even worse at 573 (standard deviation: 26).
 
 AYO's method achieved a mean of 561 instructions, with a standard deviation of 23, the worst cases being in the low 600s. (Without AYO's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
+
+DS did pretty well with his strategy of and sorting all but the longest increasing subsequence into two buckets on B, then insertion sorting back to A with a cost check. Our implementation scored a mean of 566, with a standard deviation of 21.
 
 JC's approach of pushing everything, then insertion sorting with cost checking like AYO on the way back took 584 instructions on average, with a standard deviation of 24.
 
