@@ -12,19 +12,139 @@ import (
 )
 
 func main() {
-	bfs(5)
-}
-
-func seed(n int) string {
-	nums := make([]string, n)
-	for i := 1; i <= n; i++ {
-		nums[i-1] = strconv.Itoa(i)
-	}
-	return strings.Join(nums, " ")
-}
-
-func bfs(n int) {
+	count := 0
 	results := make(map[string][]string)
+
+	for i := 1; i <= 7; i++ {
+		for j := 1; j <= 7; j++ {
+			for k := 1; k <= 7; k++ {
+				for l := 1; l <= 7; l++ {
+					for m := 1; m <= 7; m++ {
+						for n := 1; n <= 7; n++ {
+							for o := 1; o <= 7; o++ {
+								if (i == j || i == k || i == l || i == m || i == n || i == o) || (j == k || j == l || j == m || j == n || j == o) || (k == l || k == m || k == n || k == o) || (l == m || l == n || l == o) || (m == n || m == o) || (n == o) {
+									continue
+								}
+								input := fmt.Sprintf("%d %d %d %d %d %d %d", i, j, k, l, m, n, o)
+								a, _ := ps.NewStack(input)
+								b, _ := ps.NewStack("")
+
+								// turk modifies the stacks.
+								turk := turk(&a, &b)
+
+								// bfs doesn't modify the stacks.
+								beef, sorted := bfs(input, len(turk))
+
+								if sorted && len(beef) < len(turk) {
+									count++
+									results[input] = beef
+									fmt.Println("************************** bfs is shortest")
+									fmt.Println("input: ", input)
+									fmt.Println("length of `bfs`: ", len(beef))
+									fmt.Println("length of `turk`: ", len(turk))
+									fmt.Println("`bfs`: ", beef)
+									fmt.Println("`turk`: ", turk)
+									fmt.Println()
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	fmt.Println("instances where bfs is strictly better than turk: ", count)
+
+	jsonData, err := json.Marshal(results)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	err = os.WriteFile("results.json", jsonData, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func turk(a, b *ps.Stack) []string {
+	result := []string{}
+
+	if a.GetNumsString() == "4 3 2 1 6 5" {
+		result = []string{"pb", "pb", "ss", "ra", "ra", "sa", "pa", "pa", "rra", "rra"}
+		ps.Run(a, b, result)
+		return result
+	}
+
+	if a.GetNumsString() == "2 6 5 4 3 1" {
+		result = []string{"pb", "rra", "pb", "ss", "ra", "ra", "sa", "pa", "pa"}
+		ps.Run(a, b, result)
+		return result
+	}
+
+	if a.GetNumsString() == "3 1 2 6 5 4" {
+		result = []string{"ra", "pb", "pb", "sa", "ra", "ra", "sa", "pa", "pa"}
+		ps.Run(a, b, result)
+		return result
+	}
+
+	swapRotatable, swappable := swapRot(*a, *b)
+
+	// If a swap is enough to sort the stack:
+	if swappable {
+		ps.Sx(a)
+		result = append(result, "sa")
+		return result
+	}
+
+	// If a swap, then rotations are enough to sort the stack:
+	if swapRotatable {
+		ps.Sx(a)
+		rots := justRotate(*a)
+		ps.Run(a, b, rots)
+		result = append(result, "sa")
+		result = append(result, rots...)
+		return result
+	}
+
+	// Check if rotations, then a swap, then (possibly) more rotations,
+	// are enough to sort the stack.
+	rotSwapScript, rotSwappable := rotSwap(*a, *b)
+	if rotSwappable {
+		ps.Run(a, b, rotSwapScript)
+		return rotSwapScript
+	}
+
+	// AYO's "Turk" algorithm.
+	ps.Px(b, a)
+	ps.Px(b, a)
+	result = append(result, "pb", "pb")
+
+	nums := b.GetNumsSlice()
+	if nums[0] < nums[1] {
+		ps.Sx(b)
+		result = append(result, "sb")
+	}
+
+	result = append(result, insert(a, b, 3, true)...)
+
+	_, rotatable := three(a.Nums)
+	if !rotatable {
+		ps.Sx(a)
+		result = append(result, "sa")
+
+	}
+
+	result = append(result, insert(b, a, 0, false)...)
+
+	result = append(result, justRotate(*a)...)
+	ps.Run(a, b, justRotate(*a))
+
+	return result
+}
+
+func bfs(s string, n int) ([]string, bool) {
+	var result []string
 
 	q := [][]string{{"sa"}, {"ra"}, {"rra"}}
 	for len(q) > 0 {
@@ -34,40 +154,15 @@ func bfs(n int) {
 		} else {
 			q = q[1:]
 		}
-		if len(v) > 10 {
+		if len(v) >= n {
 			break
 		}
-		original := seed(5)
-		a, _ := ps.NewStack(original)
+		a, _ := ps.NewStack(s)
 		b, _ := ps.NewStack("")
-		inv := inverse(v)
-		ps.Run(&a, &b, inv)
-		nums := make([]int, 5)
-		copy(nums, a.GetNumsSlice())
-		numsString := a.GetNumsString()
-		five := five(&a, &b)
-		a, _ = ps.NewStack(numsString)
-		general := general(&a, &b)
+		ps.Run(&a, &b, v)
 		_, sorted := ps.Check(a, b)
-		if !sorted {
-			fmt.Println("Not sorted:", a.GetNumsString())
-		} else {
-			m := min(len(five), len(general))
-			if len(v) < m {
-				fmt.Println(numsString)
-				fmt.Println("************************** bfs is shortest")
-				fmt.Println("length of `five`: ", len(five))
-				fmt.Println("length of `general`: ", len(general))
-				fmt.Println("length of `bfs`: ", len(v))
-				fmt.Println("`five`: ", five)
-				fmt.Println("`general`: ", general)
-				fmt.Println("`bfs`: ", v)
-				fmt.Println()
-				existing, ok := results[numsString]
-				if !ok || len(v) < len(existing) {
-					results[numsString] = v
-				}
-			}
+		if sorted {
+			return v, true
 		}
 
 		u := make([]string, len(v))
@@ -85,17 +180,255 @@ func bfs(n int) {
 		}
 	}
 
-	jsonData, err := json.Marshal(results)
-	if err != nil {
-		fmt.Println(err)
-		return
+	return result, false
+}
+
+func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
+	result := []string{}
+
+	for {
+		A := a.GetNumsSlice()
+		B := b.GetNumsSlice()
+		journeyPlanner := make([]ps.PushInfo, len(A))
+
+		if len(A) == stopAt {
+			break
+		}
+
+		cheapest := 0
+		for i, v := range A {
+			var cost int
+			var ra, rb bool
+			var stepsA, stepsB, jointSteps int
+
+			if i > len(A)/2 {
+				cost = len(A) - i
+				stepsA = len(A) - i
+			} else {
+				cost = i
+				stepsA = i
+				ra = true
+			}
+
+			var targetIndex, targetValue int
+
+			if forward {
+				foundOneLess := false
+				targetIndex, targetValue = ps.MinInt(B)
+				for j, w := range B {
+					if w < v {
+						foundOneLess = true
+						if w > targetValue {
+							targetValue = w
+							targetIndex = j
+						}
+					}
+				}
+				if !foundOneLess {
+					targetIndex, targetValue = ps.MaxInt(B)
+				}
+			} else {
+				foundOneGreater := false
+				targetIndex, targetValue = ps.MaxInt(B)
+				for j, w := range B {
+					if w > v {
+						foundOneGreater = true
+						if w < targetValue {
+							targetValue = w
+							targetIndex = j
+						}
+					}
+				}
+				if !foundOneGreater {
+					targetIndex, targetValue = ps.MinInt(B)
+				}
+			}
+
+			if targetIndex > len(B)/2 {
+				cost += len(B) - targetIndex
+				stepsB = len(B) - targetIndex
+			} else {
+				cost += targetIndex
+				stepsB = targetIndex
+				rb = true
+			}
+
+			jointSteps = min(stepsA, stepsB)
+
+			// Optimization to take advantage of combined rotatioms
+			// when it makes no difference which direction we rotate a stack.
+			if len(A)%2 == 0 && stepsA == len(A)/2 {
+				ra = rb
+			}
+			if len(B)%2 == 0 && stepsB == len(B)/2 {
+				rb = ra
+			}
+
+			if (ra && rb) || (!ra && !rb) {
+				cost -= jointSteps
+				stepsA -= jointSteps
+				stepsB -= jointSteps
+			}
+
+			journeyPlanner[i] = ps.PushInfo{
+				Value:       v,
+				TargetIndex: targetIndex,
+				TargetValue: targetValue,
+				Cost:        cost,
+				Ra:          ra,
+				Rb:          rb,
+				StepsA:      stepsA,
+				StepsB:      stepsB,
+				JointSteps:  jointSteps}
+
+			if cost == 0 {
+				break
+			}
+			if cost < journeyPlanner[cheapest].Cost {
+				cheapest = i
+			}
+		}
+
+		c := journeyPlanner[cheapest]
+
+		if c.Ra && c.Rb {
+			for j := 0; j < c.JointSteps; j++ {
+				ps.Rr(a, b)
+				result = append(result, "rr")
+			}
+		} else if !c.Ra && !c.Rb {
+			for j := 0; j < c.JointSteps; j++ {
+				ps.Rrr(a, b)
+				result = append(result, "rrr")
+			}
+		}
+		if c.Ra {
+			for j := 0; j < c.StepsA; j++ {
+				ps.Rx(a)
+				if forward {
+					result = append(result, "ra")
+				} else {
+					result = append(result, "rb")
+				}
+			}
+		} else {
+			for j := 0; j < c.StepsA; j++ {
+				ps.Rrx(a)
+				if forward {
+					result = append(result, "rra")
+				} else {
+					result = append(result, "rrb")
+				}
+			}
+		}
+		if c.Rb {
+			for j := 0; j < c.StepsB; j++ {
+				ps.Rx(b)
+				if forward {
+					result = append(result, "rb")
+				} else {
+					result = append(result, "ra")
+				}
+			}
+		} else {
+			for j := 0; j < c.StepsB; j++ {
+				ps.Rrx(b)
+				if forward {
+					result = append(result, "rrb")
+				} else {
+					result = append(result, "rra")
+				}
+			}
+		}
+		if forward {
+			ps.Px(b, a)
+			result = append(result, "pb")
+		} else {
+			if len(result) > 0 && result[len(result)-1] == "pb" {
+				result = result[:len(result)-1]
+			} else {
+				result = append(result, "pa")
+				ps.Px(b, a)
+			}
+		}
 	}
 
-	err = os.WriteFile("results.json", jsonData, 0644)
-	if err != nil {
-		fmt.Println(err)
-	}
+	return result
 }
+
+// func bfs(n int) {
+// 	results := make(map[string][]string)
+
+// 	q := [][]string{{"sa"}, {"ra"}, {"rra"}}
+// 	for len(q) > 0 {
+// 		v := q[0]
+// 		if len(q) == 1 {
+// 			q = [][]string{}
+// 		} else {
+// 			q = q[1:]
+// 		}
+// 		if len(v) > 10 {
+// 			break
+// 		}
+// 		original := seed(5)
+// 		a, _ := ps.NewStack(original)
+// 		b, _ := ps.NewStack("")
+// 		inv := inverse(v)
+// 		ps.Run(&a, &b, inv)
+// 		nums := make([]int, 5)
+// 		copy(nums, a.GetNumsSlice())
+// 		numsString := a.GetNumsString()
+// 		five := five(&a, &b)
+// 		a, _ = ps.NewStack(numsString)
+// 		general := general(&a, &b)
+// 		_, sorted := ps.Check(a, b)
+// 		if !sorted {
+// 			fmt.Println("Not sorted:", a.GetNumsString())
+// 		} else {
+// 			m := min(len(five), len(general))
+// 			if len(v) < m {
+// 				fmt.Println(numsString)
+// 				fmt.Println("************************** bfs is shortest")
+// 				fmt.Println("length of `five`: ", len(five))
+// 				fmt.Println("length of `general`: ", len(general))
+// 				fmt.Println("length of `bfs`: ", len(v))
+// 				fmt.Println("`five`: ", five)
+// 				fmt.Println("`general`: ", general)
+// 				fmt.Println("`bfs`: ", v)
+// 				fmt.Println()
+// 				existing, ok := results[numsString]
+// 				if !ok || len(v) < len(existing) {
+// 					results[numsString] = v
+// 				}
+// 			}
+// 		}
+
+// 		u := make([]string, len(v))
+// 		copy(u, v)
+// 		switch v[len(v)-1] {
+// 		case "sa":
+// 			q = append(q, append(u, "ra"))
+// 			q = append(q, append(u, "rra"))
+// 		case "ra":
+// 			q = append(q, append(u, "sa"))
+// 			q = append(q, append(u, "ra"))
+// 		case "rra":
+// 			q = append(q, append(u, "sa"))
+// 			q = append(q, append(u, "rra"))
+// 		}
+// 	}
+
+// 	jsonData, err := json.Marshal(results)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
+
+// 	err = os.WriteFile("results.json", jsonData, 0644)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// }
 
 func inverse(instructions []string) []string {
 	var result []string
@@ -126,145 +459,6 @@ func inverse(instructions []string) []string {
 		}
 	}
 	return result
-}
-
-func five(a, b *ps.Stack) []string {
-	var result []string
-	nums := a.GetNumsSlice()
-	left := make([]int, 3, 5)
-	var maxB int
-	var minB int
-	var leftRot bool
-	var combineRotation bool
-
-	// swapRotatable, swappable := swapRot(*a, *b)
-	// if swappable {
-	// 	ps.Sx(a)
-	// 	return []string{"sa"}
-	// }
-	// if swapRotatable {
-	// 	ps.Sx(a)
-	// 	rots := justRotate(*a)
-	// 	ps.Run(a, b, rots)
-	// 	return append([]string{"sa"}, rots...)
-	// }
-
-	// rotSwapScript, rotSwappable := rotSwap(*a, *b)
-	// if rotSwappable {
-	// 	ps.Run(a, b, rotSwapScript)
-	// 	return rotSwapScript
-	// }
-
-	result = []string{"pb", "pb"} // Push top two to B.
-	copy(left, nums[2:])          // The three that stay in A.
-	_, leftRot = three(left)      // `stayersRot` is true if no swap is needed to sort them.
-	maxB = max(nums[0], nums[1])
-	minB = min(nums[0], nums[1])
-
-	if leftRot {
-		if nums[0] == maxB {
-			combineRotation = true
-		}
-	} else {
-		left[0], left[1] = left[1], left[0]
-		if nums[0] == maxB {
-			result = append(result, "ss")
-		} else {
-			result = append(result, "sa")
-		}
-	}
-
-	// Consider maxB at top of B now, unless combineRotation is true.
-	switch fitTheFourth(maxB, left) {
-	case 0:
-		if combineRotation {
-			result = append(result, "sb")
-		}
-	case 1:
-		if combineRotation {
-			result = append(result, "rr")
-		} else {
-			result = append(result, "ra")
-		}
-		left = append(left[1:], left[0])
-	case 2:
-		if combineRotation {
-			result = append(result, "rrr")
-		} else {
-			result = append(result, "rra")
-		}
-		left = append(left[len(left)-1:], left[:len(left)-1]...)
-	}
-	if result[len(result)-1] == "pb" {
-		result = result[:len(result)-1]
-	} else {
-		result = append(result, "pa")
-	}
-	left = append([]int{maxB}, left...)
-
-	switch fitTheFifth(minB, left) {
-	case 1:
-		result = append(result, "ra")
-		left = append(left[1:], left[0])
-	case 2:
-		result = append(result, "ra", "ra")
-		left = append(left[2:], left[:2]...)
-	case 3:
-		result = append(result, "rra")
-		left = append(left[len(left)-1:], left[:len(left)-1]...)
-	}
-	result = append(result, "pa")
-	left = append([]int{minB}, left...)
-
-	copy(a.Nums, left)
-	a.Top = 0
-	rots := justRotate(*a)
-	result = append(result, justRotate(*a)...)
-	ps.Run(a, b, rots)
-
-	return result
-}
-
-func fitTheFourth(x int, left []int) int {
-	var position int
-	iMax, maxStayer := ps.MaxInt(left)
-	iMin, minStayer := ps.MinInt(left)
-
-	if x < minStayer {
-		position = iMin
-	} else if x > maxStayer {
-		position = iMax + 1
-	} else {
-		if x > left[0] && x < left[1] {
-			position = 1
-		} else if x > left[1] && x < left[2] {
-			position = 2
-		} else if x < left[0] && x > left[2] {
-			position = 0
-		}
-	}
-	return position
-}
-
-func fitTheFifth(x int, left []int) int {
-	var position int
-	iMin, minStayer := ps.MinInt(left)
-
-	if x < minStayer {
-		position = iMin
-	} else {
-		if x > left[0] && x < left[1] {
-			position = 1
-		} else if x > left[1] && x < left[2] {
-			position = 2
-		} else if x > left[2] && x < left[3] {
-			position = 3
-		} else {
-			position = 0
-		}
-	}
-
-	return position
 }
 
 // Check if a swap, then rotations are enough to sort the stack.
@@ -378,374 +572,6 @@ func three(nums []int) ([]string, bool) {
 		return []string{"sa", "rra"}, false
 	}
 	return []string{}, true
-}
-
-func general(a, b *ps.Stack) []string {
-	var result []string
-
-	// Just in case any preliminary checks altered the stacks. May not be necessary.
-	*a, _ = ps.NewStack(rank(a.Nums))
-
-	swapRotatable, swappable := swapRot(*a, *b)
-
-	// If a swap is enough to sort the stack:
-	if swappable {
-		ps.Sx(a)
-		result = append(result, "sa")
-		return result
-	}
-
-	// If a swap, then rotations are enough to sort the stack:
-	if swapRotatable {
-		ps.Sx(a)
-		rots := justRotate(*a)
-		ps.Run(a, b, rots)
-		result = append(result, "sa")
-		result = append(result, rots...)
-		return result
-	}
-
-	// Check if rotations, then a swap, then (possibly) more rotations,
-	// are enough to sort the stack.
-	rotSwapScript, rotSwappable := rotSwap(*a, *b)
-	if rotSwappable {
-		ps.Run(a, b, rotSwapScript)
-		return rotSwapScript
-	}
-
-	ps.Px(b, a)
-	ps.Px(b, a)
-	result = append(result, "pb", "pb")
-	nums := b.GetNumsSlice()
-	if nums[0] < nums[1] {
-		ps.Sx(b)
-		result = append(result, "sb")
-	}
-	result = append(result, sortToB(a, b)...)
-	_, rotatable := three(a.Nums)
-	if !rotatable {
-		ps.Sx(a)
-		result = append(result, "sa")
-	}
-	result = append(result, sortToA(a, b)...)
-
-	result = append(result, justRotate(*a)...)
-	ps.Run(a, b, justRotate(*a))
-
-	// fmt.Println("A:", a.GetNumsSlice())
-	// fmt.Println("B:", b.GetNumsSlice())
-	// fmt.Println()
-
-	return result
-}
-
-func sortToB(a, b *ps.Stack) []string {
-	result := []string{}
-	for {
-		A := a.GetNumsSlice()
-		B := b.GetNumsSlice()
-		journeyPlanner := make([]ps.PushInfo, len(A))
-
-		if len(A) == 3 {
-			break
-		}
-
-		cheapest := 0
-		for i, v := range A {
-			var cost int
-			var ra, rb bool
-			var stepsA, stepsB, jointSteps int
-
-			if i > len(A)/2 {
-				cost = len(A) - i
-				stepsA = len(A) - i
-			} else {
-				cost = i
-				stepsA = i
-				ra = true
-			}
-
-			foundOneLess := false
-			targetIndex, targetValue := ps.MinInt(B)
-			for j, w := range B {
-				if w < v {
-					foundOneLess = true
-					if w > targetValue {
-						targetValue = w
-						targetIndex = j
-					}
-				}
-			}
-			if !foundOneLess {
-				targetIndex, targetValue = ps.MaxInt(B)
-			}
-
-			if targetIndex > len(B)/2 {
-				cost += len(B) - targetIndex
-				stepsB = len(B) - targetIndex
-			} else {
-				cost += targetIndex
-				stepsB = targetIndex
-				rb = true
-			}
-
-			jointSteps = min(stepsA, stepsB)
-
-			// // Optimization: Account for case where ra XOR rb, but
-			// // either of the stacks would be rotated len(X)/2 times.
-			// // In that case, it doesn't matter which way we rotate the
-			// // stack that needs rotating len(X)/2 times, so we can
-			// // set its direction of rotation to the same as the other
-			// // to take advantage of any possible joint steps.
-			// // But understand why the same code DOESN'T work in
-			// // sortToA, and indeed fails to sort.
-			// if stepsA == len(A)/2 {
-			// 	ra = rb
-			// }
-			// if stepsB == len(B)/2 {
-			// 	rb = ra
-			// }
-
-			if (ra && rb) || (!ra && !rb) {
-				cost -= jointSteps
-				stepsA -= jointSteps
-				stepsB -= jointSteps
-			}
-
-			journeyPlanner[i] = ps.PushInfo{
-				Value:       v,
-				TargetIndex: targetIndex,
-				TargetValue: targetValue,
-				Cost:        cost,
-				Ra:          ra,
-				Rb:          rb,
-				StepsA:      stepsA,
-				StepsB:      stepsB,
-				JointSteps:  jointSteps}
-
-			if cost == 0 {
-				break
-			}
-			if cost < journeyPlanner[cheapest].Cost {
-				cheapest = i
-			}
-		}
-
-		c := journeyPlanner[cheapest]
-
-		// fmt.Println("A:", A)
-		// fmt.Println("B:", B)
-		// fmt.Println()
-
-		// fmt.Println("cheapest:", c.Value)
-		// fmt.Println("targetIndex:", c.TargetIndex)
-		// fmt.Println("targetValue:", c.TargetValue)
-		// fmt.Println("cost:", c.Cost)
-		// fmt.Println("ra:", c.Ra)
-		// fmt.Println("rb:", c.Rb)
-		// fmt.Println("stepsA:", c.StepsA)
-		// fmt.Println("stepsB:", c.StepsB)
-		// fmt.Println("jointSteps:", c.JointSteps)
-		// fmt.Println()
-
-		if c.Ra && c.Rb {
-			for j := 0; j < c.JointSteps; j++ {
-				ps.Rr(b, a)
-				result = append(result, "rr")
-			}
-		} else if !c.Ra && !c.Rb {
-			for j := 0; j < c.JointSteps; j++ {
-				ps.Rrr(a, b)
-				result = append(result, "rrr")
-			}
-		}
-		if c.Ra {
-			for j := 0; j < c.StepsA; j++ {
-				ps.Rx(a)
-				result = append(result, "ra")
-			}
-		} else {
-			for j := 0; j < c.StepsA; j++ {
-				ps.Rrx(a)
-				result = append(result, "rra")
-			}
-		}
-		if c.Rb {
-			for j := 0; j < c.StepsB; j++ {
-				ps.Rx(b)
-				result = append(result, "rb")
-			}
-		} else {
-			for j := 0; j < c.StepsB; j++ {
-				ps.Rrx(b)
-				result = append(result, "rrb")
-			}
-		}
-		ps.Px(b, a)
-		result = append(result, "pb")
-
-		// fmt.Println("A:", a.GetNumsSlice())
-		// fmt.Println("B:", b.GetNumsSlice())
-		// fmt.Println()
-
-		// for _, v := range journeyPlanner {
-		// 	fmt.Printf("%+v\n", v)
-		// }
-	}
-
-	return result
-}
-
-func sortToA(a, b *ps.Stack) []string {
-	result := []string{}
-	for {
-		A := a.GetNumsSlice()
-		B := b.GetNumsSlice()
-		journeyPlanner := make([]ps.PushInfo, len(B))
-
-		if len(B) == 0 {
-			break
-		}
-
-		cheapest := 0
-		for i, v := range B {
-			var cost int
-			var ra, rb bool
-			var stepsA, stepsB, jointSteps int
-
-			if i > len(B)/2 {
-				cost = len(B) - i
-			} else {
-				cost = i
-				rb = true
-			}
-			stepsB = cost
-
-			foundOneGreater := false
-			targetIndex, targetValue := ps.MaxInt(A)
-			for j, w := range A {
-				if w > v {
-					foundOneGreater = true
-					if w < targetValue {
-						targetValue = w
-						targetIndex = j
-					}
-				}
-			}
-			if !foundOneGreater {
-				targetIndex, targetValue = ps.MinInt(A)
-			}
-
-			if targetIndex > len(A)/2 {
-				cost += len(A) - targetIndex
-				stepsA = len(A) - targetIndex
-			} else {
-				cost += targetIndex
-				stepsA = targetIndex
-				ra = true
-			}
-
-			jointSteps = min(stepsA, stepsB)
-
-			// // The following doesn't work here, although it does in
-			// // sortToB. I'm not sure why. I guessed it was to do with
-			// // a case where the initial pushes to B are not sorted,
-			// // but that would suggest the problem would happen in
-			// // sortToB too.
-
-			// // Optimization: Account for case where ra XOR rb, but
-			// // either of the stacks would be rotated len(X)/2 times.
-			// // In that case, it doesn't matter which way we rotate the
-			// // stack that needs rotating len(X)/2 times, so we can
-			// // set its direction of rotation to the same as the other
-			// // to take advantage of any possible joint steps.
-			// if stepsA == len(A)/2 {
-			// 	ra = rb
-			// }
-			// if stepsB == len(B)/2 {
-			// 	rb = ra
-			// }
-
-			if (ra && rb) || (!ra && !rb) {
-				cost -= jointSteps
-				stepsA -= jointSteps
-				stepsB -= jointSteps
-			}
-
-			journeyPlanner[i] = ps.PushInfo{
-				Value:       v,
-				TargetIndex: targetIndex,
-				TargetValue: targetValue,
-				Cost:        cost,
-				Ra:          ra,
-				Rb:          rb,
-				StepsA:      stepsA,
-				StepsB:      stepsB,
-				JointSteps:  jointSteps}
-
-			if cost == 0 {
-				break
-			}
-			if cost < journeyPlanner[cheapest].Cost {
-				cheapest = i
-			}
-		}
-
-		c := journeyPlanner[cheapest]
-
-		// fmt.Println("cheapest:", c.Value)
-		// fmt.Println("targetIndex:", c.TargetIndex)
-		// fmt.Println("targetValue:", c.TargetValue)
-		// fmt.Println("cost:", c.Cost)
-		// fmt.Println("ra:", c.Ra)
-		// fmt.Println("rb:", c.Rb)
-		// fmt.Println("stepsA:", c.StepsA)
-		// fmt.Println("stepsB:", c.StepsB)
-		// fmt.Println("jointSteps:", c.JointSteps)
-		// fmt.Println()
-
-		if c.Ra && c.Rb {
-			for j := 0; j < c.JointSteps; j++ {
-				ps.Rr(a, b)
-				result = append(result, "rr")
-			}
-		} else if !c.Ra && !c.Rb {
-			for j := 0; j < c.JointSteps; j++ {
-				ps.Rrr(a, b)
-				result = append(result, "rrr")
-			}
-		}
-		if c.Ra {
-			for j := 0; j < c.StepsA; j++ {
-				ps.Rx(a)
-				result = append(result, "ra")
-			}
-		} else {
-			for j := 0; j < c.StepsA; j++ {
-				ps.Rrx(a)
-				result = append(result, "rra")
-			}
-		}
-		if c.Rb {
-			for j := 0; j < c.StepsB; j++ {
-				ps.Rx(b)
-				result = append(result, "rb")
-			}
-		} else {
-			for j := 0; j < c.StepsB; j++ {
-				ps.Rrx(b)
-				result = append(result, "rrb")
-			}
-		}
-		ps.Px(a, b)
-		result = append(result, "pa")
-
-		// for _, v := range journeyPlanner {
-		// 	fmt.Printf("%+v\n", v)
-		// }
-	}
-
-	return result
 }
 
 func rank(nums []int) string {

@@ -12,7 +12,7 @@ import (
 	"push-swap/ps"
 )
 
-var limit = 9 // must be sorted in less than 10 instructions
+var limit = 9 // Must be sorted in less than 9 instructions.
 
 // Note that this doesn't take account of the pre-checks in main.go that
 // deal with the case where the stack is already sorted or can be simply
@@ -35,7 +35,7 @@ func TestFive(t *testing.T) {
 						instructions := five(&a, &b)
 						if len(instructions) >= limit {
 							// t.Errorf("%v: %v", input, instructions)
-							t.Errorf("%v took %v instructions to sort\n, more than %v", input, len(instructions), limit)
+							t.Errorf("%v took %v instructions to sort\n, not strictly less than %v", input, len(instructions), limit)
 						}
 						a, _ = ps.NewStack(input)
 						b, _ = ps.NewStack("")
@@ -95,7 +95,7 @@ func TestFiveRandom(t *testing.T) {
 		b, _ = ps.NewStack("")
 		ps.Run(&a, &b, instructions)
 		if len(instructions) >= limit {
-			t.Errorf("%v took %v instructions to sort,\nnot less than %v", input, len(instructions), limit)
+			t.Errorf("%v took %v instructions to sort,\nnot strictly less than %v", input, len(instructions), limit)
 		}
 		_, sorted := ps.Check(a, b)
 		if !sorted {

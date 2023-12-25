@@ -14,18 +14,17 @@ import (
 // 1000 times tests that 100 random numbers are sorted in less than 700 instructions,
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
-	limit := 700
+	limit := 700 // Must be under this.
 
 	// // Uncomment this and related lines, and adjust limit to explore stats.
 	// fails := 0
 	// scores := make([]float64, 0, 10000)
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 1000; i++ {
 		hundred := hundredRandomNumbers()
 		// // Uncomment to test with 500 random numbers and reduce
 		// // the number of tests to 100, otherwise it takes too
 		// // long.
-		// hundred := fiveHundredRandomNumbers()
 		a, err := ps.NewStack(hundred)
 		if err != nil {
 			t.Errorf("general(%s) failed: %s", hundred, err)
@@ -68,10 +67,10 @@ func TestGeneral(t *testing.T) {
 				for l := 1; l <= 6; l++ {
 					for m := 1; m <= 6; m++ {
 						for n := 1; n <= 6; n++ {
-							if (i == j || i == k || i == l || i == m || i == n) || (j == k || j == l || j == m || j == n) || k == l || k == m || k == n || (l == m || l == n) || m == n {
+							if (i == j || i == k || i == l || i == m || i == n) || (j == k || j == l || j == m || j == n) || (k == l || k == m || k == n) || (l == m || l == n) || (m == n) {
 								continue
 							}
-							limit := 13
+							limit := 13 // Must be under this.
 							input := fmt.Sprintf("%d %d %d %d %d %d", i, j, k, l, m, n)
 							a, err := ps.NewStack(input)
 							if err != nil {
@@ -83,7 +82,7 @@ func TestGeneral(t *testing.T) {
 								// // Uncomment to explore stats.
 								// scores = append(scores, float64(len(instructions)))
 								// fails++
-								t.Errorf("more than %v instructions to sort 6 numbers:\n%v took %v instructions to sort\n%v", limit, input, len(instructions), instructions)
+								t.Errorf("more than %v instructions to sort 6 numbers:\n%v took %v instructions to sort\n%v", limit-1, input, len(instructions), instructions)
 							}
 							_, sorted := ps.Check(a, b)
 							if !sorted {
@@ -111,6 +110,48 @@ func TestGeneral(t *testing.T) {
 	// 	t.Errorf("mean: %v", Average(scores))
 	// 	t.Errorf("standard deviation: %v", StandardDeviation(scores))
 	// }
+
+	// Test with different stack sizes. Note that 6, 7, and 8
+	// take longer than 9+ because these are the sizes for
+	// which we run a BFS to check for better solutions that
+	// don't use any pushes. 100 iterations is manageable for 7,
+	// but, for 8, try running the test repeatedly with, say, 10
+	// iterations.
+	for i := 0; i < 10; i++ {
+		s := giveMeRandom(7)
+		a, err := ps.NewStack(s)
+		if err != nil {
+			t.Errorf("general(%s) failed: %s", s, err)
+		}
+		b, _ := ps.NewStack("")
+		instructions := general(&a, &b)
+		a, _ = ps.NewStack(s)
+		b, _ = ps.NewStack("")
+		ps.Run(&a, &b, instructions)
+		_, sorted := ps.Check(a, b)
+		if !sorted {
+			t.Errorf("not sorted: want %v, got %v", s, a.GetNumsString())
+		}
+	}
+}
+
+func giveMeRandom(n int) string {
+	if n < 1 {
+		return ""
+	}
+	var result string
+	arr := make([]int, n)
+	for i := range arr {
+		arr[i] = i + 1
+	}
+	rand.Shuffle(n, func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
+	for i, v := range arr {
+		result += fmt.Sprintf("%d", v)
+		if i != n-1 {
+			result += " "
+		}
+	}
+	return result
 }
 
 // The first 100 primes greater than 100:
@@ -168,19 +209,3 @@ func Variance(data []float64) float64 {
 func StandardDeviation(data []float64) float64 {
 	return math.Sqrt(Variance(data))
 }
-
-// func fiveHundredRandomNumbers() string {
-// 	var result string
-// 	arr := make([]int, 500)
-// 	for i := range arr {
-// 		arr[i] = i + 1
-// 	}
-// 	rand.Shuffle(500, func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
-// 	for i, v := range arr {
-// 		result += fmt.Sprintf("%d", v)
-// 		if i != 499 {
-// 			result += " "
-// 		}
-// 	}
-// 	return result
-// }

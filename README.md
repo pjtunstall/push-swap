@@ -42,7 +42,7 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
-If you're running tests, say if you want to experiment with different algorithms, you might want to use the `-count=1` flag to bypass caching. For example, to test a function called general:
+If you're running tests, you might want to use the `-count=1` flag to make sure the test is actually performed! Sometimes cached results are given. This can happen if you run the same test on the same code (perhaps hoping the test will generate different random numbers), or if you make a change to code in a different package from the test (which can be a problem if your code depends on the code you changed in that external package). Cached results can also be given if the test depends on something outside of the code, such as environment variables, command-line flags, or some other file or database. The `-count=1` flag ensures that the test is definitely run once. For example, to test the general function:
 
 ```
 go test -run=TestGeneral -count=1
