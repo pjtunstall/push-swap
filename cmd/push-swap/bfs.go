@@ -4,7 +4,7 @@ import (
 	"push-swap/ps"
 )
 
-func bfs(c ps.Stack, n int) []string {
+func bfs(s string, n int) ([]string, bool) {
 	var result []string
 
 	q := [][]string{{"sa"}, {"ra"}, {"rra"}}
@@ -18,13 +18,12 @@ func bfs(c ps.Stack, n int) []string {
 		if len(v) >= n {
 			break
 		}
-		a, _ := ps.NewStack(c.GetNumsString())
+		a, _ := ps.NewStack(s)
 		b, _ := ps.NewStack("")
-		inv := inverse(v)
-		ps.Run(&a, &b, inv)
+		ps.Run(&a, &b, v)
 		_, sorted := ps.Check(a, b)
 		if sorted {
-			return v
+			return v, true
 		}
 
 		u := make([]string, len(v))
@@ -42,36 +41,5 @@ func bfs(c ps.Stack, n int) []string {
 		}
 	}
 
-	return result
-}
-
-func inverse(instructions []string) []string {
-	var result []string
-	for i := len(instructions) - 1; i >= 0; i-- {
-		switch instructions[i] {
-		case "sa":
-			result = append(result, "sa")
-		case "sb":
-			result = append(result, "sb")
-		case "ss":
-			result = append(result, "ss")
-		case "pa":
-			result = append(result, "pb")
-		case "pb":
-			result = append(result, "pa")
-		case "ra":
-			result = append(result, "rra")
-		case "rb":
-			result = append(result, "rrb")
-		case "rr":
-			result = append(result, "rrr")
-		case "rra":
-			result = append(result, "ra")
-		case "rrb":
-			result = append(result, "rb")
-		case "rrr":
-			result = append(result, "rr")
-		}
-	}
-	return result
+	return result, false
 }

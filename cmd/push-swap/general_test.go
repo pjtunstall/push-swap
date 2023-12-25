@@ -52,6 +52,12 @@ func TestGeneral(t *testing.T) {
 	// 	t.Errorf("standard deviation: %v", StandardDeviation(scores))
 	// }
 
+	// Stack size 6:
+
+	// // Uncomment this and related lines, and adjust limit to explore stats.
+	// fails := 0
+	// scores := make([]float64, 0, 720)
+
 	// Check that the result is sorted for all permutations of 1-6.
 	// Note that this unit test for general doesn't take into account
 	// pre-checks in main.go that deal with the case where the stack
@@ -65,17 +71,19 @@ func TestGeneral(t *testing.T) {
 							if (i == j || i == k || i == l || i == m || i == n) || (j == k || j == l || j == m || j == n) || k == l || k == m || k == n || (l == m || l == n) || m == n {
 								continue
 							}
+							limit := 13
 							input := fmt.Sprintf("%d %d %d %d %d %d", i, j, k, l, m, n)
 							a, err := ps.NewStack(input)
 							if err != nil {
 								t.Errorf("general(%s) failed: %s", input, err)
 							}
 							b, _ := ps.NewStack("")
-							general(&a, &b)
 							instructions := general(&a, &b)
-							limit := 12
-							if len(instructions) > limit {
-								t.Errorf("more than %v instructions to sort 6 numbers:\n%v took %v instructions to sort", limit, input, len(instructions))
+							if len(instructions) >= limit {
+								// // Uncomment to explore stats.
+								// scores = append(scores, float64(len(instructions)))
+								// fails++
+								t.Errorf("more than %v instructions to sort 6 numbers:\n%v took %v instructions to sort\n%v", limit, input, len(instructions), instructions)
 							}
 							_, sorted := ps.Check(a, b)
 							if !sorted {
@@ -96,6 +104,13 @@ func TestGeneral(t *testing.T) {
 			}
 		}
 	}
+
+	// // Uncomment and set limit to 0 to see the mean and standard deviation:
+	// if true {
+	// 	t.Errorf("fails: %v", fails)
+	// 	t.Errorf("mean: %v", Average(scores))
+	// 	t.Errorf("standard deviation: %v", StandardDeviation(scores))
+	// }
 }
 
 // The first 100 primes greater than 100:

@@ -42,7 +42,7 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
-If you're running a lot of tests, say if you want to experiment with different algorithms, you might want to use the `-count=1` flag to bypass caching. For example, to test a function called general:
+If you're running tests, say if you want to experiment with different algorithms, you might want to use the `-count=1` flag to bypass caching. For example, to test a function called general:
 
 ```
 go test -run=TestGeneral -count=1
@@ -131,7 +131,18 @@ YYB first scored 750 for 100 numbers by pushing the smallest half to A, then the
 
 LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: Why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
-We also tried finding the longest run (increasing subsequence of consecutive numbers) in A and pushing everything else into two buckets. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
+LR: We also tried finding the longest run (longest increasing subsequence of consecutive numbers) in A and pushing everything else into two buckets. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
+
+FO(3) 555
+AYO 561
+DS(2) 566
+FO(4) 569
+FO(2) 573
+LR 577
+DS(3) 578
+JC 584
+LF 1084
+AYO(-cost) 1387
 
 ## 4. Structure and strategy
 
@@ -202,7 +213,7 @@ We can calculate the exact amount of instructions as the number of ones in the l
 
 Similarly, ceil(log2(499)) = 9, so it takes 9 bits to represent the numbers from 0 to 499. It's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, so, as always when the stack size is not a power of 2, the zeros will be overrepresented, and there will be more pushes than rotations.
 
-At this point, though, we have a a bit of a mystery. By my calculation, `9 * 500 + zeros` and `ones + 2 * zeros` both give 6784 rather than LF's 6756. I'm quite puzzled by this. In his article, LF actually shows a screenshot of a checker program showing the result 6756 for every random sequence of 500 numbers it tested, so it doesn't seem to be a typo. I wonder if he introduced some optimization for stack sizes greater than 100 that I overlooked or that he didn't mention. Maybe I'm just missing something. I've written to him, asking if he has any insight. I'll update this if I learn more.
+At this point, though, we have a a bit of a mystery. By my calculation, `9 * 500 + zeros` and `ones + 2 * zeros` both give 6784 rather than LF's 6756. I'm quite puzzled by this. In his article, LF actually shows a screenshot of a checker program showing the result 6756 for every random sequence of 500 numbers it tested, so it's not typo. I wonder if he introduced some optimization for stack sizes greater than 100 that I overlooked or that he didn't mention. Maybe I'm just missing something. I've written to him, asking if he has any insight. I'll update this if I learn more.
 
 ## 6. Detour: bitmasks
 

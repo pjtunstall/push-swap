@@ -9,6 +9,7 @@ import (
 
 func five(a, b *ps.Stack) []string {
 	var result []string
+	*a, _ = ps.NewStack(rank(a.Nums))
 	nums := a.GetNumsSlice()
 	numsString := a.GetNumsString()
 	var maxB int
