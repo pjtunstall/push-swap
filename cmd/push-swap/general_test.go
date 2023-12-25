@@ -22,6 +22,9 @@ func TestGeneral(t *testing.T) {
 
 	for i := 0; i < 10000; i++ {
 		hundred := hundredRandomNumbers()
+		// // Uncomment to test with 500 random numbers and reduce
+		// // the number of tests to 100, otherwise it takes too
+		// // long.
 		// hundred := fiveHundredRandomNumbers()
 		a, err := ps.NewStack(hundred)
 		if err != nil {

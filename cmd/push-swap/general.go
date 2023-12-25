@@ -35,14 +35,16 @@ func general(a, b *ps.Stack) []string {
 		return rotSwapScript
 	}
 
-	if len(a.Nums) == 100 {
-		return hundred(a, b)
+	// Fred 1000orion's bucket sort to B, then insertion sort back to A.
+	// n needs to be at least 8 because when n = 6 or 7, the "third" left
+	//on stack A when the smallest two thirds are pushed to B is not
+	// has only 2 elements, whereas the algorithm says push the final
+	// (largest) third till 3 elements are left!
+	if len(a.Nums) > 7 {
+		return bucket3(a, b)
 	}
 
-	if len(a.Nums) == 500 {
-		return fiveHundred(a, b)
-	}
-
+	// AYO's "Turk" algorithm.
 	ps.Px(b, a)
 	ps.Px(b, a)
 	result = append(result, "pb", "pb")
@@ -76,18 +78,27 @@ func general(a, b *ps.Stack) []string {
 	return result
 }
 
-func hundred(a, b *ps.Stack) []string {
+func bucket3(a, b *ps.Stack) []string {
 	var result []string
 	*a, _ = ps.NewStack(rank(a.Nums))
+	n := len(a.Nums)
+	third := n / 3
+	if n%3 == 2 {
+		third++
+	}
+	twoThirds := 2 * third
+	if 2*(n%3) == 2 {
+		twoThirds++
+	}
 
 	// Push the smallest third to the bottom of stack B and the
 	// middle third to the top.
-	for len(a.Nums) > 33 {
+	for len(a.Nums) > third {
 		A := a.GetNumsSlice()
-		if A[0] < 68 {
+		if A[0] <= twoThirds {
 			ps.Px(b, a)
 			result = append(result, "pb")
-			if A[0] < 34 && len(b.Nums) > 1 {
+			if A[0] <= third && len(b.Nums) > 1 {
 				ps.Rx(b)
 				result = append(result, "rb")
 			}
@@ -118,51 +129,6 @@ func hundred(a, b *ps.Stack) []string {
 	// Rotate stack A into sorted position.
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, justRotate(*a))
-
-	return result
-}
-
-func fiveHundred(a, b *ps.Stack) []string {
-	var result []string
-	*a, _ = ps.NewStack(rank(a.Nums))
-
-	// Push the smallest third to the bottom of stack B and the
-	// middle third to the top.
-	for len(a.Nums) > 167 {
-		A := a.GetNumsSlice()
-		if A[0] < 334 {
-			ps.Px(b, a)
-			result = append(result, "pb")
-			if A[0] < 168 && len(b.Nums) > 1 {
-				ps.Rx(b)
-				result = append(result, "rb")
-			}
-		} else {
-			ps.Rx(a)
-			result = append(result, "ra")
-		}
-	}
-
-	// Push the smallest third to the top of stack B, leaving
-	// the last three on stack A
-	for len(a.Nums) > 3 {
-		ps.Px(b, a)
-		result = append(result, "pb")
-	}
-
-	// Perform a swap on stack A if necessary to make it rotatable
-	// into sorted position.
-	_, rotatable := three(a.Nums)
-	if !rotatable {
-		ps.Sx(a)
-		result = append(result, "sa")
-	}
-
-	// Sort while inserting from stack B to stack A.
-	result = append(result, insert(b, a, 0, false)...)
-
-	// Rotate stack A into sorted position.
-	result = append(result, justRotate(*a)...)
 
 	return result
 }
