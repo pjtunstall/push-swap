@@ -81,7 +81,7 @@ The technique we used is essentially [Ali Yigit Ogun's self-titled "Turk algorit
 
 He used an [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort) of all but three numbers to stack B, then insertion sort again back to A. A refinement is that instead of always pushing the number at the top of the stack, he does a preliminary calculation before each push. He then pushes the number for which the least amount of rotations is needed to bring it to the top of its stack and its target to the top of the other stack.
 
-As a special case, for 100 and 500 numbers, we followed [Fred 1000orion's method](https://www.youtube.com/watch?v=2aMrmWOgLvU): a bucket sort, with three buckets (that is, splitting the numbers into three equal chunks, then pushing all but three numbers to B in such a way that the bucket consisting of the smallest numbers is at the bottom of B, and that consisting of the largest numbers is at the top of B), then insertion sort to stack A with a cost check as per AYO.
+As a special case, for 100 and 500 numbers, we followed [Fred 1000orion's method](https://www.youtube.com/watch?v=2aMrmWOgLvU): a bucket sort, with three buckets (that is, splitting the numbers into three equal chunks, then pushing all but three numbers to B in such a way that the bucket consisting of the smallest numbers is at the bottom of B, and that consisting of the largest numbers is at the top of B), then insertion sort to stack A with a cost check as per AYO. This is currently the best way I've found.
 
 I've read several other Medium articles on the subject: by [Jamie Dawson](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a), [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e), [Julien Caucheteux](https://medium.com/@julien-ctx/push-swap-an-easy-and-efficient-algorithm-to-sort-numbers-4b7049c2639a), [Dan Sylvain](https://medium.com/@dansylvain84/my-implementation-of-the-42-push-swap-project-2706fd8c2e9f), and [YYBer](https://medium.com/@YYBer/my-one-month-push-swap-journey-explore-an-easily-understand-and-efficient-algorithm-11449eb17752).
 
@@ -95,7 +95,7 @@ Thus, for 100 numbers, JD pushes the lowest 20 numbers to stack B first, then th
 
 One remark on JD's statement: "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omitted this final step and just rotate stack A to where it needs to be before pushing each number back from B.
 
-YYB deals the numbers from A into 8 buckets on B, then pushes the remainder unsorted. It sounds like she uses selection sort with cost check on the way back to A, although not all the details are clear to me.
+YYB, like many push-swappers, follows the convenience of ranking the numbers. She deals them from A into 8 equal-sized buckets on B for 100 numbers, or 12 for 500, then pushes the remainder. She then uses an ingenious cost checking procedure to push everything back to A in order. First the maximum number is pushed to A. Then, at each iteration, if the cheapest number to push back is the one that belongs on top of the top element of A, she pushes that and leaves it there; if the cheapest number is greater than the element on the bottom of A, she pushes it and rotates it with `ra` to the bottom of A. If, after a push, the element on the bottom of A turns out to be now the one that belongs on top of the top element, she rotates it up into place with `rra`. In this way she sorts everything back to A.
 
 LF followes a quite different approach. He uses base 2 radix sort, of the Least Significant Digit flavor. For each bit, starting with the least significant (rightmost), he checks the number at the top of stack A. If the relevant bit is 0, he pushes the top number from A to B with `pb`; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers in A. Then he pushes back everything from B with `pa`, and procedes in this way through all the bits. He says it didn't get him the highest score; presumably the cost of having to push all those numbers back and forth on multiple passes was too much. But radix sort is an important technique to learn, and it should be mentioned that the `push-swap` project description does direct our attention towards non-comparative sorting algorithms.
 
@@ -127,7 +127,7 @@ DS did pretty well with his strategy of and sorting all but the longest increasi
 
 JC's approach of pushing everything, then insertion sorting with cost checking like AYO on the way back took 584 instructions on average, with a standard deviation of 24.
 
-YYB first scored 750 for 100 numbers by pushing the smallest half to A, then the smallest half of the rest, and so on till A is empty, and then selection sorting them back to A. After this attempt, she switched to a new strategy: bucket sort to B with 8 equal-sized buckets in the case of 100 numbers, or 12 in the case of 500 (although it sounds like the buckets are not arranged in descending order on B?), then push whatever is left till A is empty. Then selection sort back to A. This required less than 700 instructions for 100 numbers, and about 6500 for 500. As a final optimization, she replaced selection sort with a cost-checking procedure that reduced her mean score for 500 numbers to "5300-5400 steps".
+YYB first scored 750 for 100 numbers by pushing the smallest half to A, then the smallest half of the rest, and so on till A is empty, and then selection sorting them back to A. After this attempt, she switched to a new strategy: bucket sort to B with 8 equal-sized buckets in the case of 100 numbers, or 12 in the case of 500 (although it sounds like the buckets are not arranged in descending order on B?), then push whatever is left till A is empty. Then selection sort back to A. This required less than 700 instructions for 100 numbers, and about 6500 for 500. As a final optimization, she replaced selection sort with the ingenious cost-checking procedure, described above, that reduced her mean score for 500 numbers to "5300-5400 steps".
 
 LF reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: Why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
@@ -181,35 +181,28 @@ One consequence of this is that, if we need to rotate one stack, say, `r` times 
 
 As mentioned above, LF reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
-To see how this can be (and why he must also have always got exactly 1084 for 100 numbers), note first that he takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, ..., 99.
+To see how this can be, and why he must also have always got exactly 1084 for 100 numbers, note first that LF takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, 4, ..., 98, 99.
 
-Now, ceil(log2(500)) = 9, so there will be 9 passes for the 9 bits needed to label 500 numbers in this way. In the case of 500 numbers, then, there will be at least 500 operations per bit, because every number is either rotatated out of the way with `ra` or pushed to B with `pb`. In addition to this 500 essential operations, the subset of numbers that were pushed to B will need pushing back with `pa`.
+Ceil(log2(99)) = 7, so it takes 7 bits to express these numbers. Picture them listed in binary form, padding the smaller ones with leading zeros:
 
-One might think that half the numbers (250 of them) would take a turn at being pushed to B each time, and thus have to be pushed back (resulting in 9 \* 750 = 6750 instructions)--and this would indeed be the case if 500 was a power of 2. But the bits of 499 are 111110011, so not every 9-bit sequenece of 0s and 1s is represented among the numbers to be sorted. Since it's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, it's the 0s that will be overrepresented in the total, shifting the balance in favor of pushes.
+0000000
+0000001
+0000010
+0000011
+0000100
+...
+1100010
+1100011
 
-To take a simple example, suppose we had to sort 6 numbers. We'd need ceil(log2(6)) = 3 bits, and the numbers to sort would be expressed in binary form as:
+In sorting, there is one pass (iteration) for every bit, starting with the least significant, i.e. at the right. At every pass, all the numbers with a 0 at that bit will be pushed to B with `pb` and eventually back with `pa`, while all the numbers with a 1 at that bit will be rotated out of the way with `ra`.
 
-```
-000
-001
-010
-011
-100
-101
-```
+If the size of the stack was a power of 2, there would be an equal number of ones and zeros in the list of numbers (in binary form) to be sorted. But the bits of 99 are 1100011, so not every 7-bit sequenece of 0s and 1s is represented among the numbers to be sorted. Since it's the greatest 28 numbers that are missing between 99 and 127 (one less than the next power of 2), i.e. from the full total of all possible 7-bit sequences, it's the 0s that will be overrepresented in the total, shifting the balance in favor of pushes.
 
-There would be one operation (`ra` or `pb` for each of these numbers on each pass, and one pass for each of the three bits, hence at least 6 \* 3 = 18 operations. In addition, there will be a `pa` for every number that was pushed to stack B, which is to say, one more operation for every 0 that appears in this list. There are 11 zeros: 3 for the least significant bit, and 4 each for the others. In total, therefore, it will always take 18 + 11 = 29 operations to sort 6 numbers in this way.)
+We can calculate the exact amount of instructions as the number of ones in the list, plus twice the number of zeros, `ones + 2 * zeros`, or alternatively as `bits * n + zeros` (with n = 100 in this case; LF gives the latter formula in a comment on his article), since every number requires at least one instruction per bit (whether a rotation or a push), and then those with zero at that bit need one extra instruction to push them back. Sure enough, both formulas give 1084 for n = 100.
 
-As another way of looking at it, notice that the two numbers missing to make up the next power of two are:
+Similarly, ceil(log2(499)) = 9, so it takes 9 bits to represent the numbers from 0 to 499. It's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, so, as always when the stack size is not a power of 2, the zeros will be overrepresented, and there will be more pushes than rotations.
 
-```
-110
-111
-```
-
-For a full power of 2, there must be as many 0s as 1s for every bit. Since 0s and 1s are equally represented in the rightmost bit of the missing numbers, they must be equally represented in the rightmost bit of the 6 numbers we have: that is, 6/2 = 3 zeros. But there are no 0s among the other two bits of the missing numbers, so all 8/2 = 4 of the total possible zeros must be present among our 6 numbers. Hence it will take 6 \* 3 + 3 + 4 + 4 = 29 operations.
-
-Similarly, in the case of 100 numbers, ceil(log2(100)) = 7, so there will be at least 700 operations (rotations and pushes from A to B), and somewhat more than 7 \* 50 extra pushes, representing pushes back to A of those numbers that were moved there. This is a bit further off LF's actual score of 1084, which makes sense given that the difference between 100 and the next highest power of 2 (128) is greater than the difference between 500 and the next highest power of 2 (512).
+At this point, though, we have a a bit of a mystery. By my calculation, `9 * 500 + zeros` and `ones + 2 * zeros` both give 6784 rather than LF's 6756. I'm quite puzzled by this. In his article, LF actually shows a screenshot of a checker program showing the result 6756 for every random sequence of 500 numbers it tested, so it doesn't seem to be a typo. I wonder if he introduced some optimization for stack sizes greater than 100 that I overlooked or that he didn't mention. Maybe I'm just missing something. I've written to him, asking if he has any insight. I'll update this if I learn more.
 
 ## 6. Detour: bitmasks
 
