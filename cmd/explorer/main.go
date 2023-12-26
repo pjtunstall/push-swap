@@ -877,3 +877,186 @@ func three(nums []int) ([]string, bool) {
 // if ok {
 // 	return v
 // }
+
+// *
+
+// from push-swap
+// package main
+
+// // For use with hundredLIS in general.go, an implementation of
+// // Dan Sylvain's idea of leaving the longest increasing sequence
+// // on stack A, and pushing the rest to B, then insertion sorting
+// // B onto A with a cost check to see which to push next.
+// func longestIncreasingSequence(nums []int) []int {
+// 	if len(nums) == 0 {
+// 		return []int{}
+// 	}
+// 	result := make([]int, 1, len(nums))
+// 	for i := 0; i < len(nums); i++ {
+// 		temp := make([]int, 1, len(nums))
+// 		temp[0] = nums[i]
+// 		for j := i; j < len(nums); j++ {
+// 			if nums[j] > temp[len(temp)-1] {
+// 				temp = append(temp, nums[j])
+// 			}
+// 		}
+// 		if len(temp) > len(result) {
+// 			result = make([]int, len(temp))
+// 			copy(result, temp)
+// 		}
+// 	}
+// 	return result
+// }
+
+// // After Dan Sylvain: leave the longest increasing sequence on stack A,
+// // and push the rest to B. Then insertion sort back with a cost check
+// // to see which to push next.
+// func hundredLIS(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	LIS := longestIncreasingSequence(a.Nums)
+// 	l := len(LIS)
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top, leaving any numbers in the longest
+// 	// increasing sequence on stack A.
+// 	for len(a.Nums) > l {
+// 		found := false
+// 		for i := range LIS {
+// 			if a.Nums[a.Top] == LIS[i] {
+// 				found = true
+// 			}
+// 		}
+// 		if found {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 			continue
+// 		}
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // JC's algorithm.
+// func jc(a, b *ps.Stack) []string {
+// 	var result []string
+
+// 	for len(a.Nums) > 1 {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 	}
+
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// package main
+
+// import "push-swap/ps"
+
+// // For use with hundredRun in general.go, which leaves the longest
+// // increasing run on stack A, and pushes the rest to B.
+// func longestRun(nums []int) (int, int, int) {
+// 	length := 1
+// 	startIndex := 0
+// 	startValue := nums[0]
+// 	maxI, _ := ps.MaxInt(nums)
+// 	minI, _ := ps.MinInt(nums)
+
+// 	for i, v := range nums {
+// 		count := 1
+// 		for j := i; ; j++ {
+// 			if j+1 < len(nums) && ((nums[j+1] == nums[j]+1) || (j == maxI && j+1 == minI)) {
+// 				count++
+// 				continue
+// 			}
+// 			if j+1 == len(nums) && ((nums[0] == nums[j]+1) || (j == maxI && minI == 0)) {
+// 				count++
+// 				j = -1
+// 				continue
+// 			}
+// 			break
+// 		}
+// 		if count > length {
+// 			length = count
+// 			startIndex = i
+// 			startValue = v
+// 		}
+// 	}
+// 	return startIndex, startValue, length
+// }
+
+// package main
+
+// import "testing"
+
+// func TestLongestRun(t *testing.T) {
+// 	a := []int{1, 2, 4, 3, 5}
+// 	startIndex, startValue, length := longestRun(a)
+// 	if startIndex != 4 || startValue != 5 || length != 3 {
+// 		t.Error("Wrong result")
+// 	}
+// }
+
+// // Leave longest increasing run on stack A and push the smallest
+// // half to the bottom of stack B and the biggest half to the top.
+// func hundredRun(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	A := a.GetNumsSlice()
+// 	startIndex, startValue, length := longestRun(A)
+
+// 	// Deal with the case where the longest run overlaps the top.
+// 	diff := len(A) - startIndex
+// 	if diff < length {
+// 		for i := 0; i < length-diff; i++ {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top, leaving the longest increasing
+// 	// run on stack A, leaving the longest increasing run on
+// 	// stack A.
+// 	for len(a.Nums) > length {
+// 		if a.Nums[a.Top] == startValue {
+// 			for i := 0; i < length; i++ {
+// 				ps.Rx(a)
+// 				result = append(result, "ra")
+// 			}
+// 		}
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
