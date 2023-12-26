@@ -22,9 +22,6 @@ func TestGeneral(t *testing.T) {
 
 	for i := 0; i < 1000; i++ {
 		hundred := hundredRandomNumbers()
-		// // Uncomment to test with 500 random numbers and reduce
-		// // the number of tests to 100, otherwise it takes too
-		// // long.
 		a, err := ps.NewStack(hundred)
 		if err != nil {
 			t.Errorf("general(%s) failed: %s", hundred, err)
@@ -45,11 +42,9 @@ func TestGeneral(t *testing.T) {
 	}
 
 	// // Uncomment and set limit to 0 to see the mean and standard deviation:
-	// if true {
 	// 	t.Errorf("fails: %v", fails)
 	// 	t.Errorf("mean: %v", Average(scores))
 	// 	t.Errorf("standard deviation: %v", StandardDeviation(scores))
-	// }
 
 	// Stack size 6:
 

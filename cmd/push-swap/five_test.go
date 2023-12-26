@@ -18,6 +18,10 @@ var limit = 9 // Must be sorted in less than 9 instructions.
 // deal with the case where the stack is already sorted or can be simply
 // into the correct order.
 func TestFive(t *testing.T) {
+	// // Uncomment this and related lines, and adjust limit to explore stats.
+	// fails := 0
+	// scores := make([]float64, 0, 120)
+	// maximum := 0
 	for i := 1; i <= 5; i++ {
 		for j := 1; j <= 5; j++ {
 			for k := 1; k <= 5; k++ {
@@ -34,7 +38,12 @@ func TestFive(t *testing.T) {
 						b, _ := ps.NewStack("")
 						instructions := five(&a, &b)
 						if len(instructions) >= limit {
-							// t.Errorf("%v: %v", input, instructions)
+							// // Uncomment to explore stats.
+							// scores = append(scores, float64(len(instructions)))
+							// fails++
+							// if len(instructions) > maximum {
+							// 	maximum = len(instructions)
+							// }
 							t.Errorf("%v took %v instructions to sort\n, not strictly less than %v", input, len(instructions), limit)
 						}
 						a, _ = ps.NewStack(input)
@@ -58,6 +67,12 @@ func TestFive(t *testing.T) {
 			}
 		}
 	}
+
+	// // Uncomment and set limit to 0 to see the mean and standard deviation:
+	// t.Errorf("fails: %v", fails)
+	// t.Errorf("mean: %v", Average(scores))
+	// t.Errorf("standard deviation: %v", StandardDeviation(scores))
+	// t.Errorf("maximum: %v", maximum)
 }
 
 func contains(nums []int, num int) bool {

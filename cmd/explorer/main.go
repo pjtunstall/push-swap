@@ -15,45 +15,47 @@ func main() {
 	count := 0
 	results := make(map[string][]string)
 
-	for i := 1; i <= 7; i++ {
-		for j := 1; j <= 7; j++ {
-			for k := 1; k <= 7; k++ {
-				for l := 1; l <= 7; l++ {
-					for m := 1; m <= 7; m++ {
-						for n := 1; n <= 7; n++ {
-							for o := 1; o <= 7; o++ {
-								if (i == j || i == k || i == l || i == m || i == n || i == o) || (j == k || j == l || j == m || j == n || j == o) || (k == l || k == m || k == n || k == o) || (l == m || l == n || l == o) || (m == n || m == o) || (n == o) {
-									continue
-								}
-								input := fmt.Sprintf("%d %d %d %d %d %d %d", i, j, k, l, m, n, o)
-								a, _ := ps.NewStack(input)
-								b, _ := ps.NewStack("")
+	for i := 1; i <= 5; i++ {
+		for j := 1; j <= 5; j++ {
+			for k := 1; k <= 5; k++ {
+				for l := 1; l <= 5; l++ {
+					for m := 1; m <= 5; m++ {
+						// for n := 1; n <= 7; n++ {
+						// 	for o := 1; o <= 7; o++ {
+						// if (i == j || i == k || i == l || i == m || i == n || i == o) || (j == k || j == l || j == m || j == n || j == o) || (k == l || k == m || k == n || k == o) || (l == m || l == n || l == o) || (m == n || m == o) || (n == o) {
+						if (i == j || i == k || i == l || i == m) || (j == k || j == l || j == m) || (k == l || k == m) || (l == m) {
+							continue
+						}
+						input := fmt.Sprintf("%d %d %d %d %d", i, j, k, l, m)
+						a, _ := ps.NewStack(input)
+						b, _ := ps.NewStack("")
 
-								// turk modifies the stacks.
-								turk := turk(&a, &b)
+						// turk modifies the stacks.
+						turk := turk(&a, &b)
+						// five := five(&a, &b)
 
-								// bfs doesn't modify the stacks.
-								beef, sorted := bfs(input, len(turk))
+						// bfs doesn't modify the stacks.
+						beef, sorted := bfs(input, len(turk))
 
-								if sorted && len(beef) < len(turk) {
-									count++
-									results[input] = beef
-									fmt.Println("************************** bfs is shortest")
-									fmt.Println("input: ", input)
-									fmt.Println("length of `bfs`: ", len(beef))
-									fmt.Println("length of `turk`: ", len(turk))
-									fmt.Println("`bfs`: ", beef)
-									fmt.Println("`turk`: ", turk)
-									fmt.Println()
-								}
-							}
+						if sorted && len(beef) < len(turk) {
+							count++
+							results[input] = beef
+							fmt.Println("************************** bfs is shortest")
+							fmt.Println("input: ", input)
+							fmt.Println("length of `bfs`: ", len(beef))
+							fmt.Println("length of `turk`: ", len(turk))
+							fmt.Println("`bfs`: ", beef)
+							fmt.Println("`turk`: ", turk)
+							fmt.Println()
 						}
 					}
 				}
 			}
 		}
 	}
-	fmt.Println("instances where bfs is strictly better than turk: ", count)
+	// 	}
+	// }
+	fmt.Println("instances where bfs is strictly better than five: ", count)
 
 	jsonData, err := json.Marshal(results)
 	if err != nil {
@@ -430,36 +432,36 @@ func insert(a, b *ps.Stack, stopAt int, forward bool) []string {
 // 	}
 // }
 
-func inverse(instructions []string) []string {
-	var result []string
-	for i := len(instructions) - 1; i >= 0; i-- {
-		switch instructions[i] {
-		case "sa":
-			result = append(result, "sa")
-		case "sb":
-			result = append(result, "sb")
-		case "ss":
-			result = append(result, "ss")
-		case "pa":
-			result = append(result, "pb")
-		case "pb":
-			result = append(result, "pa")
-		case "ra":
-			result = append(result, "rra")
-		case "rb":
-			result = append(result, "rrb")
-		case "rr":
-			result = append(result, "rrr")
-		case "rra":
-			result = append(result, "ra")
-		case "rrb":
-			result = append(result, "rb")
-		case "rrr":
-			result = append(result, "rr")
-		}
-	}
-	return result
-}
+// func inverse(instructions []string) []string {
+// 	var result []string
+// 	for i := len(instructions) - 1; i >= 0; i-- {
+// 		switch instructions[i] {
+// 		case "sa":
+// 			result = append(result, "sa")
+// 		case "sb":
+// 			result = append(result, "sb")
+// 		case "ss":
+// 			result = append(result, "ss")
+// 		case "pa":
+// 			result = append(result, "pb")
+// 		case "pb":
+// 			result = append(result, "pa")
+// 		case "ra":
+// 			result = append(result, "rra")
+// 		case "rb":
+// 			result = append(result, "rrb")
+// 		case "rr":
+// 			result = append(result, "rrr")
+// 		case "rra":
+// 			result = append(result, "ra")
+// 		case "rrb":
+// 			result = append(result, "rb")
+// 		case "rrr":
+// 			result = append(result, "rr")
+// 		}
+// 	}
+// 	return result
+// }
 
 // Check if a swap, then rotations are enough to sort the stack.
 func swapRot(a, b ps.Stack) (bool, bool) {
@@ -592,3 +594,271 @@ func rank(nums []int) string {
 
 	return s
 }
+
+func five(a, b *ps.Stack) []string {
+	var result []string
+	*a, _ = ps.NewStack(rank(a.Nums))
+	nums := a.GetNumsSlice()
+	// numsString := a.GetNumsString()
+	var maxB int
+	var minB int
+	var leftRot bool
+	var combineRotation bool
+
+	// jsonData, err := os.ReadFile("shortcuts-five.json")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return []string{}
+	// }
+	// shortcuts := make(map[string][]string)
+	// err = json.Unmarshal(jsonData, &shortcuts)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return []string{}
+	// }
+
+	// v, ok := shortcuts[numsString]
+	// if ok {
+	// 	return v
+	// }
+
+	result = []string{"pb", "pb"} // Push top two to B.
+	ps.Px(b, a)
+	ps.Px(b, a)
+	_, leftRot = three(a.GetNumsSlice()) // `stayersRot` is true if no swap is needed to sort them.
+	maxB = max(nums[0], nums[1])
+	minB = min(nums[0], nums[1])
+
+	if leftRot {
+		if nums[0] == maxB {
+			combineRotation = true
+		}
+	} else {
+		if nums[0] == maxB {
+			ps.Ss(a, b)
+			result = append(result, "ss")
+		} else {
+			ps.Sx(a)
+			result = append(result, "sa")
+		}
+	}
+
+	// Consider maxB at top of B now, unless combineRotation is true.
+	switch fitTheFourth(maxB, a.GetNumsSlice()) {
+	case 0:
+		if combineRotation {
+			result = append(result, "sb")
+			ps.Sx(b)
+		}
+	case 1:
+		if combineRotation {
+			result = append(result, "rr")
+			ps.Rr(a, b)
+		} else {
+			result = append(result, "ra")
+			ps.Rx(a)
+		}
+	case 2:
+		if combineRotation {
+			result = append(result, "rrr")
+			ps.Rrr(a, b)
+		} else {
+			result = append(result, "rra")
+			ps.Rrx(a)
+		}
+	}
+	if len(result) > 0 && result[len(result)-1] == "pb" {
+		result = result[:len(result)-1]
+	} else {
+		result = append(result, "pa")
+	}
+	ps.Px(a, b)
+
+	switch fitTheFifth(minB, a.GetNumsSlice()) {
+	case 1:
+		result = append(result, "ra")
+		ps.Rx(a)
+	case 2:
+		result = append(result, "ra", "ra")
+		ps.Rx(a)
+		ps.Rx(a)
+	case 3:
+		result = append(result, "rra")
+		ps.Rrx(a)
+	}
+	if len(result) > 0 && result[len(result)-1] == "pb" {
+		result = result[:len(result)-1]
+	} else {
+		result = append(result, "pa")
+		ps.Px(a, b)
+	}
+
+	rots := justRotate(*a)
+	result = append(result, justRotate(*a)...)
+	ps.Run(a, b, rots)
+
+	return result
+}
+
+func fitTheFourth(x int, left []int) int {
+	var position int
+	iMax, maxStayer := ps.MaxInt(left)
+	iMin, minStayer := ps.MinInt(left)
+
+	if x < minStayer {
+		position = iMin
+	} else if x > maxStayer {
+		position = iMax + 1
+		if position > 2 {
+			position = 0
+		}
+	} else {
+		if x > left[0] && x < left[1] {
+			position = 1
+		} else if x > left[1] && x < left[2] {
+			position = 2
+		} else if x < left[0] && x > left[2] {
+			position = 0
+		}
+	}
+	return position
+}
+
+func fitTheFifth(x int, left []int) int {
+	var position int
+	iMin, minStayer := ps.MinInt(left)
+
+	if x < minStayer {
+		position = iMin
+	} else {
+		if x > left[0] && x < left[1] {
+			position = 1
+		} else if x > left[1] && x < left[2] {
+			position = 2
+		} else if x > left[2] && x < left[3] {
+			position = 3
+		} else {
+			position = 0
+		}
+	}
+
+	return position
+}
+
+// // Works, just not as well as five().
+// func fiveExperiment(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	original := a.GetNumsString()
+// 	nums := a.GetNumsSlice()
+
+// 	rotatable, sorted := ps.Check(*a, *b)
+// 	if sorted {
+// 		return result
+// 	}
+// 	if rotatable {
+// 		result = justRotate(*a)
+// 		return result
+// 	}
+
+// 	for i := 0; i+1 < len(nums); i++ {
+// 		if nums[i]+1 != nums[i+1] || (nums[i] == 5 && nums[i+1] != 1) {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 			break
+// 		}
+// 	}
+
+// 	var new []string
+
+// 	s := rank(a.GetNumsSlice())
+// 	c, _ := ps.NewStack(s)
+// 	d, _ := ps.NewStack("")
+// 	switch s {
+// 	case "1 3 2 4":
+// 		new = []string{"ra", "sa"}
+// 	case "1 4 2 3":
+// 		new = []string{"sa"}
+// 	case "2 3 1 4":
+// 		new = []string{"ra", "ra", "sa"}
+// 	case "2 3 4 1":
+// 		new = []string{}
+// 	case "2 4 3 1":
+// 		new = []string{"sa", "rra", "sa"}
+// 	case "3 1 2 4":
+// 		new = []string{"sa", "ra", "sa"}
+// 	case "3 2 1 4":
+// 		new = []string{"sa", "ra", "ra", "sa"}
+// 	case "3 2 4 1":
+// 		new = []string{"sa"}
+// 	case "3 4 1 2":
+// 		new = []string{}
+// 	case "4 1 2 3":
+// 		new = []string{}
+// 	case "4 1 3 2":
+// 		new = []string{"ra", "ra", "sa"}
+// 	case "4 2 1 3":
+// 		new = []string{"ra", "sa"}
+// 	case "4 2 3 1":
+// 		new = []string{"rra", "sa"}
+// 	case "4 3 1 2":
+// 		new = []string{"sa"}
+// 	default:
+// 		new = four(c, d)
+// 	}
+
+// 	result = append(result, new...)
+// 	ps.Run(a, b, new)
+
+// 	if b.Nums[b.Top] == 5 {
+// 		switch a.Nums[a.Top] {
+// 		case 2:
+// 			result = append(result, "rra")
+// 			ps.Rrx(a)
+// 		case 3:
+// 			result = append(result, "ra", "ra")
+// 			ps.Rx(a)
+// 			ps.Rx(a)
+// 		case 4:
+// 			result = append(result, "ra")
+// 			ps.Rx(a)
+// 		}
+// 	} else {
+// 		// No, we want to find the index of the number that is one more than the top of B.
+// 		nums = a.GetNumsSlice()
+// 		I := 0
+// 		for i := range nums {
+// 			if nums[i] == b.Nums[b.Top]+1 {
+// 				I = i
+// 			}
+// 		}
+// 		switch I {
+// 		case 3:
+// 			result = append(result, "rra")
+// 			ps.Rrx(a)
+// 		case 2:
+// 			result = append(result, "ra", "ra")
+// 			ps.Rx(a)
+// 			ps.Rx(a)
+// 		case 1:
+// 			result = append(result, "ra")
+// 			ps.Rx(a)
+// 		}
+// 	}
+
+// 	ps.Px(a, b)
+// 	result = append(result, "pa")
+
+// 	_, sorted = ps.Check(*a, *b)
+// 	if !sorted {
+// 		result = append(result, justRotate(*a)...)
+// 	}
+
+// 	bfs, found := bfs(original, 8)
+// 	if found && len(bfs) < len(result) {
+
+// 		return bfs
+// 	}
+
+// 	return result
+// }

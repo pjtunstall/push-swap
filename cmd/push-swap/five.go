@@ -16,7 +16,6 @@ func five(a, b *ps.Stack) []string {
 	var minB int
 	var leftRot bool
 	var combineRotation bool
-
 	jsonData, err := os.ReadFile("shortcuts-five.json")
 	if err != nil {
 		fmt.Println(err)
@@ -28,19 +27,16 @@ func five(a, b *ps.Stack) []string {
 		fmt.Println(err)
 		return []string{}
 	}
-
 	v, ok := shortcuts[numsString]
 	if ok {
 		return v
 	}
-
 	result = []string{"pb", "pb"} // Push top two to B.
 	ps.Px(b, a)
 	ps.Px(b, a)
 	_, leftRot = three(a.GetNumsSlice()) // `stayersRot` is true if no swap is needed to sort them.
 	maxB = max(nums[0], nums[1])
 	minB = min(nums[0], nums[1])
-
 	if leftRot {
 		if nums[0] == maxB {
 			combineRotation = true
@@ -54,7 +50,6 @@ func five(a, b *ps.Stack) []string {
 			result = append(result, "sa")
 		}
 	}
-
 	// Consider maxB at top of B now, unless combineRotation is true.
 	switch fitTheFourth(maxB, a.GetNumsSlice()) {
 	case 0:
@@ -85,7 +80,6 @@ func five(a, b *ps.Stack) []string {
 		result = append(result, "pa")
 	}
 	ps.Px(a, b)
-
 	switch fitTheFifth(minB, a.GetNumsSlice()) {
 	case 1:
 		result = append(result, "ra")
@@ -104,19 +98,15 @@ func five(a, b *ps.Stack) []string {
 		result = append(result, "pa")
 		ps.Px(a, b)
 	}
-
 	rots := justRotate(*a)
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, rots)
-
 	return result
 }
-
 func fitTheFourth(x int, left []int) int {
 	var position int
 	iMax, maxStayer := ps.MaxInt(left)
 	iMin, minStayer := ps.MinInt(left)
-
 	if x < minStayer {
 		position = iMin
 	} else if x > maxStayer {
@@ -135,11 +125,9 @@ func fitTheFourth(x int, left []int) int {
 	}
 	return position
 }
-
 func fitTheFifth(x int, left []int) int {
 	var position int
 	iMin, minStayer := ps.MinInt(left)
-
 	if x < minStayer {
 		position = iMin
 	} else {
@@ -153,7 +141,6 @@ func fitTheFifth(x int, left []int) int {
 			position = 0
 		}
 	}
-
 	return position
 }
 
@@ -170,7 +157,6 @@ func swapRot(a, b ps.Stack) (bool, bool) {
 func rotSwap(a, b ps.Stack) ([]string, bool) {
 	var result []string
 	var rotSwappable bool
-
 	for h := 1; h <= len(a.Nums)/2; h++ {
 		for i := 1; i <= h; i++ {
 			ps.Rx(&a)
@@ -198,7 +184,6 @@ func rotSwap(a, b ps.Stack) ([]string, bool) {
 		if rotSwappable {
 			break
 		}
-
 		for i := 1; i <= h; i++ {
 			ps.Rrx(&a)
 		}
@@ -226,6 +211,5 @@ func rotSwap(a, b ps.Stack) ([]string, bool) {
 			break
 		}
 	}
-
 	return result, rotSwappable
 }
