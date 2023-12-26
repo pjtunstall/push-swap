@@ -4,9 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"sort"
-	"strconv"
-	"strings"
 
 	"push-swap/ps"
 )
@@ -576,174 +573,174 @@ func three(nums []int) ([]string, bool) {
 	return []string{}, true
 }
 
-func rank(nums []int) string {
-	rankMap := make(map[int]int)
-	strs := make([]string, len(nums))
-	numsCopy := make([]int, len(nums))
-	copy(numsCopy, nums)
+// func rank(nums []int) string {
+// 	rankMap := make(map[int]int)
+// 	strs := make([]string, len(nums))
+// 	numsCopy := make([]int, len(nums))
+// 	copy(numsCopy, nums)
 
-	sort.Ints(numsCopy)
-	for i, v := range numsCopy {
-		rankMap[v] = i + 1
-	}
+// 	sort.Ints(numsCopy)
+// 	for i, v := range numsCopy {
+// 		rankMap[v] = i + 1
+// 	}
 
-	for i, v := range nums {
-		strs[i] = strconv.Itoa(rankMap[v])
-	}
-	s := strings.Join(strs, " ")
+// 	for i, v := range nums {
+// 		strs[i] = strconv.Itoa(rankMap[v])
+// 	}
+// 	s := strings.Join(strs, " ")
 
-	return s
-}
+// 	return s
+// }
 
-func five(a, b *ps.Stack) []string {
-	var result []string
-	*a, _ = ps.NewStack(rank(a.Nums))
-	nums := a.GetNumsSlice()
-	// numsString := a.GetNumsString()
-	var maxB int
-	var minB int
-	var leftRot bool
-	var combineRotation bool
+// func five(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	nums := a.GetNumsSlice()
+// 	// numsString := a.GetNumsString()
+// 	var maxB int
+// 	var minB int
+// 	var leftRot bool
+// 	var combineRotation bool
 
-	// jsonData, err := os.ReadFile("shortcuts-five.json")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return []string{}
-	// }
-	// shortcuts := make(map[string][]string)
-	// err = json.Unmarshal(jsonData, &shortcuts)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return []string{}
-	// }
+// 	// jsonData, err := os.ReadFile("shortcuts-five.json")
+// 	// if err != nil {
+// 	// 	fmt.Println(err)
+// 	// 	return []string{}
+// 	// }
+// 	// shortcuts := make(map[string][]string)
+// 	// err = json.Unmarshal(jsonData, &shortcuts)
+// 	// if err != nil {
+// 	// 	fmt.Println(err)
+// 	// 	return []string{}
+// 	// }
 
-	// v, ok := shortcuts[numsString]
-	// if ok {
-	// 	return v
-	// }
+// 	// v, ok := shortcuts[numsString]
+// 	// if ok {
+// 	// 	return v
+// 	// }
 
-	result = []string{"pb", "pb"} // Push top two to B.
-	ps.Px(b, a)
-	ps.Px(b, a)
-	_, leftRot = three(a.GetNumsSlice()) // `stayersRot` is true if no swap is needed to sort them.
-	maxB = max(nums[0], nums[1])
-	minB = min(nums[0], nums[1])
+// 	result = []string{"pb", "pb"} // Push top two to B.
+// 	ps.Px(b, a)
+// 	ps.Px(b, a)
+// 	_, leftRot = three(a.GetNumsSlice()) // `stayersRot` is true if no swap is needed to sort them.
+// 	maxB = max(nums[0], nums[1])
+// 	minB = min(nums[0], nums[1])
 
-	if leftRot {
-		if nums[0] == maxB {
-			combineRotation = true
-		}
-	} else {
-		if nums[0] == maxB {
-			ps.Ss(a, b)
-			result = append(result, "ss")
-		} else {
-			ps.Sx(a)
-			result = append(result, "sa")
-		}
-	}
+// 	if leftRot {
+// 		if nums[0] == maxB {
+// 			combineRotation = true
+// 		}
+// 	} else {
+// 		if nums[0] == maxB {
+// 			ps.Ss(a, b)
+// 			result = append(result, "ss")
+// 		} else {
+// 			ps.Sx(a)
+// 			result = append(result, "sa")
+// 		}
+// 	}
 
-	// Consider maxB at top of B now, unless combineRotation is true.
-	switch fitTheFourth(maxB, a.GetNumsSlice()) {
-	case 0:
-		if combineRotation {
-			result = append(result, "sb")
-			ps.Sx(b)
-		}
-	case 1:
-		if combineRotation {
-			result = append(result, "rr")
-			ps.Rr(a, b)
-		} else {
-			result = append(result, "ra")
-			ps.Rx(a)
-		}
-	case 2:
-		if combineRotation {
-			result = append(result, "rrr")
-			ps.Rrr(a, b)
-		} else {
-			result = append(result, "rra")
-			ps.Rrx(a)
-		}
-	}
-	if len(result) > 0 && result[len(result)-1] == "pb" {
-		result = result[:len(result)-1]
-	} else {
-		result = append(result, "pa")
-	}
-	ps.Px(a, b)
+// 	// Consider maxB at top of B now, unless combineRotation is true.
+// 	switch fitTheFourth(maxB, a.GetNumsSlice()) {
+// 	case 0:
+// 		if combineRotation {
+// 			result = append(result, "sb")
+// 			ps.Sx(b)
+// 		}
+// 	case 1:
+// 		if combineRotation {
+// 			result = append(result, "rr")
+// 			ps.Rr(a, b)
+// 		} else {
+// 			result = append(result, "ra")
+// 			ps.Rx(a)
+// 		}
+// 	case 2:
+// 		if combineRotation {
+// 			result = append(result, "rrr")
+// 			ps.Rrr(a, b)
+// 		} else {
+// 			result = append(result, "rra")
+// 			ps.Rrx(a)
+// 		}
+// 	}
+// 	if len(result) > 0 && result[len(result)-1] == "pb" {
+// 		result = result[:len(result)-1]
+// 	} else {
+// 		result = append(result, "pa")
+// 	}
+// 	ps.Px(a, b)
 
-	switch fitTheFifth(minB, a.GetNumsSlice()) {
-	case 1:
-		result = append(result, "ra")
-		ps.Rx(a)
-	case 2:
-		result = append(result, "ra", "ra")
-		ps.Rx(a)
-		ps.Rx(a)
-	case 3:
-		result = append(result, "rra")
-		ps.Rrx(a)
-	}
-	if len(result) > 0 && result[len(result)-1] == "pb" {
-		result = result[:len(result)-1]
-	} else {
-		result = append(result, "pa")
-		ps.Px(a, b)
-	}
+// 	switch fitTheFifth(minB, a.GetNumsSlice()) {
+// 	case 1:
+// 		result = append(result, "ra")
+// 		ps.Rx(a)
+// 	case 2:
+// 		result = append(result, "ra", "ra")
+// 		ps.Rx(a)
+// 		ps.Rx(a)
+// 	case 3:
+// 		result = append(result, "rra")
+// 		ps.Rrx(a)
+// 	}
+// 	if len(result) > 0 && result[len(result)-1] == "pb" {
+// 		result = result[:len(result)-1]
+// 	} else {
+// 		result = append(result, "pa")
+// 		ps.Px(a, b)
+// 	}
 
-	rots := justRotate(*a)
-	result = append(result, justRotate(*a)...)
-	ps.Run(a, b, rots)
+// 	rots := justRotate(*a)
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, rots)
 
-	return result
-}
+// 	return result
+// }
 
-func fitTheFourth(x int, left []int) int {
-	var position int
-	iMax, maxStayer := ps.MaxInt(left)
-	iMin, minStayer := ps.MinInt(left)
+// func fitTheFourth(x int, left []int) int {
+// 	var position int
+// 	iMax, maxStayer := ps.MaxInt(left)
+// 	iMin, minStayer := ps.MinInt(left)
 
-	if x < minStayer {
-		position = iMin
-	} else if x > maxStayer {
-		position = iMax + 1
-		if position > 2 {
-			position = 0
-		}
-	} else {
-		if x > left[0] && x < left[1] {
-			position = 1
-		} else if x > left[1] && x < left[2] {
-			position = 2
-		} else if x < left[0] && x > left[2] {
-			position = 0
-		}
-	}
-	return position
-}
+// 	if x < minStayer {
+// 		position = iMin
+// 	} else if x > maxStayer {
+// 		position = iMax + 1
+// 		if position > 2 {
+// 			position = 0
+// 		}
+// 	} else {
+// 		if x > left[0] && x < left[1] {
+// 			position = 1
+// 		} else if x > left[1] && x < left[2] {
+// 			position = 2
+// 		} else if x < left[0] && x > left[2] {
+// 			position = 0
+// 		}
+// 	}
+// 	return position
+// }
 
-func fitTheFifth(x int, left []int) int {
-	var position int
-	iMin, minStayer := ps.MinInt(left)
+// func fitTheFifth(x int, left []int) int {
+// 	var position int
+// 	iMin, minStayer := ps.MinInt(left)
 
-	if x < minStayer {
-		position = iMin
-	} else {
-		if x > left[0] && x < left[1] {
-			position = 1
-		} else if x > left[1] && x < left[2] {
-			position = 2
-		} else if x > left[2] && x < left[3] {
-			position = 3
-		} else {
-			position = 0
-		}
-	}
+// 	if x < minStayer {
+// 		position = iMin
+// 	} else {
+// 		if x > left[0] && x < left[1] {
+// 			position = 1
+// 		} else if x > left[1] && x < left[2] {
+// 			position = 2
+// 		} else if x > left[2] && x < left[3] {
+// 			position = 3
+// 		} else {
+// 			position = 0
+// 		}
+// 	}
 
-	return position
-}
+// 	return position
+// }
 
 // // Works, just not as well as five().
 // func fiveExperiment(a, b *ps.Stack) []string {
@@ -861,4 +858,22 @@ func fitTheFifth(x int, left []int) int {
 // 	}
 
 // 	return result
+// }
+
+// // This was in five() to check for a shorter push-free solution
+// // before BFS was done at runtime:
+// jsonData, err := os.ReadFile("shortcuts-five.json")
+// if err != nil {
+// 	fmt.Println(err)
+// 	return []string{}
+// }
+// shortcuts := make(map[string][]string)
+// err = json.Unmarshal(jsonData, &shortcuts)
+// if err != nil {
+// 	fmt.Println(err)
+// 	return []string{}
+// }
+// v, ok := shortcuts[original]
+// if ok {
+// 	return v
 // }

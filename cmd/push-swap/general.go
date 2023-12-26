@@ -110,7 +110,7 @@ func general(a, b *ps.Stack) []string {
 	if len(a.Nums) < 9 {
 		alt, sorted := bfs(original, len(result))
 		if sorted && len(alt) < len(result) {
-			result = alt
+			return alt
 		}
 	}
 

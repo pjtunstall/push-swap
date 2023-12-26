@@ -1,36 +1,30 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
 	"push-swap/ps"
 )
 
 func five(a, b *ps.Stack) []string {
+	// Superfluous as this check is already done in main,
+	// but here for the sake of TestFive.
+	rotatable, sorted := ps.Check(*a, *b)
+	if rotatable {
+		if sorted {
+			return []string{}
+		} else {
+			return justRotate(*a)
+		}
+	}
+
 	var result []string
 	*a, _ = ps.NewStack(rank(a.Nums))
 	nums := a.GetNumsSlice()
-	numsString := a.GetNumsString()
+	original := a.GetNumsString()
 	var maxB int
 	var minB int
 	var leftRot bool
 	var combineRotation bool
-	jsonData, err := os.ReadFile("shortcuts-five.json")
-	if err != nil {
-		fmt.Println(err)
-		return []string{}
-	}
-	shortcuts := make(map[string][]string)
-	err = json.Unmarshal(jsonData, &shortcuts)
-	if err != nil {
-		fmt.Println(err)
-		return []string{}
-	}
-	v, ok := shortcuts[numsString]
-	if ok {
-		return v
-	}
+
 	result = []string{"pb", "pb"} // Push top two to B.
 	ps.Px(b, a)
 	ps.Px(b, a)
@@ -101,8 +95,15 @@ func five(a, b *ps.Stack) []string {
 	rots := justRotate(*a)
 	result = append(result, justRotate(*a)...)
 	ps.Run(a, b, rots)
+
+	alt, found := bfs(original, len(result))
+	if found && len(alt) < len(result) {
+		return alt
+	}
+
 	return result
 }
+
 func fitTheFourth(x int, left []int) int {
 	var position int
 	iMax, maxStayer := ps.MaxInt(left)
