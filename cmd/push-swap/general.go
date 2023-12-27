@@ -37,7 +37,7 @@ func general(a, b *ps.Stack) []string {
 
 	// Fred 1000orion's bucket sort to B, then insertion sort back to A.
 	// n needs to be at least 8 because when n = 6 or 7, the "third" left
-	//on stack A when the smallest two thirds are pushed to B is not
+	// on stack A when the smallest two thirds are pushed to B is not
 	// has only 2 elements, whereas the algorithm says push the final
 	// (largest) third till 3 elements are left!
 	if len(a.Nums) > 7 {
@@ -54,6 +54,8 @@ func general(a, b *ps.Stack) []string {
 		}
 		return result
 	}
+
+	// Now we deal with stacks of size 6 and 7.
 
 	// To get these under 12 instructions. I though they were passing ok till I
 	// changed from hundred to bucket3. Either I changed something else
@@ -103,15 +105,13 @@ func general(a, b *ps.Stack) []string {
 	ps.Run(a, b, justRotate(*a))
 
 	// An extra check to see if we can sort using a sequence of only
-	// swaps and rotations. This uses a BFS, and if too slow for big
+	// swaps and rotations. This uses a BFS, and is too slow for big
 	// stacks, hence the simpler checks at the beginning of this
-	// function. We already covered stack size 8 above, so this is
-	// just for stack size 6 and 7.
-	if len(a.Nums) < 9 {
-		alt, sorted := bfs(original, len(result))
-		if sorted && len(alt) < len(result) {
-			return alt
-		}
+	// function. We already performed this check for stack size 8 above,
+	// so this is just for stack size 6 and 7.
+	alt, sorted := bfs(original, len(result))
+	if sorted && len(alt) < len(result) {
+		return alt
 	}
 
 	return result
