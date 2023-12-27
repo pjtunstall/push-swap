@@ -89,9 +89,9 @@ This is currently the best way we've found for large stacks. It assumes, though,
 
 For 6 and 7, we use [Ali Yigit Ogun's self-titled "Turk" algorithm](https://medium.com/@ayogun/push-swap-c1f5d2d41e97). I recommend this [YouTube video by Thuy Quematon (Thuggonaut)](https://www.youtube.com/watch?v=wRvipSG4Mmk) for more detail. Ali used an [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort) of all but three numbers to stack B in descending order, then insertion sort again back to A in ascending order, with a cost check in both directions as per Fred. That is to say, at each iteration, he pushes the number for which the least amount of rotations is needed to bring it to the top of its own stack and its target (i.e. the number that should be beneath it) to the top of the other stack. Ali explains the cost check well with an example.
 
-For stack size less than 9, after finding our provisional result, we run a cheeky BFS to see if there's a shorter sequences of instructions that avoids pushes. Perhaps surprisingly, there often is. BFS beats Turk on 74 out of the 120 possible permutations of 5 numbers, 567 out of the 720 permutations of 6 numbers, and 3683 out of 5040 for 7. BFS becomes prohibitively time-consuming for larger stacks, so we just do some simple checks for low-hanging fruit: stacks that can be sorted with rotations alone, or with a swap, possibly preceded and possibly succeeded by rotations.
+For stack sizes 5, 6, 7, and 8, after finding our provisional result, we run a cheeky BFS to see if there's a shorter sequences of instructions that avoids pushes. Perhaps surprisingly, there often is. BFS beats Turk on 74 out of the 120 possible permutations of 5 numbers, 567 out of the 720 permutations of 6 numbers, and 3683 out of 5040 for 7. BFS becomes prohibitively time-consuming for larger stacks, so we just do some simple checks for low-hanging fruit: stacks that can be sorted with rotations alone, or with a swap, possibly preceded and possibly succeeded by rotations.
 
-With the methods above, our program sorts all but three permutations of the numbers from 1 to 6 (inclusive) in under 13 instructions: "4 3 2 1 6 5", "2 6 5 4 3 1", "3 1 2 6 5 4". All take exactly 13. For the sake of neatness, we hardcode them to take less than 13.
+With the methods above, our program sorts all but three permutations of the numbers from 1 to 6 (inclusive) in under 13 instructions. The exceptions are: "4 3 2 1 6 5", "2 6 5 4 3 1", "3 1 2 6 5 4". All take exactly 13. For the sake of neatness, we hardcode them to take less than 13.
 
 There are several other Medium articles on the subject. We looked at articles by [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e), [Julien Caucheteux](https://medium.com/@julien-ctx/push-swap-an-easy-and-efficient-algorithm-to-sort-numbers-4b7049c2639a), [Dan Sylvain](https://medium.com/@dansylvain84/my-implementation-of-the-42-push-swap-project-2706fd8c2e9f), [YYBer](https://medium.com/@YYBer/my-one-month-push-swap-journey-explore-an-easily-understand-and-efficient-algorithm-11449eb17752), and [Luca Fischer](https://medium.com/@lucafischer_11396/two-stacks-one-goal-understanding-the-push-swap-algorithm-e08e5986f657).
 
@@ -178,7 +178,7 @@ You'll find the source code in several folders: `push-swap`, for the program tha
 
 The `ps` package is for functions and structs these programs share.
 
-`cmd` also contains a folder called `explorer`, for exploring new ideas, such as the advantages of BFS.
+`cmd` also contains a folder called `explorer`, which is a playground for exploring new ideas. Here we looked at the advantages of BFS. The JSON files contain lists of the shortest push-free solutions for stack sizes 5, 6, and 7. `explorer` is also a place where we stow the remains of experiments to compared different algorithms.
 
 Like most push-swappers, we dealt with initial stacks of less than six numbers as special cases. This was partly because they lend themselves to optimizations that would be prohibitively time-consuming for longer lists, and partly so we could treat these smaller problems as warm up exercises. The six permutations of three elements are easily checked by hand. With a ranking function to simplify the task, it didn't take much longer to find optimal solutions for the 24 permutations of four elements and hardcode them.
 
@@ -198,9 +198,9 @@ When pushing the cheapest number from A to B, its target is the biggest smaller 
 
 Indiscriminately pushing the first two numbers from A to B can result in cases where one or both are just pushed right back! We deal with this by checking first to see if the stack is already sorted, and by canceling out any "pb", "pa" subsequence from the list of instructions.
 
-For the general case with more than 7 numbers, we use Fred Orion's initial triage of the lower two thirds into two buckets on B, the greater numbers on top, the lesser at the bottom, then push all but three to the top of B, sort those three in place, and then insertion sort everything back with the same cost check that Ali uses.
+For the general case with more than 7 numbers, we use Fred Orion's initial triage of the lower two thirds into two buckets on B, the greater numbers on top, the lesser at the bottom, then push all but three of the biggest third to the top of B, sort those three in place, and then insertion sort everything back with the same cost check that Ali uses.
 
-As mentioned, we check for some cases where there is a shorter push-free sort and return that instead if we find it.
+As mentioned, we check for some cases where there is a shorter push-free sort and return that instead if we find it. For stack sizes 5 though 8, we find the shortest push-free solution with BFS and return this if it's shorter than our current result. For larger stacks, we make do with a few simple checks to see if the stack is already sorted or can be just rotated into the correct order, or sorted with a swap, or rotations and a swap, or rotations and a swap and more rotations.
 
 ## 5. Mathematical curios
 
