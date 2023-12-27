@@ -159,16 +159,16 @@ Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 5
 
 Longest Run: We also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
 
-Fred(3) 555
-Ali 561
-Dan(2) 566
-Fred(4) 569
-Fred(2) 573
-Longest Run 577
-Dan(3) 578
-Julien 584
-Leo 1084
-Ali(-cost) 1387
+- Fred(3) 555
+- Ali 561
+- Dan(2) 566
+- Fred(4) 569
+- Fred(2) 573
+- Longest Run 577
+- Dan(3) 578
+- Julien 584
+- Leo 1084
+- Ali(-cost) 1387
 
 Yet to test: Jamie Dawson, YYber, Luca Fischer, Anya Schukin.
 
@@ -199,6 +199,8 @@ When pushing the cheapest number from A to B, its target is the biggest smaller 
 Indiscriminately pushing the first two numbers from A to B can result in cases where one or both are just pushed right back! We deal with this by checking first to see if the stack is already sorted, and by canceling out any "pb", "pa" subsequence from the list of instructions.
 
 For the general case with more than 7 numbers, we use Fred Orion's initial triage of the lower two thirds into two buckets on B, the greater numbers on top, the lesser at the bottom, then push all but three to the top of B, sort those three in place, and then insertion sort everything back with the same cost check that Ali uses.
+
+As mentioned, we check for some cases where there is a shorter push-free sort and return that instead if we find it.
 
 ## 5. Mathematical curios
 
