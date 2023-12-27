@@ -159,16 +159,16 @@ Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 5
 
 Longest Run: We also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
 
-- Fred(3) 555
-- Ali 561
-- Dan(2) 566
-- Fred(4) 569
-- Fred(2) 573
-- Longest Run 577
-- Dan(3) 578
-- Julien 584
-- Leo 1084
-- Ali(-cost) 1387
+Fred(3) 555  
+Ali 561  
+Dan(2) 566  
+Fred(4) 569  
+Fred(2) 573  
+Longest Run 577  
+Dan(3) 578  
+Julien 584  
+Leo 1084  
+Ali(-cost) 1387
 
 Yet to test: Jamie Dawson, YYber, Luca Fischer, Anya Schukin.
 
@@ -228,13 +228,13 @@ To see how this can be, and why he must also have always got exactly 1084 for 10
 
 Ceil(log2(99)) = 7, so it takes 7 bits to express these numbers. Picture them listed in binary form, padding the smaller ones with leading zeros:
 
-0000000
-0000001
-0000010
-0000011
-0000100
-...
-1100010
+0000000  
+0000001  
+0000010  
+0000011  
+0000100  
+...  
+1100010  
 1100011
 
 In sorting, there is one pass (iteration) for every bit, starting with the least significant, i.e. at the right. At every pass, all the numbers with a 0 at that bit will be pushed to B with `pb` and eventually back with `pa`, while all the numbers with a 1 at that bit will be rotated out of the way with `ra`.
