@@ -42,9 +42,9 @@ func TestGeneral(t *testing.T) {
 	}
 
 	// // Uncomment and set limit to 0 to see the mean and standard deviation:
-	// 	t.Errorf("fails: %v", fails)
-	// 	t.Errorf("mean: %v", Average(scores))
-	// 	t.Errorf("standard deviation: %v", StandardDeviation(scores))
+	// t.Errorf("fails: %v", fails)
+	// t.Errorf("mean: %v", Average(scores))
+	// t.Errorf("standard deviation: %v", StandardDeviation(scores))
 
 	// Stack size 6:
 

@@ -39,20 +39,12 @@ func general(a, b *ps.Stack) []string {
 	// n needs to be at least 8 because when n = 6 or 7, the "third" left
 	// on stack A when the smallest two thirds are pushed to B is not
 	// has only 2 elements, whereas the algorithm says push the final
-	// (largest) third till 3 elements are left!
-	if len(a.Nums) > 7 {
-		result = bucket3(a, b)
-		// An extra check to see if we can sort using a sequence of only
-		// swaps and rotations. This uses a BFS, and if too slow for big
-		// stacks, hence the simpler checks at the beginning of this
-		// function.
-		if len(a.Nums) == 8 {
-			alt, sorted := bfs(original, len(result))
-			if sorted && len(alt) < len(result) {
-				result = alt
-			}
-		}
-		return result
+	// (largest) third till 3 elements are left.
+	// Turk algorithm actually gets better and better than Orion till
+	// n == 42. After that, Orion starts to improve relative to Turk,
+	// and at n == 93, Orion is winning over Turk at last.
+	if len(a.Nums) > 92 {
+		return bucket3(a, b)
 	}
 
 	// Now we deal with stacks of size 6 and 7.
@@ -109,11 +101,13 @@ func general(a, b *ps.Stack) []string {
 	// stacks, hence the simpler checks at the beginning of this
 	// function. We already performed this check for stack size 8 above,
 	// so this is just for stack size 6 and 7.
-	alt, sorted := bfs(original, len(result))
-	if sorted && len(alt) < len(result) {
-		return alt
-	}
+	if len(a.Nums) < 9 {
+		alt, sorted := bfs(original, len(result))
+		if sorted && len(alt) < len(result) {
+			return alt
+		}
 
+	}
 	return result
 }
 
