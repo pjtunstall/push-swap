@@ -127,11 +127,11 @@ func bucket3(a, b *ps.Stack) []string {
 	// Push the smallest third to the bottom of stack B and the
 	// middle third to the top.
 	for len(a.Nums) > third {
-		A := a.GetNumsSlice()
-		if A[0] <= twoThirds {
+		top := a.Nums[a.Top]
+		if top <= twoThirds {
 			ps.Px(b, a)
 			result = append(result, "pb")
-			if A[0] <= third && len(b.Nums) > 1 {
+			if top <= third && len(b.Nums) > 1 {
 				ps.Rx(b)
 				result = append(result, "rb")
 			}
