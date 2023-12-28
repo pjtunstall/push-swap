@@ -1,4 +1,5 @@
 // A test to compare the performance or turk and orion.
+// This one does actually work.
 
 package main
 

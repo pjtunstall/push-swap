@@ -182,6 +182,8 @@ Ali(-cost) 1387
 
 Yet to test: Jamie Dawson, YYber, Luca Fischer, Anya Schukin.
 
+To really get a sense of how these algorithms compare, we'd also need to test them over a range of numbers, epecially for smaller stacks. As mentioned, Ali performed better for stacks of less than 93 numbers. What other surprises are still to discover?
+
 ## 4. Structure and strategy
 
 You'll find the source code in several folders: `push-swap`, for the program that generates instructions to sort a given list of numbers, and `checker` for the program to check whether a given sequence of instructions sorts a given list of numbers, both in `cmd`.
