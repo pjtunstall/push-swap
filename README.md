@@ -89,7 +89,7 @@ This is currently the best way we've found for large stacks. It does assume that
 
 Ali used an [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort) of all but three numbers to stack B in descending order, then insertion sort again back to A in ascending order, with a cost check in both directions as per Fred. That is to say, at each iteration, he pushes the number for which the least amount of rotations is needed to bring it to the top of its own stack and its target (i.e. the number that should be beneath it) to the top of the other stack. Ali explains the cost check well with an example.
 
-Curiously, Ali's method performs better and better, compared to Fred's, as stack size increases from 8 to 42, after which Fred's starts to improve, eventually overtaking at 93.
+Curiously, Ali's method performs better and better, compared to Fred's, as stack size increases from 8 to 42, after which Fred's starts to improve, eventually overtaking at 93 (judging by mean number of instructions and percent of cases where Ali takes fewer instructions than Fred).
 
 We've treated the very smallest stacks as special cases. We've hardcoded 3 and 4. For 5, we followed [Jamie Dawson](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a), who also treated it as a special case: Push the top two numbers from A to B, sort the three on A, swap (or equivalently rotate) the two on B, insert back at the correct places, and rotate till the smallest is on top.
 
