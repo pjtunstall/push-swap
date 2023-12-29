@@ -47,18 +47,12 @@ func general(a, b *ps.Stack) []string {
 		return bucket3(a, b)
 	}
 
-	// Now we deal with stacks of size 6 and 7.
-
-	// To get these under 12 instructions. I though they were passing ok till I
-	// changed from hundred to bucket3. Either I changed something else
-	// that Git is not showing me, or the test was not showing that they
-	// were taking more than 11 instructions.
-	if a.GetNumsString() == "4 3 2 1 6 5" {
-		result = []string{"pb", "pb", "ss", "ra", "ra", "sa", "pa", "pa", "rra", "rra"}
-		ps.Run(a, b, result)
-		return result
-	}
-
+	// To get these (and hence all stacks of 6) under 12 instructions.
+	// without this check, the current algorithm takes 13 instructions.
+	// In the first case, "pb pb rb pb sa rra pa rr pa ra ra pa rra",
+	// with no better solution found by BFS. In the second case, BFS
+	// does find the best solution, but it's still 13:
+	// "sa ra sa ra ra sa ra sa rra sa ra ra ra".
 	if a.GetNumsString() == "2 6 5 4 3 1" {
 		result = []string{"pb", "rra", "pb", "ss", "ra", "ra", "sa", "pa", "pa"}
 		ps.Run(a, b, result)

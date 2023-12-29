@@ -1060,3 +1060,26 @@ func three(nums []int) ([]string, bool) {
 
 // 	return result
 // }
+
+// These three stacks require more than 12 moves to sort by Fred's
+// algorithm. The last two also require more than 12 moves to sort
+// by AYO's algorithm. In all cases, they took 13. They're the only
+// stacks of 6 that take more than 12.
+
+// if a.GetNumsString() == "4 3 2 1 6 5" {
+// 	// 	result = []string{"pb", "pb", "ss", "ra", "ra", "sa", "pa", "pa", "rra", "rra"}
+// 	// 	ps.Run(a, b, result)
+// 	// 	return result
+// 	// }
+
+// 	if a.GetNumsString() == "2 6 5 4 3 1" {
+// 		result = []string{"pb", "rra", "pb", "ss", "ra", "ra", "sa", "pa", "pa"}
+// 		ps.Run(a, b, result)
+// 		return result
+// 	}
+
+// 	if a.GetNumsString() == "3 1 2 6 5 4" {
+// 		result = []string{"ra", "pb", "pb", "sa", "ra", "ra", "sa", "pa", "pa"}
+// 		ps.Run(a, b, result)
+// 		return result
+// 	}
