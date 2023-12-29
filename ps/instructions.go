@@ -44,6 +44,7 @@ func Ss(a, b *Stack) {
 	Sx(b)
 }
 
+// Pushes from y to x.
 func Px(x, y *Stack) {
 	if len(y.Nums) == 0 {
 		return

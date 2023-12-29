@@ -303,7 +303,7 @@ func countTotal(n int) int {
 
 ## 6. Detour: bitmasks
 
-The code in the previous section uses a bitmask to identify individual bits of a number. Here we explain the concept with another example.
+The code in the previous section uses a bitmask to identify individual bits of a number. Here we illustrate the concept with another example.
 
 In the `getInstructions` function of the `checker` program (located in `get-instructions.go`), we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
 
