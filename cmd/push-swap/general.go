@@ -47,7 +47,7 @@ func general(a, b *ps.Stack) []string {
 		return bucket3(a, b)
 	}
 
-	// To get these (and hence all stacks of 6) under 12 instructions.
+	// To get these (and hence all stacks of 6) under 13 instructions.
 	// without this check, the current algorithm takes 13 instructions.
 	// In the first case, "pb pb rb pb sa rra pa rr pa ra ra pa rra",
 	// with no better solution found by BFS. In the second case, BFS
