@@ -131,7 +131,7 @@ We can now think of Fred's style of bucket sort as a special case of the method 
 
 YY and Luca just continue the process, placing buckets in layers as they wind out from the center of B. This is great positioning to take advantage of the circularity of the stack, since the bottom is closer to the top, in terms of rotations, than the center.
 
-Leo Fu followes a quite different approach. He uses base 2 radix sort, of the Least Significant Digit flavor. For each bit, starting with the least significant (rightmost), he checks the number at the top of stack A. If the relevant bit is 0, he pushes the top number from A to B with `pb`; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers in A. Then he pushes back everything from B with `pa`, and procedes in this way through all the bits. He says it didn't get him the highest score. Presumably the cost of having to push all those numbers back and forth on multiple passes was too much.
+Leo Fu followes a quite different approach. He uses base 2 [radix sort](https://en.wikipedia.org/wiki/Radix_sort), padding smaller numbers with leading zeros as needed. For each bit, starting with the least significant (rightmost), he checks the number at the top of stack A. If the relevant bit is 0, he pushes the top number from A to B with `pb`; otherwise he applies `ra` to rotate it out of the way to the bottom of A. In this way, he goes through all the numbers in A. Then he pushes back everything from B with `pa`, and procedes in this way through all the bits. He says it didn't get him the highest score. Presumably the cost of having to push all those numbers back and forth on multiple passes was too much.
 
 No doubt [btilly's idea](https://stackoverflow.com/questions/75100698/push-swap-what-is-the-most-efficient-way-to-sort-given-values-using-a-limited-s) of sharing out runs between the two stacks and merging them back and forth would suffer from the same issue: too much pushing.
 
@@ -236,7 +236,7 @@ One consequence of this is that, if we need to rotate one stack, say, `r` times 
 
 ### c. Why Leo Fu always got the same amount of instructions for a given stack size
 
-As mentioned above, Leo Fu reports that his implementation of base 2 LSD radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
+As mentioned above, Leo Fu reports that his implementation of base 2 radix sort took "about 1084" instructions for 100 numbers, and "about 6756" for 500. He imediately corrects himself, saying that he actually always got exactly 6756.
 
 To see how this can be, and why he must also have always got exactly 1084 for 100 numbers, note first that Leo takes the convenient step of converting the original values to their rank: 0, 1, 2, 3, 4, ..., 98, 99.
 
@@ -259,9 +259,51 @@ We can calculate the exact amount of instructions as the number of ones in the l
 
 Similarly, ceil(log2(499)) = 9, so it takes 9 bits to represent the numbers from 0 to 499. It's the highest 12 numbers that are missing from the full total of 2^9 = 512 possible 9-bit sequences, so, as always when the stack size is not a power of 2, the zeros will be overrepresented, and there will be more pushes than rotations.
 
-At this point, though, we have a a bit of a mystery. By my calculation, `9 * 500 + zeros` and `ones + 2 * zeros` both give 6784 rather than Leo's 6756. I'm quite puzzled by this. In his article, Leo actually shows a screenshot of a checker program showing the result 6756 for every random sequence of 500 numbers it tested, so it's not typo. I wonder if he introduced some optimization for stack sizes greater than 100 that I overlooked or that he didn't mention. Maybe I'm just missing something. I've written to him, asking if he has any insight. I'll update this if I learn more.
+At this point, though, we have a a bit of a mystery. By my calculation, `9 * 500 + zeros` and `ones + 2 * zeros` both give 6784 rather than Leo's 6756. I'm quite puzzled by this. In his article, Leo actually shows a screenshot of a checker program showing the result 6756 for every random sequence of 500 numbers it tested, so it's not typo. I wonder if he introduced some optimization for stack sizes greater than 100 that I overlooked or that he didn't mention. I've written to him, asking if he has any insight. I'll update this if I learn more. Here's how I'm counting:
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println(countTotal(500))
+}
+
+func countZeros(n, bits int) int {
+	zeros := 0
+	for i := 0; i < bits; i++ {
+		if (1<<i)&n == 0 {
+			zeros++
+		}
+	}
+	return zeros
+}
+
+func countTotal(n int) int {
+	if n == 0 {
+		return 0
+	}
+	zeros := 0
+	bits := 1
+	for m := 1; m<<bits < n; bits++ {
+	}
+	for i := 0; i < n; i++ {
+		newZeros := countZeros(i, bits)
+		zeros += newZeros
+	}
+	// Equivalently, since ones = bits*n - zeros, we could return
+	// ones + 2*zeros.
+	return bits*n + zeros
+}
+
+```
 
 ## 6. Detour: bitmasks
+
+The code in the previous section uses a bitmask to identify individual bits of a number. Here we explain the concept with another example.
 
 In the `getInstructions` function of the `checker` program (located in `get-instructions.go`), we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
 
