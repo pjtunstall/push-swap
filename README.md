@@ -182,7 +182,7 @@ Longest Run 577
 Dan(3) 578  
 Julien 584  
 Leo 1084  
-Ali(-cost) 1387
+Ali(-cost) 1387  
 Jamie 4123?
 
 Yet to test: YYber, Luca Fischer, Anya Schukin.
