@@ -1,5 +1,6 @@
 // A test to compare the performance or turk and orion.
-// This one does actually work.
+// This one does actually work. Move to cmd/push-swap and
+// call it from the start of main.
 
 package main
 

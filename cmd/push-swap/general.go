@@ -48,7 +48,7 @@ func general(a, b *ps.Stack) []string {
 	}
 
 	// To get these (and hence all stacks of 6) under 13 instructions.
-	// without this check, the current algorithm takes 13 instructions.
+	// Without this check, the current algorithm takes 13 instructions.
 	// In the first case, "pb pb rb pb sa rra pa rr pa ra ra pa rra",
 	// with no better solution found by BFS. In the second case, BFS
 	// does find the best solution, but it's still 13:
@@ -61,6 +61,16 @@ func general(a, b *ps.Stack) []string {
 
 	if a.GetNumsString() == "3 1 2 6 5 4" {
 		result = []string{"ra", "pb", "pb", "sa", "ra", "ra", "sa", "pa", "pa"}
+		ps.Run(a, b, result)
+		return result
+	}
+
+	// AYO succeeds at this one in 12 instructions; Fred took 13. Since
+	// we already found this shorter solution (10) by hand, to get Fred
+	// under 13, we use it here. AYO's solution:
+	// "pb pb sb pb sa rra pa ra pa pa rra rra".
+	if a.GetNumsString() == "4 3 2 1 6 5" {
+		result = []string{"pb", "pb", "ss", "ra", "ra", "sa", "pa", "pa", "rra", "rra"}
 		ps.Run(a, b, result)
 		return result
 	}
