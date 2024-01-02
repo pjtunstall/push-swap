@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-// 1000 times tests that 100 random numbers are sorted in less than 700 instructions,
+// 10000 times tests that 100 random numbers are sorted in less than 700 instructions,
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
 	limit := 700 // Must be under this.
@@ -30,7 +30,7 @@ func TestGeneral(t *testing.T) {
 		instructions := general(&a, &b)
 		_, sorted := ps.Check(a, b)
 		if !sorted {
-			t.Errorf("not sorted")
+			t.Errorf("not sorted: %v", a.GetNumsString())
 		}
 
 		if len(instructions) >= limit {
@@ -49,8 +49,8 @@ func TestGeneral(t *testing.T) {
 	// Stack size 6:
 
 	// // Uncomment this and related lines, and adjust limit to explore stats.
-	// fails := 0
-	// scores := make([]float64, 0, 720)
+	// fails = 0
+	// scores = make([]float64, 0, 720)
 
 	// Check that the result is sorted for all permutations of 1-6.
 	// Note that this unit test for general doesn't take into account

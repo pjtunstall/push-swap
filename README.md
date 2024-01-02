@@ -169,6 +169,8 @@ Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 5
 
 Longest Run: We also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
 
+Our version of Jamie Dawson's technique achieved a mean of 4123, with standard deviation 227. I'm suspicious of this result, since he said he passed. Leo Fu lists grades from "less than 700" (5 points) to "less than 1500" (1 point). Could they be bonus points? We'll have to look more closely at our implementation to see if we're really replicating his method. (We did tweak it by sorting the numbers in descending order on B, to save having to sort them back into ascending order on A.) Apologies to Jamie if this is a misrepresentation.
+
 In the table below, number of buckets is shown in paretheses where we tried varying it. Fred(3) is Fred's original algorithm, and Dan(2) is Dan's original.
 
 Fred(3) 555  
@@ -181,8 +183,9 @@ Dan(3) 578
 Julien 584  
 Leo 1084  
 Ali(-cost) 1387
+Jamie 4123?
 
-Yet to test: Jamie Dawson, YYber, Luca Fischer, Anya Schukin.
+Yet to test: YYber, Luca Fischer, Anya Schukin.
 
 To really get a sense of how these algorithms compare, we'd also need to test them over a range of numbers, epecially for smaller stacks. As mentioned, Ali performed better for stacks of less than 93 numbers. What other surprises are out there?
 

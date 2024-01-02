@@ -448,3 +448,195 @@ func rank(nums []int) string {
 
 	return s
 }
+
+// // Like FO's algorithm, but using 2 buckets instead of 3.
+// func hundredHalves(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+
+// 	// Push the smallest half to the bottom of stack B and the
+// 	// biggest half to the top.
+// 	for len(a.Nums) > 3 {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if b.Nums[b.Top] < 50 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Perform a swap on stack A if necessary to make it rotatable
+// 	// into sorted position.
+// 	_, rotatable := three(a.Nums)
+// 	if !rotatable {
+// 		ps.Sx(a)
+// 		result = append(result, "sa")
+// 	}
+
+// 	// Sort while inserting from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // Variant of FO's algorithm, but using 4 buckets instead of 3.
+// func fourSeasons(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+
+// 	// Group the numbers are grouped according to size and call
+// 	// the smallest fourth spring, the next smallest summer,
+// 	// then fall, and finally winter the biggest. We first push
+// 	// summer to the bottom of stack B and fall to the top.
+// 	for len(a.Nums) > 50 {
+// 		A := a.GetNumsSlice()
+// 		if A[0] > 25 && A[0] < 76 {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 			if A[0] < 51 && len(b.Nums) > 1 {
+// 				ps.Rx(b)
+// 				result = append(result, "rb")
+// 			}
+// 		} else {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	// Now we push spring to the bottom of stack B and winter to the top,
+// 	// leaving the last three on stack A.
+// 	for len(a.Nums) > 3 {
+// 		A := a.GetNumsSlice()
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 		if A[0] < 26 {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+
+// 	// Perform a swap on stack A if necessary to make it rotatable
+// 	// into sorted position.
+// 	_, rotatable := three(a.Nums)
+// 	if !rotatable {
+// 		ps.Sx(a)
+// 		result = append(result, "sa")
+// 	}
+
+// 	// Sort while merging from stack B to stack A.
+// 	result = append(result, insert(b, a, 0, false)...)
+
+// 	// Rotate stack A into sorted position.
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	return result
+// }
+
+// // Jamie Dawson's algorithm, or possibly not. It scores badly (4123),
+// // but he says it passed (less than 1500?). Perhaps we've misinterpreted it,
+// // or perhaps the pass grade at his school is more lenient. We've
+// // optimized a bit by sorting onto B in descending order, and simplifed
+// // the process of finding the next number to push to B. Instead of finding
+// // the closest number, in the range, from the top and the closest from
+// // the bottom, and comparing how far each is from the top and bottom,
+// // we just search simultaneously from the top and bottom, and push the
+// // first one we find that is in the range.
+// func jd(a, b *ps.Stack) []string {
+// 	result := []string{}
+
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+
+// 	for len(a.Nums) > 0 {
+// 		A := a.GetNumsSlice()
+// 		B := b.GetNumsSlice()
+// 	outer:
+// 		for k := 0; k < 5; k++ {
+// 			for i := 0; i < len(A); i++ {
+// 				if len(A) == 0 {
+// 					break outer
+// 				}
+// 				if len(B) == 20*(k+1) {
+// 					break
+// 				}
+// 				if A[i] > 20*k && A[i] <= 20*(k+1) {
+// 					for j := 1; j <= i; j++ {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 						A = a.GetNumsSlice()
+// 					}
+// 					if len(B) > 0 {
+// 						iMin, m := ps.MinInt(B)
+// 						iMax, _ := ps.MaxInt(B)
+// 						targetIndex := iMin
+// 						if A[0] < m {
+// 							targetIndex = iMax
+// 						} else {
+// 							for j := 0; j < len(B); j++ {
+// 								if B[j] < A[0] && B[j] > B[targetIndex] {
+// 									targetIndex = j
+// 								}
+// 							}
+// 						}
+// 						for j := 0; j < targetIndex; j++ {
+// 							ps.Rx(b)
+// 							result = append(result, "rb")
+// 						}
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					A = a.GetNumsSlice()
+// 					B = b.GetNumsSlice()
+// 				}
+
+// 				if len(A) == 0 || len(A)-i <= 0 {
+// 					break outer
+// 				}
+// 				if A[len(A)-i-1] > 20*k && A[len(A)-i-1] <= 20*(k+1) {
+// 					for j := len(A) - i - 1; j <= len(A)-1; j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 						A = a.GetNumsSlice()
+// 					}
+// 					if len(B) > 0 {
+// 						iMin, m := ps.MinInt(B)
+// 						iMax, _ := ps.MaxInt(B)
+// 						targetIndex := iMin
+// 						if A[0] < m {
+// 							targetIndex = iMax
+// 						} else {
+// 							for j := 0; j < len(B); j++ {
+// 								if B[j] < A[0] && B[j] > B[targetIndex] {
+// 									targetIndex = j
+// 								}
+// 							}
+// 						}
+// 						for j := 0; j < targetIndex; j++ {
+// 							ps.Rx(b)
+// 							result = append(result, "rb")
+// 						}
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					A = a.GetNumsSlice()
+// 					B = b.GetNumsSlice()
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	for len(b.Nums) > 0 {
+// 		ps.Px(a, b)
+// 		result = append(result, "pa")
+// 	}
+
+// 	finalRotations := justRotate(*a)
+// 	ps.Run(a, b, finalRotations)
+// 	result = append(result, finalRotations...)
+
+// 	return result
+// }
