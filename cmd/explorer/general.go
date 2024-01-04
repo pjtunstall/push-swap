@@ -68,6 +68,16 @@ func general(a, b *ps.Stack) []string {
 		return result
 	}
 
+	// AYO succeeds at this one in 12 instructions:
+	// "pb pb sb pb sa rra pa ra pa pa rra rra".
+	// Since we already found this shorter solution (10) by hand,
+	// we could use it here.
+	if a.GetNumsString() == "4 3 2 1 6 5" {
+		result = []string{"pb", "pb", "ss", "ra", "ra", "sa", "pa", "pa", "rra", "rra"}
+		ps.Run(a, b, result)
+		return result
+	}
+
 	// AYO's "Turk" algorithm.
 	ps.Px(b, a)
 	ps.Px(b, a)
@@ -633,5 +643,142 @@ func rank(nums []int) string {
 // 	ps.Run(a, b, finalRotations)
 // 	result = append(result, finalRotations...)
 
+// 	return result
+// }
+
+// // Jamie Dawson's but with descending order on B, and the additional
+// // optimizatuon of shared rotations.
+// func jd(a, b *ps.Stack) []string {
+// 	result := []string{}
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	for k := 20; k <= 100; k += 20 {
+// 		for len(b.Nums) < k {
+// 			A := a.GetNumsSlice()
+// 			B := b.GetNumsSlice()
+// 			for i := 0; i <= len(a.Nums)/2; i++ {
+// 				rotsA := 0
+// 				rotsB := 0
+// 				upB := true
+// 				if A[i] <= k {
+// 					for j := i; j > 0; j-- {
+// 						rotsA++
+// 					}
+// 					if len(b.Nums) > 0 {
+// 						iMin, m := ps.MinInt(B)
+// 						iMax, _ := ps.MaxInt(B)
+// 						targetIndex := iMin
+// 						if A[i] < m {
+// 							targetIndex = iMax
+// 						} else {
+// 							for j := 0; j < len(B); j++ {
+// 								if B[j] < A[i] && B[j] > B[targetIndex] {
+// 									targetIndex = j
+// 								}
+// 							}
+// 						}
+// 						if targetIndex > len(B)/2 {
+// 							upB = false
+// 							for j := targetIndex; j < len(B); j++ {
+// 								rotsB++
+// 							}
+// 						} else {
+// 							for j := targetIndex; j > 0; j-- {
+// 								rotsB++
+// 							}
+// 						}
+// 					}
+// 					if upB {
+// 						shared := 0
+// 						shared = min(rotsA, rotsB)
+// 						rotsA -= shared
+// 						rotsB -= shared
+// 						for j := 0; j < shared; j++ {
+// 							ps.Rr(a, b)
+// 							result = append(result, "rr")
+// 						}
+// 					}
+// 					for j := 0; j < rotsB; j++ {
+// 						if upB {
+// 							ps.Rx(b)
+// 							result = append(result, "rb")
+// 						} else {
+// 							ps.Rrx(b)
+// 							result = append(result, "rrb")
+// 						}
+// 					}
+// 					for j := 0; j < rotsA; j++ {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+
+// 				if A[len(A)-i-1] <= k {
+// 					for j := len(A) - i - 1; j < len(A); j++ {
+// 						rotsA++
+// 					}
+// 					if len(b.Nums) > 0 {
+// 						iMin, m := ps.MinInt(B)
+// 						iMax, _ := ps.MaxInt(B)
+// 						targetIndex := iMin
+// 						if A[len(A)-i-1] < m {
+// 							targetIndex = iMax
+// 						} else {
+// 							for j := 0; j < len(B); j++ {
+// 								if B[j] < A[len(A)-i-1] && B[j] > B[targetIndex] {
+// 									targetIndex = j
+// 								}
+// 							}
+// 						}
+// 						if targetIndex > len(B)/2 {
+// 							upB = false
+// 							for j := targetIndex; j < len(B); j++ {
+// 								rotsB++
+// 							}
+// 						} else {
+// 							for j := targetIndex; j > 0; j-- {
+// 								rotsB++
+// 							}
+// 						}
+// 					}
+// 					if !upB {
+// 						shared := 0
+// 						shared = min(rotsA, rotsB)
+// 						rotsA -= shared
+// 						rotsB -= shared
+// 						for j := 0; j < shared; j++ {
+// 							ps.Rrr(a, b)
+// 							result = append(result, "rrr")
+// 						}
+// 					}
+// 					for j := 0; j < rotsB; j++ {
+// 						if upB {
+// 							ps.Rx(b)
+// 							result = append(result, "rb")
+// 						} else {
+// 							ps.Rrx(b)
+// 							result = append(result, "rrb")
+// 						}
+// 					}
+// 					for j := 0; j < rotsA; j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+// 			}
+// 		}
+// 	}
+// 	for len(b.Nums) > 0 {
+// 		ps.Px(a, b)
+// 		result = append(result, "pa")
+// 	}
+// 	finalRotations := justRotate(*a)
+// 	ps.Run(a, b, finalRotations)
+// 	result = append(result, finalRotations...)
 // 	return result
 // }

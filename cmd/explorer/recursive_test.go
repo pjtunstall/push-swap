@@ -7,6 +7,8 @@ import (
 	"testing"
 )
 
+// recursiveTest tests the general sorting algorithm on all permutations of n
+// numbers.
 func recursiveTest(t *testing.T, dice []int, depth, limit, n int) {
 	// If we've assigned a value to each die...
 	if depth == n {

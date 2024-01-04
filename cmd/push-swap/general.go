@@ -65,16 +65,6 @@ func general(a, b *ps.Stack) []string {
 		return result
 	}
 
-	// AYO succeeds at this one in 12 instructions; Fred took 13. Since
-	// we already found this shorter solution (10) by hand, to get Fred
-	// under 13, we use it here. AYO's solution:
-	// "pb pb sb pb sa rra pa ra pa pa rra rra".
-	if a.GetNumsString() == "4 3 2 1 6 5" {
-		result = []string{"pb", "pb", "ss", "ra", "ra", "sa", "pa", "pa", "rra", "rra"}
-		ps.Run(a, b, result)
-		return result
-	}
-
 	// AYO's "Turk" algorithm.
 	ps.Px(b, a)
 	ps.Px(b, a)
