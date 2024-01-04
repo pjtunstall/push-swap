@@ -537,93 +537,88 @@ func rank(nums []int) string {
 // 	return result
 // }
 
-// // Jamie Dawson's algorithm, or possibly not. It scores badly (4123),
-// // but he says it passed (less than 1500?). Perhaps we've misinterpreted it,
-// // or perhaps the pass grade at his school is more lenient. We've
-// // optimized a bit by sorting onto B in descending order, and simplifed
-// // the process of finding the next number to push to B. Instead of finding
-// // the closest number, in the range, from the top and the closest from
-// // the bottom, and comparing how far each is from the top and bottom,
-// // we just search simultaneously from the top and bottom, and push the
-// // first one we find that is in the range.
+// // Jamie Dawson's algorithm, except sorting onto B in descending order.
+// // If the numbers are sorted in ascending order on B, it will take 99
+// // extra instructions, ignoring possible optimization by combining
+// // rotations.
 // func jd(a, b *ps.Stack) []string {
 // 	result := []string{}
 
 // 	*a, _ = ps.NewStack(rank(a.Nums))
 
-// 	for len(a.Nums) > 0 {
-// 		A := a.GetNumsSlice()
-// 		B := b.GetNumsSlice()
-// 	outer:
-// 		for k := 0; k < 5; k++ {
-// 			for i := 0; i < len(A); i++ {
-// 				if len(A) == 0 {
-// 					break outer
-// 				}
-// 				if len(B) == 20*(k+1) {
-// 					break
-// 				}
-// 				if A[i] > 20*k && A[i] <= 20*(k+1) {
-// 					for j := 1; j <= i; j++ {
+// 	for k := 20; k <= 100; k += 20 {
+// 		for len(b.Nums) < k {
+// 			A := a.GetNumsSlice()
+// 			B := b.GetNumsSlice()
+// 			for i := 0; i <= len(a.Nums)/2; i++ {
+// 				if A[i] <= k {
+// 					for a.Nums[a.Top] != A[i] {
 // 						ps.Rx(a)
 // 						result = append(result, "ra")
-// 						A = a.GetNumsSlice()
 // 					}
-// 					if len(B) > 0 {
+// 					if len(b.Nums) > 0 {
 // 						iMin, m := ps.MinInt(B)
 // 						iMax, _ := ps.MaxInt(B)
 // 						targetIndex := iMin
-// 						if A[0] < m {
+// 						if a.Nums[a.Top] < m {
 // 							targetIndex = iMax
 // 						} else {
 // 							for j := 0; j < len(B); j++ {
-// 								if B[j] < A[0] && B[j] > B[targetIndex] {
+// 								if B[j] < a.Nums[a.Top] && B[j] > B[targetIndex] {
 // 									targetIndex = j
 // 								}
 // 							}
 // 						}
-// 						for j := 0; j < targetIndex; j++ {
-// 							ps.Rx(b)
-// 							result = append(result, "rb")
+// 						if targetIndex > len(B)/2 {
+// 							for b.Nums[b.Top] != B[targetIndex] {
+// 								ps.Rrx(b)
+// 								result = append(result, "rrb")
+// 							}
+// 						} else {
+// 							for b.Nums[b.Top] != B[targetIndex] {
+// 								ps.Rx(b)
+// 								result = append(result, "rb")
+// 							}
 // 						}
 // 					}
 // 					ps.Px(b, a)
 // 					result = append(result, "pb")
-// 					A = a.GetNumsSlice()
-// 					B = b.GetNumsSlice()
+// 					break
 // 				}
 
-// 				if len(A) == 0 || len(A)-i <= 0 {
-// 					break outer
-// 				}
-// 				if A[len(A)-i-1] > 20*k && A[len(A)-i-1] <= 20*(k+1) {
-// 					for j := len(A) - i - 1; j <= len(A)-1; j++ {
+// 				if A[len(A)-i-1] <= k {
+// 					for a.Nums[a.Top] != A[len(A)-i-1] {
 // 						ps.Rrx(a)
 // 						result = append(result, "rra")
-// 						A = a.GetNumsSlice()
 // 					}
-// 					if len(B) > 0 {
+// 					if len(b.Nums) > 0 {
 // 						iMin, m := ps.MinInt(B)
 // 						iMax, _ := ps.MaxInt(B)
 // 						targetIndex := iMin
-// 						if A[0] < m {
+// 						if a.Nums[a.Top] < m {
 // 							targetIndex = iMax
 // 						} else {
 // 							for j := 0; j < len(B); j++ {
-// 								if B[j] < A[0] && B[j] > B[targetIndex] {
+// 								if B[j] < a.Nums[a.Top] && B[j] > B[targetIndex] {
 // 									targetIndex = j
 // 								}
 // 							}
 // 						}
-// 						for j := 0; j < targetIndex; j++ {
-// 							ps.Rx(b)
-// 							result = append(result, "rb")
+// 						if targetIndex > len(B)/2 {
+// 							for b.Nums[b.Top] != B[targetIndex] {
+// 								ps.Rrx(b)
+// 								result = append(result, "rrb")
+// 							}
+// 						} else {
+// 							for b.Nums[b.Top] != B[targetIndex] {
+// 								ps.Rx(b)
+// 								result = append(result, "rb")
+// 							}
 // 						}
 // 					}
 // 					ps.Px(b, a)
 // 					result = append(result, "pb")
-// 					A = a.GetNumsSlice()
-// 					B = b.GetNumsSlice()
+// 					break
 // 				}
 // 			}
 // 		}

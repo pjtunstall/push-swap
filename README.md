@@ -107,7 +107,7 @@ As mentioned, we used Jamie Dawson's special-case technique for 5 numbers. Jamie
 
 (According to Wikipedia, the classic bucket orders an array as follows: It creates an auxiliary array, "scatters" the items into buckets in this auxiliary array, then sorts them in their buckets, and only then "gathers" the items, returning the buckets in the right order to the original array. Neither Jamie nor Fred do exactly this, but something more like what Fred does is described as a common [optimization](https://en.wikipedia.org/wiki/Bucket_sort#Optimizations). Note, however, that what is being optimized, in the sense of the Wikipedia article, is time complexity, not amount of push-swap instructions. Equally, insertion sort while filling each bucket may not be ideal for time complexity, but this doesn't necessarily have any bearing on what we need to optimize.)
 
-Thus, for 100 numbers, Jamie pushes the lowest 20 numbers to stack B first, then the next lowest, and so on till everything is sorted on B in ascending order. (Why not descending, so that they'll naturally fall into ascending order when pushed back to A?) At each iteration, he pushes the number in the current range that takes least rotations to reach the top of stack A. Finally he pushes them back one by one, presumably rotating B between pushes to account for that fact that, within buckets, ascending order prevails. As with Julien's method, all but trivial sorting happens in one direction. For Jamie, the sorting happens from A to B; for JC, from B to A.
+Thus, for 100 numbers, Jamie pushes the lowest 20 numbers to stack B first, then the next lowest, and so on till everything is sorted on B in ascending order. (Why not descending, so that they'll naturally fall into ascending order when pushed back to A?) At each iteration, he pushes the number in the current range that takes least rotations to reach the top of stack A. Finally he pushes them back one by one, rotating B between pushes to account for that fact that, within buckets, ascending order prevails. As with Julien's method, all but trivial sorting happens in one direction. For Jamie, the sorting happens from A to B; for JC, from B to A.
 
 One remark on Jamie's statement: "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omit this final step and just rotate stack A to where it needs to be before pushing each number back from B.
 
@@ -165,11 +165,11 @@ Julien Caucheteux's approach of pushing everything, then insertion sorting with 
 
 YYBer first scored 750 for 100 numbers by pushing the smallest half to A, then the smallest half of the rest, and so on till A is empty, and then selection sorting them back to A. After this attempt, she switched to a new strategy: push into 8 equal-sized buckets on B in the case of 100 numbers, or 12 in the case of 500, then push whatever is left till A is empty. Then selection sort back to A. This required less than 700 instructions for 100 numbers, and about 6500 for 500. As a final optimization, she replaced selection sort with the ingenious cost-checking procedure, described above, that reduced her mean score for 500 numbers to "5300-5400 steps".
 
+Jamie Dawson's algorithm took 867 instructions, with a standard deviation of 35. It can, of course, be reduced to 768 by the simple expedient of sorting into descending (rather than ascending) order on B.
+
 Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: Why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
 Longest Run: We also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
-
-Our version of Jamie Dawson's technique achieved a mean of 4123, with standard deviation 227. I'm suspicious of this result, since he said he passed. Leo Fu lists grades from "less than 700" (5 points) to "less than 1500" (1 point). Could they be bonus points? We'll have to look more closely at our implementation to see if we're really replicating his method. (We did tweak it by sorting the numbers in descending order on B, to save having to sort them back into ascending order on A.) Apologies to Jamie if this is a misrepresentation.
 
 In the table below, number of buckets is shown in paretheses where we tried varying it. Fred(3) is Fred's original algorithm, and Dan(2) is Dan's original.
 
@@ -181,9 +181,9 @@ Fred(2) 573
 Longest Run 577  
 Dan(3) 578  
 Julien 584  
+Jamie 867  
 Leo 1084  
-Ali(-cost) 1387  
-Jamie 4123?
+Ali(-cost) 1387
 
 Yet to test: YYber, Luca Fischer, Anya Schukin.
 
