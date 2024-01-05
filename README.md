@@ -115,7 +115,7 @@ For stacks of 100 numbers, Jamie uses 5 buckets, and for stacks of 500 numbers, 
 
 As with Julien's method, all but trivial sorting happens in one direction. For Jamie, the sorting happens from A to B; for Julien, from B to A.
 
-We'll see in [Results](#c-results) that a conventional bucket sort first, to triage the numbers onto B before sorting them fully onto A, would be better, as would fewer buckets. In fact, the best number of buckets with this technique is one! If we just push everything from A to B, then insertion sort back, Jamie's technique reduces to Julien's, with a significant improvement.
+We'll see in [Results](#c-results) that a conventional bucket sort first, to triage the numbers onto B before sorting them fully onto A, would be better, as would fewer buckets. In fact, the best number of buckets with this technique is one! If we just push everything from A to B, then insertion sort back, Jamie's technique reduces to Julien's.
 
 YYBer, like many push-swappers, including ourselves, follows the convenience of ranking the numbers, thus "-3 -100 0 360 108" becomes "2 1 3 5 4". This can simplify calculations, and the instructions needed to sort them are the same. (Just keep in mind that she uses the word index to mean rank in this sense.) For stack size 100, she pushes them from A to B as 8 buckets of 12 numbers each. To sort 500 numbers, she uses 12 buckets of 40 numbers each. In either case, she pushes whatever is left to the top of B as one last bucket till A is empty.
 
@@ -173,13 +173,13 @@ YYBer first scored 750 for 100 numbers by pushing the smallest half to A, then t
 
 Jamie Dawson's algorithm took 867 instructions, with a standard deviation of 35. It can be cut to 768 by the simple expedient of switching the intial sort onto B from ascending to descending. Shared rotations bring it down further to 713. A natural question is: what would happen if we just triage the numbers into buckets on B (as in a traditional bucket sort), then only apply the insertion sort as we push them back to A? Well, then we only need 674 instructions. How about adjusting the number of buckets?
 
-5: 674
-4: 643
-3: 632
-2: 595
+5: 674  
+4: 643  
+3: 632  
+2: 595  
 1: 584
 
-So, here, the buckets are actually making it worse! Notice that, with one bucket, i.e. just pushing everything to B and insertion sorting back, this incremental optimization of Jamie's algorithm reduces to Julien's.
+So, here, the buckets are actually making it worse! Notice that, with one bucket, i.e. just pushing everything to B and insertion sorting back, this incremental optimization of Jamie's algorithm becomes exactly the method that Julien used.
 
 Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
@@ -203,26 +203,26 @@ Ali(-cost) 1387
 
 Yet to test: YYber, Luca Fischer, Anya Schukin.
 
-As for 500 numbers, Jamie says he used the same logic as for 100, "But instead of splitting it into 5 chunks, [\I] just split it into 11 chunks. Why 11? 11 chunks are what I decided to use after running several tests on it. The range of action points I got was way less than other numbers I tested it on."
+As for 500 numbers, Jamie says he used the same logic as for 100, "But instead of splitting it into 5 chunks, \[I\] just split it into 11 chunks. Why 11? 11 chunks are what I decided to use after running several tests on it. The range of action points I got was way less than other numbers I tested it on."
 
 We tested his algorithm (optimized with shared rotations and descending order on B) for different amounts of buckets on 500 numbers. Each test was performed 100 times, and the standard deviation was always in the region of 150. The sweet spot seems to be around 4 buckets.
 
-1: 5208
-2: 4677
-3: 4532
-4: 4505
-5: 4591
-6: 4735
-7: 4890
-8: 4997
-9: 5166
-10: 5326
-11: 5543
-12: 5726
-...
+1: 5208  
+2: 4677  
+3: 4532  
+4: 4505  
+5: 4591  
+6: 4735  
+7: 4890  
+8: 4997  
+9: 5166  
+10: 5326  
+11: 5543  
+12: 5726  
+...  
 20: 7280
 
-turk: 5105
+turk: 5105  
 orion: 4216
 
 To really get a sense of how these algorithms compare, we'd also need to test them over a range of numbers, including smaller stacks. As mentioned, Ali performed better for stacks of less than 93 numbers. What other surprises are out there?
