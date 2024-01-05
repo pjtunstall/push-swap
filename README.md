@@ -181,6 +181,8 @@ Jamie Dawson's algorithm took 867 instructions, with a standard deviation of 35.
 
 So, here, the buckets are actually making it worse! Notice that, with one bucket, i.e. just pushing everything to B and insertion sorting back, this incremental optimization of Jamie's algorithm becomes exactly the method that Julien used.
 
+How is Fred doing so well with 3 buckets, then? Well, he doesn't search for numbers in a current range and rotate them into position to push. Instead, he just takes whatever is on top of A and either rotates in out of the way to the bottom of A, or simply pushes tp B, or pushes to B and rotates: just one or two moves to place each item.
+
 Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
 Longest Run: we also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
@@ -205,7 +207,7 @@ Yet to test: YYber, Luca Fischer, Anya Schukin.
 
 As for 500 numbers, Jamie says he used the same logic as for 100, "But instead of splitting it into 5 chunks, \[I\] just split it into 11 chunks. Why 11? 11 chunks are what I decided to use after running several tests on it. The range of action points I got was way less than other numbers I tested it on."
 
-We tested his algorithm (optimized with shared rotations and descending order on B) for different amounts of buckets on 500 numbers. Each test was performed 100 times, and the standard deviation was always in the region of 150. The sweet spot seems to be around 4 buckets.
+We tested a version of his algorithm--optimized with shared rotations and descending order on B, and making the initial bucket sort a simple triage rather than combining it with instertion sort--for different amounts of buckets on 500 numbers. Each test was performed 100 times. The sweet spot seems to be around 4 buckets.
 
 1: 5208  
 2: 4677  
@@ -225,7 +227,34 @@ We tested his algorithm (optimized with shared rotations and descending order on
 turk: 5105  
 orion: 4216
 
-To really get a sense of how these algorithms compare, we'd also need to test them over a range of numbers, including smaller stacks. As mentioned, Ali performed better for stacks of less than 93 numbers. What other surprises are out there?
+On the other hand, Jamie's algorithm with full insertion sort into the buckets on B (more like what he actuall used, just optimized with descending order on B and shared rotations) does seem to be optimal around the low teens, so his choice of 11 buckets is not unreasonable.
+
+1: 32199  
+2: 19493  
+3: 10804  
+4: 11552  
+5: 9806  
+6: 7963  
+7: 8677  
+8: 7345  
+9: 7109  
+10: 6978  
+11: 6821  
+12: 6743  
+13: 6684  
+14: 6701  
+15: 6776  
+14: 6701  
+15: 6776  
+16: 6834  
+17: 6914  
+18: 7057  
+19: 7114  
+20: 7205  
+..  
+30: 8555
+
+But to really get a sense of how these algorithms compare, we'd also need to test them over a range of numbers, including smaller stacks. As mentioned, Ali performed better for stacks of less than 93 numbers. What other surprises are out there?
 
 ## 4. Structure and strategy
 
