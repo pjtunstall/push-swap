@@ -28,6 +28,9 @@ func TestGeneral(t *testing.T) {
 		}
 		b, _ := ps.NewStack("")
 		instructions := general(&a, &b)
+		a, _ = ps.NewStack(hundred)
+		b, _ = ps.NewStack("")
+		ps.Run(&a, &b, instructions)
 		_, sorted := ps.Check(a, b)
 		if !sorted {
 			t.Errorf("not sorted: %v", a.GetNumsString())
@@ -79,6 +82,9 @@ func TestGeneral(t *testing.T) {
 								// fails++
 								t.Errorf("more than %v instructions to sort 6 numbers:\n%v took %v instructions to sort\n%v", limit-1, input, len(instructions), instructions)
 							}
+							a, _ = ps.NewStack(input)
+							b, _ = ps.NewStack("")
+							ps.Run(&a, &b, instructions)
 							_, sorted := ps.Check(a, b)
 							if !sorted {
 								split := strings.Split(input, " ")

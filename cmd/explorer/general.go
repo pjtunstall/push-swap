@@ -40,7 +40,7 @@ func general(a, b *ps.Stack) []string {
 
 	// Fred 1000orion's bucket sort to B, then insertion sort back to A.
 	// n needs to be at least 8 because when n = 6 or 7, the "third" left
-	// on stack A when the smallest two thirds are pushed to B is not
+	// on stack A when the smallest two thirds are pushed to B
 	// has only 2 elements, whereas the algorithm says push the final
 	// (largest) third till 3 elements are left.
 	// Turk algorithm actually gets better and better than Orion till
@@ -647,7 +647,7 @@ func rank(nums []int) string {
 // }
 
 // // Jamie Dawson's but with descending order on B, and the additional
-// // optimizatuon of shared rotations.
+// // optimization of shared rotations.
 // func jd(a, b *ps.Stack) []string {
 // 	result := []string{}
 // 	*a, _ = ps.NewStack(rank(a.Nums))
@@ -780,5 +780,62 @@ func rank(nums []int) string {
 // 	finalRotations := justRotate(*a)
 // 	ps.Run(a, b, finalRotations)
 // 	result = append(result, finalRotations...)
+// 	return result
+// }
+
+// // Jamie Dawson's but just putting into buckets as we go to B,
+// // the smaller the numbers the closer the bucket to the bottom
+// // of B, only insertion sorting on the way back to A.
+// func bucket(a, b *ps.Stack, size int) []string {
+// 	result := []string{}
+// 	n := len(a.Nums)
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	for k := size; k <= n-n%size; k += size {
+// 		for len(b.Nums) < k {
+// 			A := a.GetNumsSlice()
+// 			for i := 0; i <= len(a.Nums)/2; i++ {
+// 				rotsA := 0
+// 				if A[i] <= k {
+// 					for j := i; j > 0; j-- {
+// 						rotsA++
+// 					}
+// 					for j := 0; j < rotsA; j++ {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+
+// 				if A[len(A)-i-1] <= k {
+// 					for j := len(A) - i - 1; j < len(A); j++ {
+// 						rotsA++
+// 					}
+// 					for j := 0; j < rotsA; j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	if len(a.Nums) == 0 {
+// 		ps.Px(a, b)
+// 		result = result[:len(result)-1]
+// 	} else {
+// 		for len(a.Nums) > 1 {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 		}
+// 	}
+
+// 	result = append(result, insert(b, a, 0, false)...)
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
 // 	return result
 // }

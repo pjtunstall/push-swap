@@ -37,9 +37,9 @@ func general(a, b *ps.Stack) []string {
 
 	// Fred 1000orion's bucket sort to B, then insertion sort back to A.
 	// n needs to be at least 8 because when n = 6 or 7, the "third" left
-	// on stack A when the smallest two thirds are pushed to B is not
-	// has only 2 elements, whereas the algorithm says push the final
-	// (largest) third till 3 elements are left.
+	// on stack A when the smallest two thirds are pushed to B only has
+	// 2 elements, whereas the algorithm says push the final (largest)
+	// third till 3 elements are left.
 	// Turk algorithm actually gets better and better than Orion till
 	// n == 42. After that, Orion starts to improve relative to Turk,
 	// and at n == 93, Orion is winning over Turk at last.
