@@ -73,6 +73,8 @@ We've provided a Zsh script to run the audit questions. Make sure the executable
 
 If auditing this way, be sure to verify that the script does actually do what the audit questions ask, and to consider the subjective questions at the end.
 
+Thanks!
+
 ## 3. Research
 
 ### a. Our peers at affiliated schools
