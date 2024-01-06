@@ -155,7 +155,7 @@ Ali Yigit Ogun says he scored 125/125. As for what this means, he links to a PDF
 
 At any rate, by December 2023, at 01 Founders in London, we'd get an unspecified bonus if we could sort 100 mumbers in less than 700 of the specified operations. No mention is made of 500 numbers in our [audit questions](https://github.com/01-edu/public/tree/master/subjects/push-swap/audit). Altogether, it looks like we could have an easier ride--if we wanted it..
 
-### Results
+### c. Results
 
 In what follows, we'll compare the performance of various algorithms at sorting stacks of 100 numbers. Since doing these tests, we've realized that this may not be indicative of how they fare on smaller stacks, so please bear in mind that this is not an absolute verdict.
 
