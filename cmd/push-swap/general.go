@@ -36,15 +36,15 @@ func general(a, b *ps.Stack) []string {
 	}
 
 	// Fred 1000orion's bucket sort to B, then insertion sort back to A.
-	// n needs to be at least 8 because when n = 6 or 7, the "third" left
-	// on stack A when the smallest two thirds are pushed to B only has
-	// 2 elements, whereas the algorithm says push the final (largest)
-	// third till 3 elements are left.
-	// Turk algorithm actually gets better and better than Orion till
-	// n == 42. After that, Orion starts to improve relative to Turk,
-	// and at n == 93, Orion is winning over Turk at last.
+	// n needs to be at least 8, at least in our implementation, because
+	// when n = 6 or 7, the "third" left on stack A when the smallest two
+	// thirds are pushed to B only has 2 elements, whereas the algorithm
+	// says push the final third, consisting of the largest values, till
+	// 3 elements are left. Turk algorithm actually gets better and better
+	// than Orion till n == 42. After that, Orion starts to improve relative
+	// to Turk, and at n == 93, Orion is winning over Turk at last.
 	if len(a.Nums) > 92 {
-		return bucket3(a, b)
+		return orion(a, b)
 	}
 
 	// To get these (and hence all stacks of 6) under 13 instructions.
@@ -105,17 +105,18 @@ func general(a, b *ps.Stack) []string {
 	return result
 }
 
-func bucket3(a, b *ps.Stack) []string {
+func orion(a, b *ps.Stack) []string {
 	var result []string
 	*a, _ = ps.NewStack(rank(a.Nums))
 	n := len(a.Nums)
 	third := n / 3
-	if n%3 == 2 {
-		third++
-	}
 	twoThirds := 2 * third
-	if 2*(n%3) == 2 {
+
+	switch n % 3 {
+	case 1:
 		twoThirds++
+	case 2:
+		third++
 	}
 
 	// Push the smallest third to the bottom of stack B and the

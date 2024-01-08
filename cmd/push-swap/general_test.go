@@ -14,11 +14,11 @@ import (
 // 10000 times tests that 100 random numbers are sorted in less than 700 instructions,
 // and 6! times tests that all permutations of 1-6 are sorted in less than 9 instructions:
 func TestGeneral(t *testing.T) {
-	limit := 0 // Must be under this.
+	limit := 700 // Must be under this.
 
-	// Uncomment this and related lines, and adjust limit to explore stats.
-	fails := 0
-	scores := make([]float64, 0, 10000)
+	// // Uncomment this and related lines, and adjust limit to explore stats.
+	// fails := 0
+	// scores := make([]float64, 0, 10000)
 
 	for i := 0; i < 10000; i++ {
 		hundred := hundredRandomNumbers()
@@ -39,18 +39,18 @@ func TestGeneral(t *testing.T) {
 		}
 
 		if len(instructions) >= limit {
-			// Uncomment to explore performance stats.
-			// This fails count assumed they are actually being sorted.
-			scores = append(scores, float64(len(instructions)))
-			fails++
+			// // Uncomment to explore performance stats.
+			// // This fails count assumed they are actually being sorted.
+			// scores = append(scores, float64(len(instructions)))
+			// fails++
 			t.Errorf("%v instructions--that's a bit much", len(instructions))
 		}
 	}
 
-	// Uncomment and set limit to 0 to see the mean and standard deviation:
-	t.Errorf("fails: %v", fails)
-	t.Errorf("mean: %v", Average(scores))
-	t.Errorf("standard deviation: %v", StandardDeviation(scores))
+	// // Uncomment and set limit to 0 to see the mean and standard deviation:
+	// t.Errorf("fails: %v", fails)
+	// t.Errorf("mean: %v", Average(scores))
+	// t.Errorf("standard deviation: %v", StandardDeviation(scores))
 
 	// Stack size 6:
 
