@@ -105,7 +105,7 @@ Dan's distinct feature is that he starts by finding the longest increasing subse
 
 Julien does something similar to Ali. His method is a bit simpler and a bit less effective at sorting 100 numbers, at least in our implementation. He starts by pushing everything to stack B. He then sorts them back to A via insertion sort with cost check, choosing, at each iteration, to push back the number that can be correctly placed on A with the least rotations.
 
-As mentioned, aside from optimizations to combine rotations and eliminate needless pushes, we use Jamie Dawson's special-case technique for 5 numbers. He pushes the top two numbers indescriminately. Now, Jamie says, "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omit this step and just make a swap rotate stack A to where it needs to be before pushing each number back from B.
+As mentioned, aside from optimizations to combine rotations and eliminate needless pushes, we use Jamie Dawson's special-case technique for 5 numbers. He pushes the top two numbers indiscriminately. Now, Jamie says, "We’ll bring those numbers back once the three numbers in Stack A are sorted from smallest to largest." In his example, this happens to rotate stack A into the right position to receive the number at the top of stack B. In other cases, though, it might be counterproductive to rotate stack A all the way till the smallest number is on top. So we omit this step and just make a swap rotate stack A to where it needs to be before pushing each number back from B.
 
 For larger stacks, Jamie first tried what he calls [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort), even linking to this Wikipedia article, but which sounds more like [selection sort](https://en.wikipedia.org/wiki/Selection_sort). At each step, he pushed the minumum number from A and, in this way, moved all the numbers to B in descending order. He then pushed everything back to A. This, he says, sorted the numbers, but was over the maximum length requirement to pass. (He doesn't say what that requirement was, but "under 1500" is the lowest scoring result in the table quoted by Leo Fu.)
 
@@ -121,19 +121,23 @@ We'll see in [Results](#c-results) that a conventional bucket sort first, to tri
 
 YYBer, like many push-swappers, including ourselves, follows the convenience of ranking the numbers, thus "-3 -100 0 360 108" becomes "2 1 3 5 4". This can simplify calculations, and the instructions needed to sort them are the same. (Just keep in mind that she uses the word index to mean rank in this sense.) For stack size 100, she pushes them from A to B as 8 buckets of 12 numbers each. To sort 500 numbers, she uses 12 buckets of 40 numbers each. In either case, she pushes whatever is left to the top of B as one last bucket till A is empty.
 
+How YY decides on the next number in the current range to push to B is not altogether clear. Her method has much in common with Luca Fischer's, who uses the same procedure as Jamie, so it's likely she does the same.
+
 It's no accident that both bucket counts are even. This lets her deal with two buckets at once. For example, with 100 numbers, she puts anything from 13-24 on top of B with a simple `pb`, and anything from 1-12 on the bottom with `pb rb`. When this is done, she moves on to the next two buckets, putting 37-48 on top of B and 25-36 at the bottom, and so on.
 
-When the remaining numbers have been pushed to B, so that A is empty, she uses an ingenious cost checking procedure to push everything back. First the maximum number is pushed to A. Then, at each iteration, if the cheapest number to push back is the one that belongs on top of the cuurent top element of A, she pushes it and leaves it there. If there's a cheaper number that's greater than the element on the bottom of A, she pushes that one and rotates it with `ra` to the bottom of A. If, after a push, the element at the bottom of A turns out to be now the one that belongs on top of the top element, she rotates it up into place with `rra`. In this way, she sorts everything back to A.
+When the remaining numbers have been pushed to B, so that A is empty, YY uses a cost checking procedure to push everything back. First the maximum number is pushed to A. Then the new number at the top of B is pushed and rotated to the bottom: `pa ra`.
 
-Luca Fischer's algorithm has a lot in common with YY's. It can clarify some points to read their articles together. He also pushes pairs of buckets at a time to B, and they both use the word ratio for the size of each bucket (of the pair) or, to put it another way, for the midpoint between the buckets of the first pair. (This value is presumably calculated as a ratio of the original stack size, although YY uses different ratios for 100 and 500.)
+Then, at each iteration, she checks if the value at the top of B is one less than the current top of A. If so, she places it there with `pa`. Otherwise, if the value at the top of B is greater than the one at the bottom of A, she runs `pa ra` to push it to A and rotate it to the bottom. But if the number at the top of B can be placed neither at the top nor at the bottom of A, she finds the maximum remaining number on B and the number greater than the one at the bottom of A which is least rotations (or reverse rotations) away from the top. She checks which of these two takes the smallest amount of rotations (or reverse rotations) to reach the top of B, rotates it there and pushes it. If it was the maximum, it will be correctly positioned as one less than the previous top of A. If not, she rotates it to the bottom of A.
 
-Luca has a video, showing how this puts the two buckets with the smallest values in the middle of B, and, at each stage, pushes the next pair of buckets with the smaller of the pair at the bottom of B, and the larger values at the top. For stack size 100, each bucket of the pair holds 14 numbers.
+Every time a number is pushed to the top of A and left there, a check is made to see if the number at the bottom can now be reverse rotated into its final position on top. This is repeated for as long as possible.
 
-Just like Jamie Dawson, while moving the numbers in a given range (pair of buckets) to B, Luca always pushes the the number that will take the least rotations to reach the top of A.
+In this way, she sorts everything back to A.
 
-He proceeds in this way till the three biggest numbers are left on A, which he sorts in place.
+Luca Fischer follows much the same approach. It can clarify his and YY's articles to read them together. He also pushes pairs of buckets at a time to B. Both he and YY use the word ratio for the size of each bucket (of the pair) or, to put it another way, for the midpoint between the buckets of the first pair. (This value is presumably calculated as a ratio of the original stack size, although YY uses different ratios for 100 and 500.) YY and Luca each have a videos, showing how this puts the two buckets with the smallest values in the middle of B, and how, at each stage, the next pair of buckets arrive with the smaller values at the bottom of B, and the larger values at the top.
 
-On the way back, Luca checks what's at the top of B. If its correct final position is on top of the current top of A, he pushes it there. If it's greater than the number at the bottom of A, he pushes and rotates to the bottom of A. (He characterizes this as "temporarily storing values in the bottom portion of stack A.") If neither condition is met, he pushes the current maximum from B.
+Luca doesn't say that he pushes the first value to go back to A indiscriminately from the top, but we've assumed so by analogy with YY's indiscriminate first push after the maximum of all the numbers has gone back. His description doesn't make sense without this assumtion, and his video clearly shows values less than the maximum being stored temporarily on the bottom of A.
+
+There are just a couple of differences: in Luca's case, for stack size 100, each bucket of the pair holds 14 numbers (versus 12 for YY); and, whereas YY empties stack A, Luca only pushes till the largest three numbers are left on A, and sorts them there. On the way back, Luca checks what's at the top of B. If its correct final position is on top of the current top of A, he pushes it there. If it's greater than the number at the bottom of A, he pushes and rotates to the bottom of A. (He characterizes this as "temporarily storing values in the bottom portion of stack A.") If neither condition is met, he pushes the current maximum from B.
 
 We can now think of Fred's style of bucket sort as a special case of the method used by YY and Luca. Rather than a division into three equal parts, we can see it as sorting into a pair of buckets, each of size 33, then pushing the remainder to the top of B. In Fred's case, the first pair of buckets is too big, relative to the stack size, to allow for more pairs, given his rule to stop when there are three numbers left on A. Hence he only performs one iteration of dealing out a pair of buckets before pushing the remainder.
 
@@ -159,21 +163,21 @@ At any rate, by December 2023, at 01 Founders in London, we'd get an unspecified
 
 ### c. Results
 
-In what follows, we'll compare the performance of various algorithms at sorting stacks of 100 numbers. Since doing these tests, we've realized that this may not be indicative of how they fare on smaller stacks, so please bear in mind that what follows is not an absolute verdict.
+In what follows, we'll compare the performance of various algorithms on 10,000 trials at sorting stacks of 100 numbers. Since doing these tests, we've realized that performance on 100 numbers may not be indicative of how they fare on smaller stacks, so please bear in mind that what follows is not an absolute verdict.
 
-On 10,000 tests, our implementation of Fred Orion's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 24. Of all the ways we've tried so far, this is the winner, and it sounds like Fred may have achieved some further optimization that wasn't revealed in his summary, unless I've overlooked it. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.
+Our implementation of Fred Orion's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 25. Of all the ways we've tried so far, this is the winner, and it sounds like Fred may have achieved some further optimization that wasn't revealed in his summary, unless I've overlooked it. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.
 
-We tried varying the number of buckets used in this technique: Four buckets performed somewhat worse at 569 instructions (standard deviation: 23), and two buckets even worse at 573 (standard deviation: 26).
+We tried varying the number of buckets used in this technique: Four buckets performed somewhat worse at 569 instructions, and two buckets even worse at 573.
 
-Ali Yigit Ogun's "Turk" algorithm achieved a mean of 561 instructions, with a standard deviation of 23, the worst cases being in the low 600s. (Without Ali's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
+Ali Yigit Ogun's "Turk" algorithm achieved a mean of 561 instructions, the worst cases being in the low 600s. (Without Ali's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
 
-Dan Sylvain did pretty well with his strategy of sorting all but the longest increasing subsequence into two buckets on B, then insertion sorting back to A with a cost check. Our implementation scored a mean of 566, with a standard deviation of 21.
+Dan Sylvain did pretty well with his strategy of sorting all but the longest increasing subsequence into two buckets on B, then insertion sorting back to A with a cost check. Our implementation scored a mean of 566.
 
-Julien Caucheteux's approach of pushing everything, then insertion sorting with cost checking like Ali on the way back took 584 instructions on average, with a standard deviation of 24.
+Julien Caucheteux's approach of pushing everything, then insertion sorting with cost checking like Ali on the way back took 584 instructions on average.
 
-YYBer first scored 750 for 100 numbers by pushing the smallest half to A, then the smallest half of the rest, and so on till A is empty, and then selection sorting them back to A. After this attempt, she switched to a new strategy: push into 8 equal-sized buckets on B in the case of 100 numbers, or 12 in the case of 500, then push whatever is left till A is empty. Then selection sort back to A. This required less than 700 instructions for 100 numbers, and about 6500 for 500. As a final optimization, she replaced selection sort with the cost-checking procedure described above, which reduced her mean score for 500 numbers to "5300-5400 steps".
+YYBer reports first scoring 750 for 100 numbers by pushing the smallest half to A, then the smallest half of the rest, and so on till A is empty, and then selection sorting them back to A. After this attempt, she switched to a new strategy: push into 8 equal-sized buckets on B in the case of 100 numbers, or 12 in the case of 500, then push whatever is left till A is empty. Then selection sort back to A. This, she says, required less than 700 instructions for 100 numbers, and about 6500 for 500. As a final optimization, she replaced selection sort with the cost-checking procedure described above. With this, she reports a mean score for 500 numbers to "5300-5400 steps". Our implementation of her algorithm scored 631 on 100 numbers (with just 9 over 699), and 4814 on 500.
 
-Jamie Dawson's algorithm took 867 instructions, with a standard deviation of 35. It can be cut to 768 by the simple expedient of switching the intial sort onto B from ascending to descending. Shared rotations bring it down further to 713. A natural question is: what would happen if we just triage the numbers into buckets on B (as in a traditional bucket sort), then only apply the insertion sort as we push them back to A? Well, then we only need 674 instructions. How about adjusting the number of buckets?
+Jamie Dawson's algorithm took 867 instructions. It can be cut to 768 by the simple expedient of switching the intial sort onto B from ascending to descending. Shared rotations bring it down further to 713. A natural question is: what would happen if we just triage the numbers into buckets on B (as in a traditional bucket sort), then only apply the insertion sort as we push them back to A? Well, we only need 674 instructions. How about adjusting the number of buckets?
 
 5: 674  
 4: 643  
@@ -183,11 +187,11 @@ Jamie Dawson's algorithm took 867 instructions, with a standard deviation of 35.
 
 So, here, the buckets are actually making it worse! Notice that, with one bucket, i.e. just pushing everything to B and insertion sorting back, this incremental optimization of Jamie's algorithm becomes exactly the method that Julien used.
 
-How is Fred doing so well with 3 buckets, then? Well, he doesn't search for numbers in a current range and rotate them into position to push. Instead, he just takes whatever is on top of A and either rotates it out of the way to the bottom of A (to be pushed later), or simply pushes to B, or pushes to B and rotates: just one or two moves to place each item.
+How is Fred doing so well with 3 buckets, then? He doesn't search for numbers in a current range and rotate them into position to push. Instead, he just takes whatever is on top of A and either rotates it out of the way to the bottom of A (to be pushed later), or simply pushes to B, or pushes to B and rotates: just one or two moves to place each item.
 
 Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
-Longest Run: we also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions and a standard deviation of 25. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
+Longest Run: we also tried leaving the longest run (i.e. the longest sequence of numbers adjacent in the initial stack, such that their ranks are consecutive integers) on A and pushing everything else into two buckets on B, after which we insertion sorted them back with a cost check. This resulted in a mean of 577 instructions. But then, the length of the longest run, for 100 uniformly distributed random numbers, is mostly 1 or 2.
 
 In the table below, number of buckets is shown in paretheses where we tried varying it. Fred(3) is Fred's original algorithm, and Dan(2) is Dan's original.
 
@@ -199,6 +203,8 @@ Fred(2) 573
 Longest Run 577  
 Dan(3) 578  
 Julien 584  
+YYBer 631  
+Luca 655  
 Jamie (+desc, +shared, +triage) 674  
 Jamie (+desc, +shared) 713  
 Jamie(+desc) 768  
@@ -206,7 +212,7 @@ Jamie 867
 Leo 1084  
 Ali(-cost) 1387
 
-Yet to test: YYber, Luca Fischer, Anya Schukin.
+Yet to test: Anya Schukin.
 
 As for 500 numbers, Jamie says he used the same logic as for 100, "But instead of splitting it into 5 chunks, \[I\] just split it into 11 chunks. Why 11? 11 chunks are what I decided to use after running several tests on it. The range of action points I got was way less than other numbers I tested it on."
 

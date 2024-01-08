@@ -839,3 +839,300 @@ func rank(nums []int) string {
 // 	ps.Run(a, b, justRotate(*a))
 // 	return result
 // }
+
+// func luca(a, b *ps.Stack) []string {
+// 	result := []string{}
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	n := len(a.Nums)
+// 	r := 14
+
+// outer:
+// 	for k := r; k <= n; k += 2 * r {
+// 		for l := 0; l < 2*r; l++ {
+// 			if len(a.Nums) == 3 {
+// 				break outer
+// 			}
+// 			A := a.GetNumsSlice()
+// 			for i := 0; i <= len(a.Nums)/2; i++ {
+// 				if A[i] > k && A[i] <= k+r {
+// 					if A[i] > 97 {
+// 						continue
+// 					}
+// 					for j := i; j > 0; j-- {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+// 				if A[i] <= k {
+// 					if A[i] > 97 {
+// 						continue
+// 					}
+// 					for j := i; j > 0; j-- {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 					}
+// 					ps.Px(b, a)
+// 					ps.Rx(b)
+// 					result = append(result, "pb", "rb")
+// 					break
+// 				}
+
+// 				if A[len(A)-i-1] > k && A[len(A)-i-1] <= k+r {
+// 					if A[len(A)-i-1] > 97 {
+// 						continue
+// 					}
+// 					for j := len(A) - i - 1; j < len(A); j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+// 				if A[len(A)-i-1] <= k {
+// 					if A[len(A)-i-1] > 97 {
+// 						continue
+// 					}
+// 					for j := len(A) - i - 1; j < len(A); j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 					}
+// 					ps.Px(b, a)
+// 					ps.Rx(b)
+// 					result = append(result, "pb", "rb")
+// 					break
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	// Push the remaining elements to stack B.
+// 	for len(a.Nums) > 3 {
+// 		if a.Nums[a.Top] > 97 {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 			continue
+// 		}
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 	}
+
+// 	_, rotatable := three(a.Nums)
+// 	if !rotatable {
+// 		ps.Sx(a)
+// 		result = append(result, "sa")
+
+// 	}
+
+// 	result = append(result, justRotate(*a)...)
+// 	ps.Run(a, b, justRotate(*a))
+
+// 	ps.Px(a, b)
+// 	result = append(result, "pa")
+// 	A := a.GetNumsSlice()
+// 	if a.Nums[0] != A[1]-1 {
+// 		ps.Rx(a)
+// 		result = append(result, "ra")
+// 	}
+
+// 	for len(b.Nums) > 0 || a.Nums[a.Top] != 1 {
+// 		if bottomsUp(*a) {
+// 			ps.Rrx(a)
+// 			result = append(result, "rra")
+// 			continue
+// 		}
+// 		A := a.GetNumsSlice()
+// 		B := b.GetNumsSlice()
+// 		if B[0] == A[0]-1 {
+// 			ps.Px(a, b)
+// 			result = append(result, "pa")
+// 			continue
+// 		} else if B[0] > A[len(A)-1] {
+// 			ps.Px(a, b)
+// 			ps.Rx(a)
+// 			result = append(result, "pa", "ra")
+// 			continue
+// 		} else {
+// 			maxI, _ := ps.MaxInt(B)
+// 			if maxI > len(B)/2 {
+// 				for j := maxI; j < len(B); j++ {
+// 					ps.Rrx(b)
+// 					result = append(result, "rrb")
+// 				}
+// 			} else {
+// 				for j := maxI; j > 0; j-- {
+// 					ps.Rx(b)
+// 					result = append(result, "rb")
+// 				}
+// 			}
+// 			ps.Px(a, b)
+// 			result = append(result, "pa")
+// 		}
+// 	}
+
+// 	return result
+// }
+
+// // For use with luca and yy.
+// func bottomsUp(a ps.Stack) bool {
+// 	A := a.GetNumsSlice()
+// 	return A[len(A)-1] == A[0]-1
+// }
+
+// func yy(a, b *ps.Stack) []string {
+// 	result := []string{}
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	n := len(a.Nums)
+// 	r := 12
+
+// outer:
+// 	for k := r; k <= n; k += 2 * r {
+// 		for l := 0; l < 2*r; l++ {
+// 			if len(a.Nums) == 3 {
+// 				break outer
+// 			}
+// 			A := a.GetNumsSlice()
+// 			for i := 0; i <= len(a.Nums)/2; i++ {
+// 				if A[i] > k && A[i] <= k+r {
+// 					for j := i; j > 0; j-- {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+// 				if A[i] <= k {
+// 					for j := i; j > 0; j-- {
+// 						ps.Rx(a)
+// 						result = append(result, "ra")
+// 					}
+// 					ps.Px(b, a)
+// 					ps.Rx(b)
+// 					result = append(result, "pb", "rb")
+// 					break
+// 				}
+
+// 				if A[len(A)-i-1] > k && A[len(A)-i-1] <= k+r {
+// 					for j := len(A) - i - 1; j < len(A); j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 					}
+// 					ps.Px(b, a)
+// 					result = append(result, "pb")
+// 					break
+// 				}
+// 				if A[len(A)-i-1] <= k {
+// 					for j := len(A) - i - 1; j < len(A); j++ {
+// 						ps.Rrx(a)
+// 						result = append(result, "rra")
+// 					}
+// 					ps.Px(b, a)
+// 					ps.Rx(b)
+// 					result = append(result, "pb", "rb")
+// 					break
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	for len(a.Nums) > 0 {
+// 		ps.Px(b, a)
+// 		result = append(result, "pb")
+// 	}
+
+// 	maxI, _ := ps.MaxInt(b.GetNumsSlice())
+// 	if maxI > len(b.Nums)/2 {
+// 		for j := maxI; j < len(b.Nums); j++ {
+// 			ps.Rrx(b)
+// 			result = append(result, "rrb")
+// 		}
+// 	} else {
+// 		for j := maxI; j > 0; j-- {
+// 			ps.Rx(b)
+// 			result = append(result, "rb")
+// 		}
+// 	}
+// 	ps.Px(a, b)
+// 	ps.Px(a, b)
+// 	result = append(result, "pa", "pa")
+// 	A := a.GetNumsSlice()
+// 	if a.Nums[0] != A[1]-1 {
+// 		ps.Rx(a)
+// 		result = append(result, "ra")
+// 	}
+
+// 	for len(b.Nums) > 0 || a.Nums[a.Top] != 1 {
+// 		if bottomsUp(*a) {
+// 			ps.Rrx(a)
+// 			result = append(result, "rra")
+// 			continue
+// 		}
+// 		A := a.GetNumsSlice()
+// 		B := b.GetNumsSlice()
+// 		if B[0] == A[0]-1 {
+// 			ps.Px(a, b)
+// 			result = append(result, "pa")
+// 			continue
+// 		} else if B[0] > A[len(A)-1] {
+// 			ps.Px(a, b)
+// 			ps.Rx(a)
+// 			result = append(result, "pa", "ra")
+// 			continue
+// 		} else {
+// 			maxI, _ := ps.MaxInt(B)
+// 			otherI := 0
+
+// 			for i := 1; i <= len(B)/2; i++ {
+// 				if B[i] > A[len(A)-1] {
+// 					otherI = i
+// 					break
+// 				}
+// 				if B[len(B)-i] > A[len(A)-1] {
+// 					otherI = len(B) - i
+// 					break
+// 				}
+// 			}
+
+// 			rotsMax := min(maxI, len(B)-maxI)
+// 			rotsOther := min(otherI, len(B)-otherI)
+
+// 			if rotsMax <= rotsOther {
+// 				if maxI > len(B)/2 {
+// 					for j := maxI; j < len(B); j++ {
+// 						ps.Rrx(b)
+// 						result = append(result, "rrb")
+// 					}
+// 				} else {
+// 					for j := maxI; j > 0; j-- {
+// 						ps.Rx(b)
+// 						result = append(result, "rb")
+// 					}
+// 				}
+// 				ps.Px(a, b)
+// 				result = append(result, "pa")
+// 			} else {
+// 				if otherI > len(B)/2 {
+// 					for j := otherI; j < len(B); j++ {
+// 						ps.Rrx(b)
+// 						result = append(result, "rrb")
+// 					}
+// 				} else {
+// 					for j := otherI; j > 0; j-- {
+// 						ps.Rx(b)
+// 						result = append(result, "rb")
+// 					}
+// 				}
+// 				ps.Px(a, b)
+// 				ps.Rx(a)
+// 				result = append(result, "pa", "ra")
+// 			}
+
+// 		}
+// 	}
+
+// 	return result
+// }
