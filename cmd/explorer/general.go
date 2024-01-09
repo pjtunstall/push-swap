@@ -1136,3 +1136,138 @@ func rank(nums []int) string {
 
 // 	return result
 // }
+
+// func anya(a, b *ps.Stack) []string {
+// 	var result []string
+// 	*a, _ = ps.NewStack(rank(a.Nums))
+// 	n := len(a.Nums)
+// 	median := len(a.Nums) / 2
+
+// 	for i := 0; i < n; i++ {
+// 		if a.Nums[a.Top] <= median {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 		} else {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	for len(b.Nums) > 0 {
+// 		B := b.GetNumsSlice()
+// 		maxI, _ := ps.MaxInt(B)
+// 		minI, _ := ps.MinInt(B)
+// 		var pushMeNext int
+// 		var iAmMin bool
+// 		for i := 0; i <= len(B)/2; i++ {
+// 			if i == maxI {
+// 				pushMeNext = i
+// 				break
+// 			}
+// 			if i == minI {
+// 				pushMeNext = i
+// 				iAmMin = true
+// 				break
+// 			}
+// 			if i == 0 {
+// 				continue
+// 			}
+// 			if len(B)-i == maxI {
+// 				pushMeNext = len(B) - i
+// 				break
+// 			}
+// 			if len(B)-i == minI {
+// 				pushMeNext = len(B) - i
+// 				iAmMin = true
+// 				break
+// 			}
+// 		}
+
+// 		if pushMeNext > len(b.Nums)/2 {
+// 			for i := pushMeNext; i < len(b.Nums); i++ {
+// 				ps.Rrx(b)
+// 				result = append(result, "rrb")
+// 			}
+// 		} else {
+// 			for i := pushMeNext; i > 0; i-- {
+// 				ps.Rx(b)
+// 				result = append(result, "rb")
+// 			}
+// 		}
+// 		ps.Px(a, b)
+// 		result = append(result, "pa")
+// 		if iAmMin {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	for i := 0; i < n; i++ {
+// 		if a.Nums[a.Top] > median {
+// 			ps.Px(b, a)
+// 			result = append(result, "pb")
+// 		} else {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	rots := justRotate(*a)
+// 	result = append(result, rots...)
+// 	ps.Run(a, b, rots)
+
+// 	for len(b.Nums) > 0 {
+// 		B := b.GetNumsSlice()
+// 		maxI, _ := ps.MaxInt(B)
+// 		minI, _ := ps.MinInt(B)
+// 		var pushMeNext int
+// 		var iAmMin bool
+// 		for i := 0; i <= len(B)/2; i++ {
+// 			if i == maxI {
+// 				pushMeNext = i
+// 				break
+// 			}
+// 			if i == minI {
+// 				pushMeNext = i
+// 				iAmMin = true
+// 				break
+// 			}
+// 			if i == 0 {
+// 				continue
+// 			}
+// 			if len(B)-i == maxI {
+// 				pushMeNext = len(B) - i
+// 				break
+// 			}
+// 			if len(B)-i == minI {
+// 				pushMeNext = len(B) - i
+// 				iAmMin = true
+// 				break
+// 			}
+// 		}
+
+// 		if pushMeNext > len(b.Nums)/2 {
+// 			for i := pushMeNext; i < len(b.Nums); i++ {
+// 				ps.Rrx(b)
+// 				result = append(result, "rrb")
+// 			}
+// 		} else {
+// 			for i := pushMeNext; i > 0; i-- {
+// 				ps.Rx(b)
+// 				result = append(result, "rb")
+// 			}
+// 		}
+// 		ps.Px(a, b)
+// 		result = append(result, "pa")
+// 		if iAmMin {
+// 			ps.Rx(a)
+// 			result = append(result, "ra")
+// 		}
+// 	}
+
+// 	rots = justRotate(*a)
+// 	result = append(result, rots...)
+// 	ps.Run(a, b, rots)
+
+// 	return result
+// }
