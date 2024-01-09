@@ -147,7 +147,7 @@ A few others have made their solutions public on GitHub, such as [Adrian Roque](
 
 ### b. Grading systems
 
-It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did Ali Yigit Ogun at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go. But the basic idea of sorting numbers using two stacks is the same, as are the permitted operations.
+It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did Ali Yigit Ogun at 42-Heilbronn; others, such as YYBer, only had to write push-swap while a checker was provided. The projects I've seen discussed online were written in C (although the articles focus on strategy rather than implementation). Ours had to be in Go. But the basic idea of sorting numbers using two stacks is the same, as are the permitted operations.
 
 Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of folks' solutions when they don't go into specifics. At Ecole 42, Lyon, in 2021, [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e) passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which top marks are gained by sorting 100 numbers in less than 700 instructions, and 500 in less than 5500.
 
