@@ -147,7 +147,7 @@ A few others have made their solutions public on GitHub, such as [Adrian Roque](
 
 ### b. Grading systems
 
-It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did AYO at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go.
+It seems the push-swap rules have varied slightly over time and space. We had two write a checker and a push-swap program, as did Ali Yigit Ogun at 42-Heilbronn; others only had to write push-swap while the checker was provided. The projects I've seen discussed online were written in C or C++ (although the articles focus on strategy rather than implementation). Ours had to be in Go. But the basic idea of sorting numbers using two stacks is the same, as are the permitted operations.
 
 Different scoring systems are used by the various schools, which can sometimes offer clues about the performance of folks' solutions when they don't go into specifics. At Ecole 42, Lyon, in 2021, [Leo Fu](https://medium.com/nerd-for-tech/push-swap-tutorial-fa746e6aba1e) passed by sorting 100 numbers in "about 1084 instructions". He quotes a scoring system in which top marks are gained by sorting 100 numbers in less than 700 instructions, and 500 in less than 5500.
 
@@ -161,19 +161,19 @@ At any rate, by December 2023, at 01 Founders in London, we'd get an unspecified
 
 In what follows, we'll compare the performance of various algorithms on 10,000 trials at sorting stacks of 100 numbers. Since doing these tests, we've realized that performance on 100 numbers may not be indicative of how they fare on smaller stacks, so please bear in mind that this is not an absolute verdict.
 
-Our implementation of Fred Orion's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 25. Of all the ways we've tried so far, this is the winner, and it sounds like Fred may have achieved some further optimization that wasn't revealed in his summary, unless I've overlooked it. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.
+Our implementation of Fred Orion's algorithm took an average of 555 instructions to sort 100 numbers, with a standard deviation of 25, and never more than 699. The worse cases were in the low 600s, with 498 (4.98%) over 600. Of all the ways we've tried so far, this is the winner, and it sounds like Fred may have achieved some further optimization that wasn't revealed in his summary, unless I've overlooked it. He says he sorted 100 with a mean of 510 instructions. I don't know how many tests he did. To sort 500 numbers, he reports a mean of 3750 instructions; our version scored 4216 on 100 trials, with a standard deviation of 121.
 
 We tried varying the number of buckets used in this technique: Four buckets performed somewhat worse at 569 instructions, and two buckets even worse at 573.
 
-Ali Yigit Ogun's "Turk" algorithm achieved a mean of 561 instructions, the worst cases being in the low 600s. (Without Ali's cost calculation, the mean was 1387, and the standard deviation 79. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
+Ali Yigit Ogun's "Turk" algorithm achieved a mean of 561, with a standard deviation of 23. Again, the the worst cases were in the low 600s, and 549 (5.49%) of them were over 600. (Without Ali's cost calculation, the mean was 1387. Our initial checks to see if the stack can be simply swapped and rotated into order made no difference in this test.)
 
 Dan Sylvain did pretty well with his strategy of sorting all but the longest increasing subsequence into two buckets on B, then insertion sorting back to A with a cost check. Our implementation scored a mean of 566.
 
-Julien Caucheteux's approach of pushing everything, then insertion sorting with cost checking like Ali on the way back took 584 instructions on average.
+Julien Caucheteux's approach of pushing everything, then insertion sorting with cost checking like Ali on the way back took 584 instructions, in our interpretation.
 
 YYBer reports first scoring 750 for 100 numbers by pushing the smallest half to A, then the smallest half of the rest, and so on till A is empty, and then selection sorting them back to A. After this attempt, she switched to a new strategy: push into 8 equal-sized buckets on B in the case of 100 numbers, or 12 in the case of 500, then push whatever is left till A is empty. Then selection sort back to A. This, she says, required less than 700 instructions for 100 numbers, and about 6500 for 500. As a final optimization, she replaced selection sort with the cost-checking procedure described above. With this, she reports a mean score for 500 numbers to "5300-5400 steps". Our implementation of her algorithm scored 631 on 100 numbers (with just 9 over 699), and 4814 on 500.
 
-Jamie Dawson's algorithm took 867 instructions. It can be cut to 768 by the simple expedient of switching the intial sort onto B from ascending to descending. Shared rotations bring it down further to 713. A natural question is: what would happen if we just triage the numbers into buckets on B (as in a traditional bucket sort), then only apply the insertion sort as we push them back to A? It turns out we only need 674 instructions. How about adjusting the number of buckets?
+Our version of Jamie Dawson's algorithm took 867 instructions. It can be cut to 768 by the simple expedient of switching the intial sort onto B from ascending to descending. Shared rotations bring it down further to 713. A natural question is: what would happen if we just triage the numbers into buckets on B (as in a traditional bucket sort), then only apply the insertion sort as we push them back to A? It turns out we only need 674 instructions. How about adjusting the number of buckets?
 
 5: 674  
 4: 643  
@@ -184,6 +184,8 @@ Jamie Dawson's algorithm took 867 instructions. It can be cut to 768 by the simp
 So, here, the buckets are actually making it worse! Notice that, with one bucket, i.e. just pushing everything to B and insertion sorting back, this incremental optimization of Jamie's algorithm becomes exactly the method that Julien used.
 
 How is Fred doing so well with 3 buckets, then? He doesn't search for numbers in a current range and rotate them into position to push. Instead, he just takes whatever is on top of A and either rotates it out of the way to the bottom of A (to be pushed later), or simply pushes to B, or pushes to B and rotates: just one or two moves to place each item.
+
+Anya Schukin's algorithm, in our implementation, sorted 100 numbers in 811 instructions.
 
 Leo Fu reports "about 1084" instructions for 100 numbers, and "about 6756" for 500, then remarks that he actually always got exactly 6756, no matter how many times he tested it on different random numbers, and poses the question: why? We'll return to this [shortly](#c-why-does-leo-fus-radix-sort-always-take-the-same-amount-of-instructions-for-a-given-stack-size).
 
@@ -204,11 +206,10 @@ Luca 655
 Jamie (+desc, +shared, +triage) 674  
 Jamie (+desc, +shared) 713  
 Jamie(+desc) 768  
+Anya 811  
 Jamie 867  
 Leo 1084  
 Ali(-cost) 1387
-
-Yet to test: Anya Schukin.
 
 As for 500 numbers, Jamie says he used the same logic as for 100, "But instead of splitting it into 5 chunks, \[I\] just split it into 11 chunks. Why 11? 11 chunks are what I decided to use after running several tests on it. The range of action points I got was way less than other numbers I tested it on."
 
