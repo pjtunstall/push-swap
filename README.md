@@ -20,7 +20,7 @@
 
 This is our take on the 01 Edu project `push-swap`, details of which can be found [here](https://github.com/01-edu/public/tree/master/subjects/push-swap).
 
-We're given a list of numbers on a circular stack A, together with an empty stack B, and a set of eleven operations, including rotations of stacks (individually or together in the same direction), swapping the top two elements of a stack, and pushing numbers back and forth from one stack to another.
+We're given a list of numbers on a circular stack A, together with an empty circular stack B, and a set of eleven operations: rotation (`ra`, `rb`) and reverse rotation (`rra`, `rrb`) of a stack, swapping the top two elements of a stack (`sa`, `sb`), pushing numbers from A to B or vice-versa (`pa`, `pb`), and performing a combined rotation (`rr`), reverse rotation (`rrr`), or swap (`ss`) of both stacks.
 
 The object is to write a program that leaves the numbers sorted on stack A in ascending order. There are certain constraints on the length of the sequence of instructions to accomplish this.
 
@@ -42,7 +42,7 @@ Alternatively, you can run `./checker "3 2 1 0"` (with your choice of initial va
 
 In case you want to run `main_test.go`, be aware that it expects both these binaries to be built and in their eponymous folders.
 
-If you're running tests, you might want to use the `-count=1` flag to make sure the test is actually performed! Sometimes cached results are given. This can happen if you run the same test on the same code (perhaps hoping the test will generate different random numbers), or if you make a change to code in a different package from the test (which can be a problem if your code depends on the code you changed in that external package). Cached results can also be given if the test depends on something outside of the code, such as environment variables, command-line flags, or some other file or database. The `-count=1` flag ensures that the test is definitely run once. For example, to test the general function:
+If you're running tests, you might want to use the `-count=1` flag to make sure the test is actually performed! Sometimes cached results are given. This can happen if you run the same test on the same code (perhaps hoping the test will generate different random numbers), or if you make a change to code in a different package from the test (which can be a problem if your code depends on the code you changed in that external package). Cached results can also be given if you changed something the test depends on something outside of the code, such as environment variables, command-line flags, or some other file or database. The `-count=1` flag ensures that the test is definitely run once. For example, to test the general function:
 
 ```
 go test -run=TestGeneral -count=1
