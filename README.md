@@ -209,7 +209,7 @@ YYBer 631
 Luca 655  
 Jamie (+desc, +shared, +triage) 674  
 Jamie (+desc, +shared) 713  
-Jamie(+desc) 768  
+Jamie (+desc) 768  
 Anya 811  
 Jamie 867  
 Leo 1084  
@@ -329,7 +329,7 @@ Ceil(log2(99)) = 7, so it takes 7 bits to express these numbers. Picture them li
 1100010  
 1100011
 
-In sorting, there is one pass (iteration) for every bit, starting with the least significant, i.e. at the right. At every pass, all the numbers with a 0 at that bit will be pushed to B with `pb` and eventually back with `pa`, while all the numbers with a 1 at that bit will be rotated out of the way with `ra`.
+In sorting, there's one pass (iteration) for every bit, starting with the least significant, i.e. at the right. At every pass, all the numbers with a 0 at that bit will be pushed to B with `pb` and eventually back with `pa`, while all the numbers with a 1 at that bit will be rotated out of the way with `ra`.
 
 If the size of the stack was a power of 2, there would be an equal number of ones and zeros in the list of numbers (in binary form) to be sorted. But the bits of 99 are 1100011, so not every 7-bit sequenece of 0s and 1s is represented among the numbers to be sorted. Since it's the greatest 28 numbers that are missing between 99 and 127 (one less than the next power of 2), i.e. from the full total of all possible 7-bit sequences, it's the 0s that will be overrepresented in the total, shifting the balance in favor of pushes.
 
@@ -389,6 +389,6 @@ However, we can't unconditionally move up a line because, when the intructions a
 
 This is done by checking if the input is from a character device. The method `fi.Mode()` returns a bitmask, i.e. a number that represents a sequence of bits. In the case of `fi.Mode()`, these bits represent the file mode and permissions. One of them indicates whether the file is a character device. This should be true when the input is from the command line.
 
-`os.ModeCharDevice` is a constant that indicates which bit, this is. It's value is 8192. In binary, 8192 is 10000000000000, a 1 followed by 13 zeros. So, being a power of two, 8192 can stand for a single bit, the 14th bit of the sequence.
+`os.ModeCharDevice` is a constant that indicates which bit this is. Its value is 8192. In binary, 8192 is 10000000000000, a 1 followed by 13 zeros. So, being a power of two, 8192 can stand for a single bit, the 14th bit of the sequence.
 
-The `&` is a bitwise AND operator. It's used here to check if the bit that represents a character device is set (i.e. 1). The result of this AND operation will only be zero when the 14th bit of `fi.Mode` is zero. Otherwise it will be 8192.
+The `&` is a bitwise AND operator. It's used here to check if the bit that represents a character device is set (i.e. 1). The result of this AND operation will only be zero when the 14th bit of `fi.Mode` is zero.
