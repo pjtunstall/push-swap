@@ -385,10 +385,14 @@ The code in the previous section uses a bitmask to identify individual bits of a
 
 In the `getInstructions` function of the `checker` program (located in `get-instructions.go`), we wanted to move the cursor up a line to eliminate the blank line that results when the user indicates that they've finished typing instructions by pressing enter on a line with no instructions.
 
-However, we can't unconditionally move up a line because, when the intructions are piped to the program, there is no blank line. Hence we check whether the input is from the terminal before moving up a line.
+However, we can't unconditionally move up a line because, when the intructions are piped to the program, there is no blank line. Hence we check whether the input is from a character device (i.e. the terminal) before moving up a line.
 
-This is done by checking if the input is from a character device. The method `fi.Mode()` returns a bitmask, i.e. a number that represents a sequence of bits. In the case of `fi.Mode()`, these bits represent the file mode and permissions. One of them indicates whether the file is a character device. This should be true when the input is from the command line.
+To this end, the `main` function in `checker` passes a boolean, `(fi.Mode() & os.ModeCharDevice) != 0`, to `getInstructions`.
 
-`os.ModeCharDevice` is a constant that indicates which bit this is. Its value is 8192. In binary, 8192 is 10000000000000, a 1 followed by 13 zeros. So, being a power of two, 8192 can stand for a single bit, the 14th bit of the sequence.
+The `&` is the bitwise AND operator. It returns a number which, when expressed in binary, has a 1 only at positions where both of its operands have 1, and 0 everywhere else.
 
-The `&` is a bitwise AND operator. It's used here to check if the bit that represents a character device is set (i.e. 1). The result of this AND operation will only be zero when the 14th bit of `fi.Mode` is zero.
+`fi.Mode()` returns a number, the 0s and 1s of whose binary representation indicate file mode and permissions. In particular, its 14th bit shows whether the input is from the command line.
+
+`os.ModeCharDevice` is a constant, equal to the 14th power of 2, namely 8192. This will be the bitmask we use to query that 14th bit.
+
+Thus, `fi.Mode() & os.ModeCharDevice` will only be zero when the 14th bit of `fi.Mode` is 0. (Otherwise it will be 8192.)
